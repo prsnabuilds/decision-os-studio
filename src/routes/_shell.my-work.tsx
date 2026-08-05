@@ -10,7 +10,6 @@ import {
   PageHeader,
 
   PriorityBadge,
-  Quarters,
   SectionHeading,
   Segmented,
   StatusBadge,
@@ -18,7 +17,6 @@ import {
   TextInput,
   type Urgency,
 } from "@/components/ds";
-import { PersonChip } from "@/components/ds/bits";
 import { leaves, pipelines, tasks, type Task } from "@/data/demo";
 import { inr } from "@/lib/format";
 import { cn } from "@/lib/utils";
