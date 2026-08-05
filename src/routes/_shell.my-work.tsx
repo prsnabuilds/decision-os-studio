@@ -6,9 +6,10 @@ import {
   Card,
   EmptyState,
   Field,
+  Meta,
   PageHeader,
+
   PriorityBadge,
-  Quarters,
   SectionHeading,
   Segmented,
   StatusBadge,
@@ -16,7 +17,6 @@ import {
   TextInput,
   type Urgency,
 } from "@/components/ds";
-import { PersonChip } from "@/components/ds/bits";
 import { leaves, pipelines, tasks, type Task } from "@/data/demo";
 import { inr } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -61,7 +61,15 @@ const statusLabels = {
   done: "Done",
 } as const;
 
-function TaskCard({ task, aiScore }: { task: Task; aiScore?: number }) {
+function TaskCard({
+  task,
+  aiScore,
+  dense = false,
+}: {
+  task: Task;
+  aiScore?: number;
+  dense?: boolean;
+}) {
   const [open, setOpen] = React.useState(false);
   const [steps, setSteps] = React.useState(task.steps ?? []);
 
@@ -75,17 +83,43 @@ function TaskCard({ task, aiScore }: { task: Task; aiScore?: number }) {
     });
   };
 
+  const dueLabel =
+    task.dueInDays < 0
+      ? `Due ${Math.abs(task.dueInDays)} ${Math.abs(task.dueInDays) === 1 ? "day" : "days"} ago`
+      : task.dueInDays === 0
+        ? "Due today"
+        : `Due in ${task.dueInDays} days`;
+
+  const metaItems = dense
+    ? [task.assignee, dueLabel].filter(Boolean)
+    : [
+        task.priority === "high" ? <PriorityBadge priority="high" /> : null,
+        task.status !== "todo" ? statusLabels[task.status] : null,
+        task.assignee,
+        dueLabel,
+        task.requireProof ? "Proof required" : null,
+        `${task.progress}% done`,
+        typeof aiScore === "number" ? `AI score ${aiScore}` : null,
+      ].filter(Boolean);
+
   return (
     <Card
       compact
       urgency={groupOf(task) === "overdue" || groupOf(task) === "today" ? groupOf(task) : undefined}
       className="pl-5"
     >
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="min-w-40 flex-1 text-body-strong text-foreground">{task.title}</span>
-        {task.amount ? (
+      <div className="flex flex-wrap items-start gap-2">
+        <div className="min-w-40 flex-1">
+          <p className="text-body-strong text-foreground">{task.title}</p>
+          <Meta items={metaItems} className="mt-1" />
+          {dense && task.amount ? (
+            <p className="mt-1 tabular text-small text-secondary-foreground">{inr(task.amount)}</p>
+          ) : null}
+        </div>
+        {!dense && task.amount ? (
           <span className="tabular text-body-strong text-foreground">{inr(task.amount)}</span>
         ) : null}
+
         <button
           type="button"
           aria-expanded={open}
@@ -97,37 +131,6 @@ function TaskCard({ task, aiScore }: { task: Task; aiScore?: number }) {
         </button>
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        <PriorityBadge priority={task.priority} />
-        <StatusBadge
-          kind={
-            task.status === "done" ? "completed" : task.status === "blocked" ? "pending" : "neutral"
-          }
-        >
-          {statusLabels[task.status]}
-        </StatusBadge>
-        <PersonChip name={task.assignee} />
-        <span className="text-label text-tertiary-foreground">
-          {task.dueInDays < 0
-            ? `Due ${Math.abs(task.dueInDays)} ${Math.abs(task.dueInDays) === 1 ? "day" : "days"} ago`
-            : task.dueInDays === 0
-              ? "Due today"
-              : `Due in ${task.dueInDays} days`}
-        </span>
-        {task.requireProof ? <StatusBadge kind="pending">Proof Required</StatusBadge> : null}
-      </div>
-
-      <div className="mt-3 flex flex-wrap items-center gap-4">
-        <Quarters value={task.progress} />
-        {typeof aiScore === "number" ? (
-          <span className="flex items-center gap-2">
-            <span className="h-1.5 w-20 overflow-hidden rounded-pill bg-surface-sunken">
-              <span className="block h-full rounded-pill bg-brand" style={{ width: `${aiScore}%` }} />
-            </span>
-            <span className="text-label tabular text-tertiary-foreground">AI Score {aiScore}</span>
-          </span>
-        ) : null}
-      </div>
 
       {open ? (
         <div className="mt-4 space-y-4 border-t border-hairline pt-4">
@@ -327,11 +330,13 @@ function BoardView() {
         </Card>
       ) : null}
 
-      <div className="grid gap-4 lg:grid-cols-4">
+      <div className="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
+        <div className="flex min-w-max gap-3">
         {columns.map((c) => {
           const items = tasks.filter((t) => t.status === c);
           return (
-            <div key={c} className="rounded-lg border border-hairline bg-surface-sunken p-3">
+            <div key={c} className="w-72 shrink-0 rounded-lg bg-surface-sunken p-3">
+
               <div className="mb-3 flex items-center justify-between">
                 <p className="text-label text-tertiary-foreground">{statusLabels[c]}</p>
                 <span className="text-label tabular text-tertiary-foreground">{items.length}</span>
@@ -340,13 +345,15 @@ function BoardView() {
                 {items.length === 0 ? (
                   <p className="px-1 text-small text-tertiary-foreground">No tasks in this column.</p>
                 ) : (
-                  items.map((t) => <TaskCard key={t.id} task={t} />)
+                  items.map((t) => <TaskCard key={t.id} task={t} dense />)
                 )}
               </div>
             </div>
           );
         })}
+        </div>
       </div>
+
     </div>
   );
 }

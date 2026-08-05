@@ -130,27 +130,35 @@ export function IconBtn({
 
 /* ------------------------------ Badges ------------------------------ */
 
+/*
+ * Status colour is deliberately minimal: four roles only.
+ *   attention → something is waiting on a person (caution)
+ *   late      → past due (danger)
+ *   done      → closed successfully (success)
+ *   neutral   → everything else, including informational labels
+ * Older names are kept as aliases so callers stay readable.
+ */
 export type StatusKind =
+  | "attention"
+  | "late"
+  | "done"
+  | "neutral"
   | "pending"
   | "directive"
   | "overdue"
   | "completed"
-  | "rejected"
-  | "neutral";
+  | "rejected";
 
 const statusStyles: Record<StatusKind, string> = {
-  pending:
-    "bg-[var(--badge-pending-bg)] text-[var(--badge-pending-fg)] border-[var(--badge-pending-bd)]",
-  directive:
-    "bg-[var(--badge-directive-bg)] text-[var(--badge-directive-fg)] border-[var(--badge-directive-bd)]",
-  overdue:
-    "bg-[var(--badge-overdue-bg)] text-[var(--badge-overdue-fg)] border-[var(--badge-overdue-bd)]",
-  completed:
-    "bg-[var(--badge-completed-bg)] text-[var(--badge-completed-fg)] border-[var(--badge-completed-bd)]",
-  rejected:
-    "bg-[var(--badge-neutral-bg)] text-[var(--badge-neutral-fg)] border-[var(--badge-neutral-bd)]",
-  neutral:
-    "bg-[var(--badge-neutral-bg)] text-[var(--badge-neutral-fg)] border-[var(--badge-neutral-bd)]",
+  attention: "bg-[var(--badge-pending-bg)] text-[var(--badge-pending-fg)]",
+  pending: "bg-[var(--badge-pending-bg)] text-[var(--badge-pending-fg)]",
+  late: "bg-[var(--badge-overdue-bg)] text-[var(--badge-overdue-fg)]",
+  overdue: "bg-[var(--badge-overdue-bg)] text-[var(--badge-overdue-fg)]",
+  done: "bg-[var(--badge-completed-bg)] text-[var(--badge-completed-fg)]",
+  completed: "bg-[var(--badge-completed-bg)] text-[var(--badge-completed-fg)]",
+  directive: "bg-[var(--badge-neutral-bg)] text-[var(--badge-neutral-fg)]",
+  rejected: "bg-[var(--badge-neutral-bg)] text-[var(--badge-neutral-fg)]",
+  neutral: "bg-[var(--badge-neutral-bg)] text-[var(--badge-neutral-fg)]",
 };
 
 export function StatusBadge({
@@ -167,7 +175,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-pill border px-2.5 py-0.5 text-label",
+        "inline-flex items-center gap-1.5 rounded-pill px-2 py-0.5 text-label",
         statusStyles[kind],
         className,
       )}
@@ -178,21 +186,18 @@ export function StatusBadge({
   );
 }
 
+/* High priority earns a tint; medium and low stay as quiet text. */
 export function PriorityBadge({ priority }: { priority: "high" | "medium" | "low" }) {
-  const map = {
-    high: "bg-caution-50 text-caution-800 border-caution-200",
-    medium: "bg-neutral-100 text-foreground border-hairline",
-    low: "bg-background text-secondary-foreground border-hairline",
-  } as const;
-  const labels = { high: "High", medium: "Medium", low: "Low" } as const;
+  if (priority !== "high") {
+    return (
+      <span className="text-label text-tertiary-foreground">
+        {priority === "medium" ? "Medium" : "Low"} Priority
+      </span>
+    );
+  }
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-pill border px-2.5 py-0.5 text-label",
-        map[priority],
-      )}
-    >
-      {labels[priority]} Priority
+    <span className="inline-flex items-center rounded-pill bg-[var(--badge-pending-bg)] px-2 py-0.5 text-label text-[var(--badge-pending-fg)]">
+      High Priority
     </span>
   );
 }
@@ -216,6 +221,36 @@ export function CountBadge({
   );
 }
 
+/* A quiet second line of metadata, dot-separated. */
+export function Meta({
+  items,
+  className,
+}: {
+  items: React.ReactNode[];
+  className?: string | undefined;
+}) {
+  const shown = items.filter(Boolean);
+  return (
+    <p
+      className={cn(
+        "flex flex-wrap items-center gap-x-2 gap-y-1 text-small text-tertiary-foreground",
+        className,
+      )}
+    >
+      {shown.map((item, i) => (
+        <React.Fragment key={i}>
+          {i > 0 ? (
+            <span aria-hidden="true" className="opacity-50">
+              ·
+            </span>
+          ) : null}
+          <span className="inline-flex items-center gap-1.5">{item}</span>
+        </React.Fragment>
+      ))}
+    </p>
+  );
+}
+
 /* ------------------------------ Surfaces ------------------------------ */
 
 export type Urgency = "overdue" | "today" | "week" | "later";
@@ -233,18 +268,22 @@ export function Card({
   className,
   children,
   interactive,
+  bordered,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
   urgency?: Urgency | undefined;
   compact?: boolean | undefined;
   interactive?: boolean | undefined;
+  /* Opt in to a hard edge only for containers that must read as panels. */
+  bordered?: boolean | undefined;
 }) {
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-lg border border-hairline bg-surface",
-        compact ? "p-4" : "p-5",
-        interactive && "transition-shadow duration-150 hover:shadow-sm",
+        "relative overflow-hidden rounded-lg bg-surface",
+        bordered ? "border border-hairline" : "shadow-xs",
+        compact ? "p-3.5" : "p-5",
+        interactive && "transition-colors duration-150 hover:bg-surface-hover",
         className,
       )}
       {...props}
@@ -260,6 +299,7 @@ export function Card({
     </div>
   );
 }
+
 
 export function PageHeader({
   eyebrow,
@@ -471,6 +511,73 @@ export function Quarters({ value }: { value: number }) {
         ))}
       </div>
       <span className="text-label tabular text-tertiary-foreground">{value}% Done</span>
+    </div>
+  );
+}
+
+/* ------------------------------ Detail panel ------------------------------ */
+
+/*
+ * A focused slide-over. Detail belongs in a deliberate surface, never at the
+ * bottom of a long scroll.
+ */
+export function DetailPanel({
+  open,
+  onClose,
+  title,
+  subtitle,
+  children,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  subtitle?: string | undefined;
+  children: React.ReactNode;
+}) {
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50">
+      <button
+        type="button"
+        aria-label="Close detail"
+        onClick={onClose}
+        className="absolute inset-0 bg-neutral-900/40"
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        className="absolute inset-y-0 right-0 flex w-full max-w-xl flex-col bg-surface shadow-lg sm:w-[560px]"
+      >
+        <div className="flex items-start gap-3 border-b border-hairline px-5 py-4">
+          <div className="min-w-0 flex-1">
+            <h2 className="truncate text-h3 text-foreground">{title}</h2>
+            {subtitle ? (
+              <p className="mt-0.5 text-small text-tertiary-foreground">{subtitle}</p>
+            ) : null}
+          </div>
+          <IconBtn label="Close" onClick={onClose}>
+            <span aria-hidden="true" className="text-body">
+              ✕
+            </span>
+          </IconBtn>
+        </div>
+        <div className="flex-1 overflow-y-auto p-5">{children}</div>
+      </div>
     </div>
   );
 }

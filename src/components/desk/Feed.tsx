@@ -12,7 +12,7 @@ import {
   Stamp,
   Bell,
 } from "lucide-react";
-import { Btn, Card, EmptyState, FilterPill, IconBtn, StatusBadge } from "@/components/ds";
+import { Btn, Card, EmptyState, FilterPill, IconBtn, Meta } from "@/components/ds";
 import { SourceLabel } from "@/components/ds/bits";
 import { feed, type FeedClass, type FeedItem } from "@/data/demo";
 import { inr } from "@/lib/format";
@@ -91,7 +91,7 @@ export function TasksAndActivity() {
           />
         )
       ) : (
-        <ul className="space-y-2">
+        <ul className="space-y-1.5">
           {visible.map((item) => {
             const Icon = classIcons[item.classification];
             return (
@@ -106,19 +106,21 @@ export function TasksAndActivity() {
                         ? "today"
                         : undefined
                   }
-                  className="flex flex-wrap items-center gap-3 pl-5"
+                  className="group flex flex-wrap items-center gap-3 pl-5"
                 >
-                  <span className="inline-flex items-center gap-1.5 rounded-pill border border-hairline bg-surface-sunken px-2.5 py-0.5 text-label text-secondary-foreground">
-                    <Icon className="size-3.5" />
-                    {item.classification}
-                  </span>
-                  <SourceLabel source={item.source} />
-                  {item.duplicates ? (
-                    <StatusBadge kind="neutral">{item.duplicates}× Captured</StatusBadge>
-                  ) : null}
                   <div className="min-w-48 flex-1">
                     <p className="text-body-strong text-foreground">{item.title}</p>
-                    <p className="truncate text-small text-secondary-foreground">{item.preview}</p>
+                    <Meta
+                      items={[
+                        <>
+                          <Icon className="size-3.5" aria-hidden="true" />
+                          {item.classification}
+                        </>,
+                        <SourceLabel source={item.source} />,
+                        item.duplicates ? `${item.duplicates}× captured` : null,
+                        <span className="truncate">{item.preview}</span>,
+                      ].filter(Boolean)}
+                    />
                   </div>
                   {item.amount ? (
                     <span className="tabular text-body-strong text-foreground">
@@ -146,6 +148,7 @@ export function TasksAndActivity() {
             );
           })}
         </ul>
+
       )}
 
       {/* Rendered unconditionally — the disclosure rule. */}

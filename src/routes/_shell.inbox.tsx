@@ -4,13 +4,16 @@ import { Loader2 } from "lucide-react";
 import {
   Btn,
   Card,
+  DetailPanel,
   EmptyState,
+  Meta,
   Skel,
   StatusBadge,
   PriorityBadge,
   SectionHeading,
   TextArea,
 } from "@/components/ds";
+
 import { CaptureBlock } from "@/components/desk/CaptureBlock";
 import { ApprovalCard } from "@/components/desk/ApprovalCard";
 import { TasksAndActivity } from "@/components/desk/Feed";
@@ -55,6 +58,8 @@ function DecisionDesk() {
   const [loading, setLoading] = React.useState(true);
   const [processing, setProcessing] = React.useState(false);
   const [showAllDecisions, setShowAllDecisions] = React.useState(false);
+  const [reviewing, setReviewing] = React.useState<string | null>(null);
+
 
   React.useEffect(() => {
     const id = window.setTimeout(() => setLoading(false), 700);
@@ -156,10 +161,11 @@ function DecisionDesk() {
                       </span>
                     ) : null}
                     {item.kind === "decision" ? (
-                      <Btn variant="secondary" size="sm" onClick={scrollToLists}>
+                      <Btn variant="secondary" size="sm" onClick={() => setReviewing(item.id)}>
                         Review →
                       </Btn>
                     ) : null}
+
                   </Card>
                 </li>
               ))}
@@ -184,13 +190,33 @@ function DecisionDesk() {
       <section id="decision-approvals">
         <SectionHeading
           title="Decision Approvals"
-          sub={`${pending.length} ${plural(pending.length, "decision still needs", "decisions still need")} you. Here is the one that has waited longest.`}
+          sub={`${pending.length} ${plural(pending.length, "decision still needs", "decisions still need")} you. Longest waiting first — open one to decide.`}
         />
-        <div className="space-y-3">
-          {(showAllDecisions ? longestWaiting : longestWaiting.slice(0, 1)).map((d) => (
-            <ApprovalCard key={d.id} decision={d} />
+        <ul className="space-y-1.5">
+          {(showAllDecisions ? longestWaiting : longestWaiting.slice(0, 3)).map((d) => (
+            <li key={d.id}>
+              <Card compact interactive className="flex flex-wrap items-center gap-3">
+                <div className="min-w-48 flex-1">
+                  <p className="text-body-strong text-foreground">{d.title}</p>
+                  <Meta
+                    items={[
+                      `Waiting ${d.waitingDays} ${plural(d.waitingDays, "day", "days")}`,
+                      `Raised by ${d.raisedBy}`,
+                      `Unblocks ${d.unblocks.length} ${plural(d.unblocks.length, "task", "tasks")}`,
+                    ]}
+                    className="mt-1"
+                  />
+                </div>
+                {d.amount ? (
+                  <span className="tabular text-body-strong text-foreground">{inr(d.amount)}</span>
+                ) : null}
+                <Btn variant="secondary" size="sm" onClick={() => setReviewing(d.id)}>
+                  Review →
+                </Btn>
+              </Card>
+            </li>
           ))}
-        </div>
+        </ul>
         <Btn
           variant="secondary"
           className="mt-4"
@@ -201,6 +227,18 @@ function DecisionDesk() {
             : `Show All ${pending.length} Decisions`}
         </Btn>
       </section>
+
+      <DetailPanel
+        open={reviewing !== null}
+        onClose={() => setReviewing(null)}
+        title="Decision Review"
+        subtitle="Approve, reject or send it back — the tasks below unblock the moment you decide."
+      >
+        {reviewing ? (
+          <ApprovalCard decision={decisions.find((d) => d.id === reviewing)!} />
+        ) : null}
+      </DetailPanel>
+
 
       {/* Section 4 — Needs Your Attention */}
       {escalations.length > 0 ? (

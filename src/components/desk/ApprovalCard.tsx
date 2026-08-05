@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Paperclip, UserCog, Plus } from "lucide-react";
-import { Btn, Card, StatusBadge } from "@/components/ds";
+import { Btn, Card, Meta, StatusBadge } from "@/components/ds";
 import { PersonChip, SourceLabel } from "@/components/ds/bits";
 import type { Decision } from "@/data/demo";
 import { inr } from "@/lib/format";
@@ -12,26 +12,33 @@ export function ApprovalCard({ decision }: { decision: Decision }) {
   const [outcome, setOutcome] = React.useState<"pending" | "approved" | "rejected">("pending");
 
   return (
-    <Card className="space-y-4">
+    <Card className="space-y-4 p-0 shadow-none">
+      <div>
+        <h3 className="text-h3 text-foreground">{decision.title}</h3>
+        <Meta
+          className="mt-1"
+          items={[
+            outcome === "pending" ? "Awaiting your decision" : null,
+            `Raised by ${decision.raisedBy}`,
+            <SourceLabel source={decision.source} />,
+            `Created ${decision.createdOn}`,
+          ].filter(Boolean)}
+        />
+      </div>
+
       <div className="flex flex-wrap items-center gap-2">
-        <StatusBadge kind={outcome === "approved" ? "completed" : outcome === "rejected" ? "rejected" : "pending"}>
-          {outcome === "approved" ? "Approved" : outcome === "rejected" ? "Rejected" : "Pending"}
-        </StatusBadge>
-        <StatusBadge kind="directive">Directive</StatusBadge>
-        <span className="text-label text-tertiary-foreground">Created {decision.createdOn}</span>
+        {outcome !== "pending" ? (
+          <StatusBadge kind={outcome === "approved" ? "done" : "neutral"}>
+            {outcome === "approved" ? "Approved" : "Rejected"}
+          </StatusBadge>
+        ) : null}
         {decision.amount ? (
           <span className="ml-auto text-h3 tabular text-foreground">{inr(decision.amount)}</span>
         ) : null}
       </div>
 
-      <div>
-        <h3 className="text-h3 text-foreground">{decision.title}</h3>
-        <p className="mt-1 flex items-center gap-2 text-small text-tertiary-foreground">
-          Raised by {decision.raisedBy} · <SourceLabel source={decision.source} />
-        </p>
-      </div>
-
       <p className="text-body text-secondary-foreground">{decision.summary}</p>
+
 
       <div className="rounded-md border border-hairline">
         <p className="border-b border-hairline px-4 py-2 text-label text-tertiary-foreground">

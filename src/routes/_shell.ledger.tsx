@@ -24,12 +24,13 @@ const tabs = ["Overview", "Revenue", "Expenses", "Assets", "Inventory"] as const
 
 function Kpi({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-md border border-hairline bg-surface p-4">
+    <div className="rounded-md bg-surface p-3 shadow-xs">
       <p className="text-label text-tertiary-foreground">{label}</p>
-      <p className="mt-1 text-h2 tabular text-foreground">{inr(value)}</p>
+      <p className="mt-0.5 text-h3 tabular text-foreground">{inr(value)}</p>
     </div>
   );
 }
+
 
 function Table({
   columns,
@@ -94,7 +95,7 @@ function Overview() {
   const maxCat = Math.max(...finance.categories.map((c) => c.amount));
   return (
     <div className="space-y-8">
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
         <Kpi label="Revenue Billed" value={finance.revenueBilled} />
         <Kpi label="Revenue Received" value={finance.revenueReceived} />
         <Kpi label="Total Spend" value={finance.totalSpend} />
