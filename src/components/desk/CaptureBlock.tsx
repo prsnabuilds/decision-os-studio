@@ -20,6 +20,10 @@ export function CaptureBlock({ onSubmit }: { onSubmit: () => void }) {
   const [paused, setPaused] = React.useState(false);
   const [seconds, setSeconds] = React.useState(0);
   const [language, setLanguage] = React.useState<(typeof languages)[number]>("Auto");
+  const [greeting, setGreeting] = React.useState("Welcome Back");
+
+  React.useEffect(() => setGreeting(timeGreeting()), []);
+
 
   React.useEffect(() => {
     if (!recording || paused) return;
