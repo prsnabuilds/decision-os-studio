@@ -345,7 +345,7 @@ function BoardView() {
                 {items.length === 0 ? (
                   <p className="px-1 text-small text-tertiary-foreground">No tasks in this column.</p>
                 ) : (
-                  items.map((t) => <TaskCard key={t.id} task={t} />)
+                  items.map((t) => <TaskCard key={t.id} task={t} dense />)
                 )}
               </div>
             </div>
