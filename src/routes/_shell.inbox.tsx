@@ -161,10 +161,11 @@ function DecisionDesk() {
                       </span>
                     ) : null}
                     {item.kind === "decision" ? (
-                      <Btn variant="secondary" size="sm" onClick={scrollToLists}>
+                      <Btn variant="secondary" size="sm" onClick={() => setReviewing(item.id)}>
                         Review →
                       </Btn>
                     ) : null}
+
                   </Card>
                 </li>
               ))}
