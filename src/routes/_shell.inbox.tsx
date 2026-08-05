@@ -58,6 +58,8 @@ function DecisionDesk() {
   const [loading, setLoading] = React.useState(true);
   const [processing, setProcessing] = React.useState(false);
   const [showAllDecisions, setShowAllDecisions] = React.useState(false);
+  const [reviewing, setReviewing] = React.useState<string | null>(null);
+
 
   React.useEffect(() => {
     const id = window.setTimeout(() => setLoading(false), 700);
