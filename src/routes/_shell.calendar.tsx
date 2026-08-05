@@ -28,9 +28,9 @@ function CalendarPage() {
   const [view, setView] = React.useState<"Agenda" | "Month">("Agenda");
 
   const buckets = [
-    tasks.filter((t) => t.due === "today" || t.due === "overdue").slice(0, 4),
-    tasks.filter((t) => t.due === "week").slice(0, 3),
-    tasks.filter((t) => t.due === "later").slice(0, 2),
+    tasks.filter((t) => t.dueInDays <= 0).slice(0, 4),
+    tasks.filter((t) => t.dueInDays > 0 && t.dueInDays <= 7).slice(0, 3),
+    tasks.filter((t) => t.dueInDays > 7).slice(0, 2),
   ];
 
   return (
@@ -59,13 +59,13 @@ function CalendarPage() {
                 <ul className="space-y-2">
                   {buckets[i]!.map((t) => (
                     <li key={t.id}>
-                      <Card compact urgency={t.due} className="flex flex-wrap items-center gap-3">
+                      <Card compact urgency={t.dueInDays < 0 ? "overdue" : t.dueInDays === 0 ? "today" : t.dueInDays <= 7 ? "week" : "later"} className="flex flex-wrap items-center gap-3">
                         <div className="min-w-48 flex-1 pl-2">
                           <p className="text-body-strong text-foreground">{t.title}</p>
                           <p className="text-small text-secondary-foreground">{t.assignee}</p>
                         </div>
-                        <StatusBadge kind={t.due === "overdue" ? "overdue" : "neutral"}>
-                          {t.due === "overdue" ? "Overdue" : "Due"}
+                        <StatusBadge kind={t.dueInDays < 0 ? "overdue" : "neutral"}>
+                          {t.dueInDays < 0 ? "Overdue" : "Due"}
                         </StatusBadge>
                       </Card>
                     </li>
