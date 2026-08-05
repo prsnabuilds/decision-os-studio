@@ -21,23 +21,24 @@ import { cn } from "@/lib/utils";
 import { Btn, CountBadge, IconBtn, StatusBadge } from "@/components/ds";
 import { currentUser, notifications } from "@/data/demo";
 import { relativeTime } from "@/lib/format";
-import logoOnLight from "@/assets/decisionos-logo-dark-text.svg.asset.json";
-import logoOnDark from "@/assets/decisionos-logo-light-text.svg.asset.json";
+import logoOnLight from "@/assets/decisionos-wordmark-dark-text.svg.asset.json";
+import logoOnDark from "@/assets/decisionos-wordmark-light-text.svg.asset.json";
 
 const nav = [
-  { to: "/inbox", label: "Decision Desk", icon: Inbox, count: 6, tone: "neutral" as const },
-  { to: "/brief", label: "CEO Brief", icon: Newspaper, count: 5, tone: "danger" as const },
-  { to: "/my-work", label: "My Work", icon: ListChecks },
-  { to: "/contacts", label: "People", icon: Users },
-  { to: "/brain", label: "Company Brain", icon: Brain },
-  { to: "/ledger", label: "Finance", icon: Wallet },
-  { to: "/ingest", label: "Capture", icon: Upload, count: 5, tone: "neutral" as const },
-  { to: "/meetings", label: "Meeting Notes", icon: Mic2 },
-  { to: "/settings", label: "Settings", icon: SettingsIcon },
+  { to: "/inbox", label: "Decision Desk", short: "Desk", icon: Inbox, count: 6, tone: "neutral" as const },
+  { to: "/brief", label: "CEO Brief", short: "Brief", icon: Newspaper, count: 5, tone: "danger" as const },
+  { to: "/my-work", label: "My Work", short: "Work", icon: ListChecks },
+  { to: "/contacts", label: "People", short: "People", icon: Users },
+  { to: "/brain", label: "Company Brain", short: "Brain", icon: Brain },
+  { to: "/ledger", label: "Finance", short: "Finance", icon: Wallet },
+  { to: "/ingest", label: "Capture", short: "Capture", icon: Upload, count: 5, tone: "neutral" as const },
+  { to: "/meetings", label: "Meeting Notes", short: "Notes", icon: Mic2 },
+  { to: "/settings", label: "Settings", short: "Settings", icon: SettingsIcon },
 ];
 
 /* The bottom bar is the primary route set; the drawer holds the same names in full. */
 const mobileTabs = nav.slice(0, 4);
+
 
 
 export function Wordmark({ size = "md" }: { size?: "md" | "lg" }) {
