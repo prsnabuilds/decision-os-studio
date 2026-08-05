@@ -34,13 +34,9 @@ const nav = [
   { to: "/settings", label: "Settings", icon: SettingsIcon },
 ];
 
-const mobileTabs = [
-  { to: "/inbox", label: "Desk", icon: Inbox },
-  { to: "/brief", label: "Brief", icon: Newspaper },
-  { to: "/my-work", label: "Work", icon: ListChecks },
-  { to: "/contacts", label: "People", icon: Users },
-  { to: "/brain", label: "Brain", icon: Brain },
-];
+/* The bottom bar is the primary route set; the drawer holds the same names in full. */
+const mobileTabs = nav.slice(0, 4);
+
 
 export function Wordmark({ size = "md" }: { size?: "md" | "lg" }) {
   return (

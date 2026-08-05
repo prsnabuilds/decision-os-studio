@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Paperclip, UserCog, Plus } from "lucide-react";
-import { Btn, Card, StatusBadge } from "@/components/ds";
+import { Btn, Card, Meta, StatusBadge } from "@/components/ds";
 import { PersonChip, SourceLabel } from "@/components/ds/bits";
 import type { Decision } from "@/data/demo";
 import { inr } from "@/lib/format";
