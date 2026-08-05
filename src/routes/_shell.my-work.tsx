@@ -61,7 +61,15 @@ const statusLabels = {
   done: "Done",
 } as const;
 
-function TaskCard({ task, aiScore }: { task: Task; aiScore?: number }) {
+function TaskCard({
+  task,
+  aiScore,
+  dense = false,
+}: {
+  task: Task;
+  aiScore?: number;
+  dense?: boolean;
+}) {
   const [open, setOpen] = React.useState(false);
   const [steps, setSteps] = React.useState(task.steps ?? []);
 
@@ -75,6 +83,25 @@ function TaskCard({ task, aiScore }: { task: Task; aiScore?: number }) {
     });
   };
 
+  const dueLabel =
+    task.dueInDays < 0
+      ? `Due ${Math.abs(task.dueInDays)} ${Math.abs(task.dueInDays) === 1 ? "day" : "days"} ago`
+      : task.dueInDays === 0
+        ? "Due today"
+        : `Due in ${task.dueInDays} days`;
+
+  const metaItems = dense
+    ? [task.assignee, dueLabel].filter(Boolean)
+    : [
+        task.priority === "high" ? <PriorityBadge priority="high" /> : null,
+        task.status !== "todo" ? statusLabels[task.status] : null,
+        task.assignee,
+        dueLabel,
+        task.requireProof ? "Proof required" : null,
+        `${task.progress}% done`,
+        typeof aiScore === "number" ? `AI score ${aiScore}` : null,
+      ].filter(Boolean);
+
   return (
     <Card
       compact
@@ -84,26 +111,15 @@ function TaskCard({ task, aiScore }: { task: Task; aiScore?: number }) {
       <div className="flex flex-wrap items-start gap-2">
         <div className="min-w-40 flex-1">
           <p className="text-body-strong text-foreground">{task.title}</p>
-          <Meta
-            items={[
-              task.priority === "high" ? <PriorityBadge priority="high" /> : null,
-              task.status !== "todo" ? statusLabels[task.status] : null,
-              task.assignee,
-              task.dueInDays < 0
-                ? `Due ${Math.abs(task.dueInDays)} ${Math.abs(task.dueInDays) === 1 ? "day" : "days"} ago`
-                : task.dueInDays === 0
-                  ? "Due today"
-                  : `Due in ${task.dueInDays} days`,
-              task.requireProof ? "Proof required" : null,
-              `${task.progress}% done`,
-              typeof aiScore === "number" ? `AI score ${aiScore}` : null,
-            ].filter(Boolean)}
-            className="mt-1"
-          />
+          <Meta items={metaItems} className="mt-1" />
+          {dense && task.amount ? (
+            <p className="mt-1 tabular text-small text-secondary-foreground">{inr(task.amount)}</p>
+          ) : null}
         </div>
-        {task.amount ? (
+        {!dense && task.amount ? (
           <span className="tabular text-body-strong text-foreground">{inr(task.amount)}</span>
         ) : null}
+
         <button
           type="button"
           aria-expanded={open}
