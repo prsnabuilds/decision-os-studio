@@ -335,7 +335,9 @@ function BoardView() {
             </div>
           );
         })}
+        </div>
       </div>
+
     </div>
   );
 }
