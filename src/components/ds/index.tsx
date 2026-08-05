@@ -301,25 +301,45 @@ export function Card({
 }
 
 
+export function BackLink({ to, label }: { to: string; label: string }) {
+  return (
+    <Link
+      to={to}
+      className="mb-3 inline-flex items-center gap-1.5 text-small text-secondary-foreground transition-colors duration-150 hover:text-foreground"
+    >
+      <ArrowLeft className="size-4" aria-hidden="true" />
+      {label}
+    </Link>
+  );
+}
+
 export function PageHeader({
   eyebrow,
   title,
+  backTo,
+  backLabel,
   children,
 }: {
   eyebrow?: string | undefined;
   title: string;
+  backTo?: string | undefined;
+  backLabel?: string | undefined;
   children?: React.ReactNode;
 }) {
   return (
-    <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        {eyebrow ? <p className="text-label text-tertiary-foreground">{eyebrow}</p> : null}
-        <h1 className="text-h1 text-foreground">{title}</h1>
+    <header className="mb-6">
+      {backTo ? <BackLink to={backTo} label={backLabel ?? "Back"} /> : null}
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          {eyebrow ? <p className="text-label text-tertiary-foreground">{eyebrow}</p> : null}
+          <h1 className="text-h1 text-foreground">{title}</h1>
+        </div>
+        {children ? <div className="flex flex-wrap items-center gap-2">{children}</div> : null}
       </div>
-      {children ? <div className="flex flex-wrap items-center gap-2">{children}</div> : null}
     </header>
   );
 }
+
 
 export function SectionHeading({
   title,
