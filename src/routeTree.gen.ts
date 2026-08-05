@@ -16,8 +16,11 @@ import { Route as ShellBrainRouteImport } from './routes/_shell.brain'
 import { Route as ShellBriefRouteImport } from './routes/_shell.brief'
 import { Route as ShellFinanceRouteImport } from './routes/_shell.finance'
 import { Route as ShellInboxRouteImport } from './routes/_shell.inbox'
+import { Route as ShellIngestRouteImport } from './routes/_shell.ingest'
 import { Route as ShellLedgerRouteImport } from './routes/_shell.ledger'
+import { Route as ShellMeetingsRouteImport } from './routes/_shell.meetings'
 import { Route as ShellMyWorkRouteImport } from './routes/_shell.my-work'
+import { Route as ShellNotificationsRouteImport } from './routes/_shell.notifications'
 import { Route as ShellContactsIndexRouteImport } from './routes/_shell.contacts.index'
 import { Route as ShellContactsIdRouteImport } from './routes/_shell.contacts.$id'
 
@@ -55,14 +58,29 @@ const ShellInboxRoute = ShellInboxRouteImport.update({
   path: '/inbox',
   getParentRoute: () => ShellRoute,
 } as any)
+const ShellIngestRoute = ShellIngestRouteImport.update({
+  id: '/ingest',
+  path: '/ingest',
+  getParentRoute: () => ShellRoute,
+} as any)
 const ShellLedgerRoute = ShellLedgerRouteImport.update({
   id: '/ledger',
   path: '/ledger',
   getParentRoute: () => ShellRoute,
 } as any)
+const ShellMeetingsRoute = ShellMeetingsRouteImport.update({
+  id: '/meetings',
+  path: '/meetings',
+  getParentRoute: () => ShellRoute,
+} as any)
 const ShellMyWorkRoute = ShellMyWorkRouteImport.update({
   id: '/my-work',
   path: '/my-work',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellNotificationsRoute = ShellNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => ShellRoute,
 } as any)
 const ShellContactsIndexRoute = ShellContactsIndexRouteImport.update({
@@ -83,8 +101,11 @@ export interface FileRoutesByFullPath {
   '/brief': typeof ShellBriefRoute
   '/finance': typeof ShellFinanceRoute
   '/inbox': typeof ShellInboxRoute
+  '/ingest': typeof ShellIngestRoute
   '/ledger': typeof ShellLedgerRoute
+  '/meetings': typeof ShellMeetingsRoute
   '/my-work': typeof ShellMyWorkRoute
+  '/notifications': typeof ShellNotificationsRoute
   '/contacts/$id': typeof ShellContactsIdRoute
   '/contacts/': typeof ShellContactsIndexRoute
 }
@@ -95,8 +116,11 @@ export interface FileRoutesByTo {
   '/brief': typeof ShellBriefRoute
   '/finance': typeof ShellFinanceRoute
   '/inbox': typeof ShellInboxRoute
+  '/ingest': typeof ShellIngestRoute
   '/ledger': typeof ShellLedgerRoute
+  '/meetings': typeof ShellMeetingsRoute
   '/my-work': typeof ShellMyWorkRoute
+  '/notifications': typeof ShellNotificationsRoute
   '/contacts/$id': typeof ShellContactsIdRoute
   '/contacts': typeof ShellContactsIndexRoute
 }
@@ -109,8 +133,11 @@ export interface FileRoutesById {
   '/_shell/brief': typeof ShellBriefRoute
   '/_shell/finance': typeof ShellFinanceRoute
   '/_shell/inbox': typeof ShellInboxRoute
+  '/_shell/ingest': typeof ShellIngestRoute
   '/_shell/ledger': typeof ShellLedgerRoute
+  '/_shell/meetings': typeof ShellMeetingsRoute
   '/_shell/my-work': typeof ShellMyWorkRoute
+  '/_shell/notifications': typeof ShellNotificationsRoute
   '/_shell/contacts/$id': typeof ShellContactsIdRoute
   '/_shell/contacts/': typeof ShellContactsIndexRoute
 }
@@ -123,8 +150,11 @@ export interface FileRouteTypes {
     | '/brief'
     | '/finance'
     | '/inbox'
+    | '/ingest'
     | '/ledger'
+    | '/meetings'
     | '/my-work'
+    | '/notifications'
     | '/contacts/$id'
     | '/contacts/'
   fileRoutesByTo: FileRoutesByTo
@@ -135,8 +165,11 @@ export interface FileRouteTypes {
     | '/brief'
     | '/finance'
     | '/inbox'
+    | '/ingest'
     | '/ledger'
+    | '/meetings'
     | '/my-work'
+    | '/notifications'
     | '/contacts/$id'
     | '/contacts'
   id:
@@ -148,8 +181,11 @@ export interface FileRouteTypes {
     | '/_shell/brief'
     | '/_shell/finance'
     | '/_shell/inbox'
+    | '/_shell/ingest'
     | '/_shell/ledger'
+    | '/_shell/meetings'
     | '/_shell/my-work'
+    | '/_shell/notifications'
     | '/_shell/contacts/$id'
     | '/_shell/contacts/'
   fileRoutesById: FileRoutesById
@@ -211,6 +247,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellInboxRouteImport
       parentRoute: typeof ShellRoute
     }
+    '/_shell/ingest': {
+      id: '/_shell/ingest'
+      path: '/ingest'
+      fullPath: '/ingest'
+      preLoaderRoute: typeof ShellIngestRouteImport
+      parentRoute: typeof ShellRoute
+    }
     '/_shell/ledger': {
       id: '/_shell/ledger'
       path: '/ledger'
@@ -218,11 +261,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellLedgerRouteImport
       parentRoute: typeof ShellRoute
     }
+    '/_shell/meetings': {
+      id: '/_shell/meetings'
+      path: '/meetings'
+      fullPath: '/meetings'
+      preLoaderRoute: typeof ShellMeetingsRouteImport
+      parentRoute: typeof ShellRoute
+    }
     '/_shell/my-work': {
       id: '/_shell/my-work'
       path: '/my-work'
       fullPath: '/my-work'
       preLoaderRoute: typeof ShellMyWorkRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/notifications': {
+      id: '/_shell/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof ShellNotificationsRouteImport
       parentRoute: typeof ShellRoute
     }
     '/_shell/contacts/': {
@@ -247,8 +304,11 @@ interface ShellRouteChildren {
   ShellBriefRoute: typeof ShellBriefRoute
   ShellFinanceRoute: typeof ShellFinanceRoute
   ShellInboxRoute: typeof ShellInboxRoute
+  ShellIngestRoute: typeof ShellIngestRoute
   ShellLedgerRoute: typeof ShellLedgerRoute
+  ShellMeetingsRoute: typeof ShellMeetingsRoute
   ShellMyWorkRoute: typeof ShellMyWorkRoute
+  ShellNotificationsRoute: typeof ShellNotificationsRoute
   ShellContactsIdRoute: typeof ShellContactsIdRoute
   ShellContactsIndexRoute: typeof ShellContactsIndexRoute
 }
@@ -258,8 +318,11 @@ const ShellRouteChildren: ShellRouteChildren = {
   ShellBriefRoute: ShellBriefRoute,
   ShellFinanceRoute: ShellFinanceRoute,
   ShellInboxRoute: ShellInboxRoute,
+  ShellIngestRoute: ShellIngestRoute,
   ShellLedgerRoute: ShellLedgerRoute,
+  ShellMeetingsRoute: ShellMeetingsRoute,
   ShellMyWorkRoute: ShellMyWorkRoute,
+  ShellNotificationsRoute: ShellNotificationsRoute,
   ShellContactsIdRoute: ShellContactsIdRoute,
   ShellContactsIndexRoute: ShellContactsIndexRoute,
 }
