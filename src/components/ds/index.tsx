@@ -433,6 +433,76 @@ export function TextInput({
   return <input className={cn(inputClass, className)} {...props} />;
 }
 
+export function Select({
+  className,
+  options,
+  placeholder,
+  ...props
+}: React.SelectHTMLAttributes<HTMLSelectElement> & {
+  options: readonly string[];
+  placeholder?: string;
+}) {
+  return (
+    <div className="relative">
+      <select
+        className={cn(inputClass, "appearance-none pr-9", className)}
+        defaultValue={props.value === undefined ? "" : undefined}
+        {...props}
+      >
+        <option value="" disabled>
+          {placeholder ?? "Choose one"}
+        </option>
+        {options.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
+      </select>
+      <ChevronDown
+        className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-tertiary-foreground"
+        aria-hidden="true"
+      />
+    </div>
+  );
+}
+
+/** A dropdown that reveals a free-text box when "Other" is chosen. */
+export function SelectWithOther({
+  id,
+  options,
+  placeholder,
+  otherPlaceholder,
+}: {
+  id: string;
+  options: readonly string[];
+  placeholder?: string;
+  otherPlaceholder?: string;
+}) {
+  const [value, setValue] = React.useState("");
+  const opts = React.useMemo(
+    () => (options.includes("Other") ? options : [...options, "Other"]),
+    [options],
+  );
+  return (
+    <div className="space-y-2">
+      <Select
+        id={id}
+        options={opts}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+      {value === "Other" ? (
+        <TextInput
+          aria-label="Please specify"
+          placeholder={otherPlaceholder ?? "Please specify"}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+
 export function TextArea({
   className,
   ...props
