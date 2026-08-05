@@ -440,7 +440,7 @@ export function Select({
   ...props
 }: React.SelectHTMLAttributes<HTMLSelectElement> & {
   options: readonly string[];
-  placeholder?: string;
+  placeholder?: string | undefined;
 }) {
   return (
     <div className="relative">
@@ -475,8 +475,8 @@ export function SelectWithOther({
 }: {
   id: string;
   options: readonly string[];
-  placeholder?: string;
-  otherPlaceholder?: string;
+  placeholder?: string | undefined;
+  otherPlaceholder?: string | undefined;
 }) {
   const [value, setValue] = React.useState("");
   const opts = React.useMemo(
