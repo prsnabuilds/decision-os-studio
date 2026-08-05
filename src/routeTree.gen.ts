@@ -12,8 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShellRouteImport } from './routes/_shell'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ShellBrainRouteImport } from './routes/_shell.brain'
 import { Route as ShellBriefRouteImport } from './routes/_shell.brief'
+import { Route as ShellFinanceRouteImport } from './routes/_shell.finance'
 import { Route as ShellInboxRouteImport } from './routes/_shell.inbox'
+import { Route as ShellLedgerRouteImport } from './routes/_shell.ledger'
 import { Route as ShellMyWorkRouteImport } from './routes/_shell.my-work'
 import { Route as ShellContactsIndexRouteImport } from './routes/_shell.contacts.index'
 import { Route as ShellContactsIdRouteImport } from './routes/_shell.contacts.$id'
@@ -32,14 +35,29 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShellBrainRoute = ShellBrainRouteImport.update({
+  id: '/brain',
+  path: '/brain',
+  getParentRoute: () => ShellRoute,
+} as any)
 const ShellBriefRoute = ShellBriefRouteImport.update({
   id: '/brief',
   path: '/brief',
   getParentRoute: () => ShellRoute,
 } as any)
+const ShellFinanceRoute = ShellFinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
+  getParentRoute: () => ShellRoute,
+} as any)
 const ShellInboxRoute = ShellInboxRouteImport.update({
   id: '/inbox',
   path: '/inbox',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellLedgerRoute = ShellLedgerRouteImport.update({
+  id: '/ledger',
+  path: '/ledger',
   getParentRoute: () => ShellRoute,
 } as any)
 const ShellMyWorkRoute = ShellMyWorkRouteImport.update({
@@ -61,8 +79,11 @@ const ShellContactsIdRoute = ShellContactsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/brain': typeof ShellBrainRoute
   '/brief': typeof ShellBriefRoute
+  '/finance': typeof ShellFinanceRoute
   '/inbox': typeof ShellInboxRoute
+  '/ledger': typeof ShellLedgerRoute
   '/my-work': typeof ShellMyWorkRoute
   '/contacts/$id': typeof ShellContactsIdRoute
   '/contacts/': typeof ShellContactsIndexRoute
@@ -70,8 +91,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/brain': typeof ShellBrainRoute
   '/brief': typeof ShellBriefRoute
+  '/finance': typeof ShellFinanceRoute
   '/inbox': typeof ShellInboxRoute
+  '/ledger': typeof ShellLedgerRoute
   '/my-work': typeof ShellMyWorkRoute
   '/contacts/$id': typeof ShellContactsIdRoute
   '/contacts': typeof ShellContactsIndexRoute
@@ -81,8 +105,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_shell': typeof ShellRouteWithChildren
   '/login': typeof LoginRoute
+  '/_shell/brain': typeof ShellBrainRoute
   '/_shell/brief': typeof ShellBriefRoute
+  '/_shell/finance': typeof ShellFinanceRoute
   '/_shell/inbox': typeof ShellInboxRoute
+  '/_shell/ledger': typeof ShellLedgerRoute
   '/_shell/my-work': typeof ShellMyWorkRoute
   '/_shell/contacts/$id': typeof ShellContactsIdRoute
   '/_shell/contacts/': typeof ShellContactsIndexRoute
@@ -92,8 +119,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/brain'
     | '/brief'
+    | '/finance'
     | '/inbox'
+    | '/ledger'
     | '/my-work'
     | '/contacts/$id'
     | '/contacts/'
@@ -101,8 +131,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/brain'
     | '/brief'
+    | '/finance'
     | '/inbox'
+    | '/ledger'
     | '/my-work'
     | '/contacts/$id'
     | '/contacts'
@@ -111,8 +144,11 @@ export interface FileRouteTypes {
     | '/'
     | '/_shell'
     | '/login'
+    | '/_shell/brain'
     | '/_shell/brief'
+    | '/_shell/finance'
     | '/_shell/inbox'
+    | '/_shell/ledger'
     | '/_shell/my-work'
     | '/_shell/contacts/$id'
     | '/_shell/contacts/'
@@ -147,6 +183,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_shell/brain': {
+      id: '/_shell/brain'
+      path: '/brain'
+      fullPath: '/brain'
+      preLoaderRoute: typeof ShellBrainRouteImport
+      parentRoute: typeof ShellRoute
+    }
     '/_shell/brief': {
       id: '/_shell/brief'
       path: '/brief'
@@ -154,11 +197,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellBriefRouteImport
       parentRoute: typeof ShellRoute
     }
+    '/_shell/finance': {
+      id: '/_shell/finance'
+      path: '/finance'
+      fullPath: '/finance'
+      preLoaderRoute: typeof ShellFinanceRouteImport
+      parentRoute: typeof ShellRoute
+    }
     '/_shell/inbox': {
       id: '/_shell/inbox'
       path: '/inbox'
       fullPath: '/inbox'
       preLoaderRoute: typeof ShellInboxRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/ledger': {
+      id: '/_shell/ledger'
+      path: '/ledger'
+      fullPath: '/ledger'
+      preLoaderRoute: typeof ShellLedgerRouteImport
       parentRoute: typeof ShellRoute
     }
     '/_shell/my-work': {
@@ -186,16 +243,22 @@ declare module '@tanstack/react-router' {
 }
 
 interface ShellRouteChildren {
+  ShellBrainRoute: typeof ShellBrainRoute
   ShellBriefRoute: typeof ShellBriefRoute
+  ShellFinanceRoute: typeof ShellFinanceRoute
   ShellInboxRoute: typeof ShellInboxRoute
+  ShellLedgerRoute: typeof ShellLedgerRoute
   ShellMyWorkRoute: typeof ShellMyWorkRoute
   ShellContactsIdRoute: typeof ShellContactsIdRoute
   ShellContactsIndexRoute: typeof ShellContactsIndexRoute
 }
 
 const ShellRouteChildren: ShellRouteChildren = {
+  ShellBrainRoute: ShellBrainRoute,
   ShellBriefRoute: ShellBriefRoute,
+  ShellFinanceRoute: ShellFinanceRoute,
   ShellInboxRoute: ShellInboxRoute,
+  ShellLedgerRoute: ShellLedgerRoute,
   ShellMyWorkRoute: ShellMyWorkRoute,
   ShellContactsIdRoute: ShellContactsIdRoute,
   ShellContactsIndexRoute: ShellContactsIndexRoute,
