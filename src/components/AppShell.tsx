@@ -21,6 +21,8 @@ import { cn } from "@/lib/utils";
 import { Btn, CountBadge, IconBtn, StatusBadge } from "@/components/ds";
 import { currentUser, notifications } from "@/data/demo";
 import { relativeTime } from "@/lib/format";
+import logoOnLight from "@/assets/decisionos-logo-dark-text.svg.asset.json";
+import logoOnDark from "@/assets/decisionos-logo-light-text.svg.asset.json";
 
 const nav = [
   { to: "/inbox", label: "Decision Desk", icon: Inbox, count: 6, tone: "neutral" as const },
