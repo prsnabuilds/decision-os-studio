@@ -1,6 +1,9 @@
 import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
+import { Link } from "@tanstack/react-router";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+
 import {
   Tooltip,
   TooltipContent,
