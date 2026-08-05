@@ -11,12 +11,12 @@ import {
   StatusBadge,
   PriorityBadge,
   SectionHeading,
-  TextArea,
 } from "@/components/ds";
 
 import { CaptureBlock } from "@/components/desk/CaptureBlock";
 import { ApprovalCard } from "@/components/desk/ApprovalCard";
 import { TasksAndActivity } from "@/components/desk/Feed";
+import { VoiceReply } from "@/components/desk/VoiceReply";
 import { buildRanked, decisions, tasks, topThree } from "@/data/demo";
 import { inr, joinReadably, plural } from "@/lib/format";
 
@@ -121,7 +121,15 @@ function DecisionDesk() {
         </div>
       ) : null}
 
-      {/* Section 1 — Today */}
+      {/* Section 1 — Capture (the first thing you do each morning) */}
+      <CaptureBlock
+        onSubmit={() => {
+          setProcessing(true);
+          window.setTimeout(() => setProcessing(false), 4000);
+        }}
+      />
+
+      {/* Section 2 — Today */}
       {loading ? (
         <BriefSkeleton />
       ) : (
@@ -177,14 +185,6 @@ function DecisionDesk() {
           </Btn>
         </section>
       )}
-
-      {/* Section 2 — Capture */}
-      <CaptureBlock
-        onSubmit={() => {
-          setProcessing(true);
-          window.setTimeout(() => setProcessing(false), 4000);
-        }}
-      />
 
       {/* Section 3 — Decision Approvals */}
       <section id="decision-approvals">
@@ -267,14 +267,10 @@ function DecisionDesk() {
                     {t.step ? `Raised on step: ${t.step} · ` : ""}Raised by {t.raisedBy}
                   </p>
                 </div>
-                <TextArea
-                  rows={2}
-                  aria-label={`Your response to ${t.raisedBy}`}
-                  placeholder={`Type your decision — this goes back to ${t.raisedBy}`}
+                <VoiceReply
+                  ariaLabel={`Your response to ${t.raisedBy}`}
+                  placeholder={`Speak or type your decision — it goes back to ${t.raisedBy}`}
                 />
-                <Btn variant="secondary" size="sm">
-                  Send Response
-                </Btn>
               </Card>
             ))}
           </div>

@@ -8,6 +8,8 @@ import {
   Field,
   Meta,
   PageHeader,
+  Select,
+  SelectWithOther,
 
   PriorityBadge,
   SectionHeading,
@@ -496,10 +498,19 @@ function LeaveView() {
           <h3 className="text-h3 text-foreground">Request Leave</h3>
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="Leave Type" htmlFor="lv-type">
-              <TextInput id="lv-type" placeholder="Casual leave" />
+              <SelectWithOther
+                id="lv-type"
+                options={["Casual Leave", "Sick Leave", "Earned Leave", "Unpaid Leave"]}
+                placeholder="Choose a leave type"
+                otherPlaceholder="Tell us the leave type"
+              />
             </Field>
             <Field label="Portion" htmlFor="lv-portion">
-              <TextInput id="lv-portion" placeholder="Full day / Half day" />
+              <Select
+                id="lv-portion"
+                options={["Full Day", "Half Day — Morning", "Half Day — Afternoon"]}
+                placeholder="Choose a portion"
+              />
             </Field>
             <Field label="From" htmlFor="lv-from">
               <TextInput id="lv-from" type="date" />
@@ -531,7 +542,12 @@ function LeaveView() {
         <Card className="space-y-3">
           <h3 className="text-h3 text-foreground">Report Absence</h3>
           <Field label="Reason" htmlFor="ab-reason">
-            <TextInput id="ab-reason" placeholder="Unwell / Travel / Personal" />
+            <SelectWithOther
+              id="ab-reason"
+              options={["Unwell", "Travel", "Personal", "Family Emergency"]}
+              placeholder="Choose a reason"
+              otherPlaceholder="Tell us the reason"
+            />
           </Field>
           <Field label="Note" htmlFor="ab-note">
             <TextArea id="ab-note" rows={2} placeholder="Anything the team should know today" />

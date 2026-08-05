@@ -5,6 +5,14 @@ import { cn } from "@/lib/utils";
 
 const languages = ["Auto", "English", "தமிழ்", "Tanglish"] as const;
 
+function timeGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Good Morning";
+  if (h < 17) return "Good Afternoon";
+  return "Good Evening";
+}
+
+
 export function CaptureBlock({ onSubmit }: { onSubmit: () => void }) {
   const [expanded, setExpanded] = React.useState(false);
   const [typed, setTyped] = React.useState("");
@@ -12,6 +20,10 @@ export function CaptureBlock({ onSubmit }: { onSubmit: () => void }) {
   const [paused, setPaused] = React.useState(false);
   const [seconds, setSeconds] = React.useState(0);
   const [language, setLanguage] = React.useState<(typeof languages)[number]>("Auto");
+  const [greeting, setGreeting] = React.useState("Welcome Back");
+
+  React.useEffect(() => setGreeting(timeGreeting()), []);
+
 
   React.useEffect(() => {
     if (!recording || paused) return;
@@ -27,30 +39,48 @@ export function CaptureBlock({ onSubmit }: { onSubmit: () => void }) {
 
   if (!expanded) {
     return (
-      <Card className="flex flex-wrap items-center gap-4">
-        <button
-          type="button"
-          aria-label="Speak A Decision"
-          onClick={() => {
-            setExpanded(true);
-            setRecording(true);
-          }}
-          className="flex size-16 shrink-0 items-center justify-center rounded-pill bg-brand text-on-primary shadow-xs transition-colors duration-150 hover:bg-brand-hover"
-        >
-          <Mic className="size-6" aria-hidden="true" />
-        </button>
-        <div className="min-w-40 flex-1">
-          <p className="text-h3 text-foreground">Capture A Decision</p>
-          <p className="text-small text-secondary-foreground">
-            Speak in any language — AI writes it up in English
-          </p>
+      <section
+        aria-labelledby="capture-hero-heading"
+        className="rounded-xl bg-brand-tint px-6 py-8 sm:px-8 sm:py-10"
+      >
+        <div className="flex flex-col items-center gap-5 text-center">
+          <button
+            type="button"
+            aria-label="Speak A Decision"
+            onClick={() => {
+              setExpanded(true);
+              setRecording(true);
+            }}
+            className="flex size-20 shrink-0 items-center justify-center rounded-pill bg-brand text-on-primary shadow-md transition-transform duration-150 hover:bg-brand-hover hover:scale-105 sm:size-24"
+          >
+            <Mic className="size-8 sm:size-9" aria-hidden="true" />
+          </button>
+          <div>
+            <p className="text-label text-brand-on-tint">{greeting}</p>
+            <h2 id="capture-hero-heading" className="mt-1 text-h1 text-foreground">
+              Say What Needs To Happen
+            </h2>
+            <p className="mx-auto mt-2 max-w-md text-lead text-secondary-foreground">
+              Speak it in Tamil, English or Tanglish — DecisionOS writes it up, assigns it and
+              tracks it for you.
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-2">
+            <Btn variant="secondary" size="sm" onClick={() => setExpanded(true)}>
+              Type It Instead
+            </Btn>
+            <Btn variant="secondary" size="sm" onClick={() => setExpanded(true)}>
+              <Upload className="size-4" aria-hidden="true" /> Upload A File
+            </Btn>
+            <Btn variant="secondary" size="sm" onClick={() => setExpanded(true)}>
+              <Camera className="size-4" aria-hidden="true" /> Take A Photo
+            </Btn>
+          </div>
         </div>
-        <Btn variant="tertiary" onClick={() => setExpanded(true)}>
-          Type Or Upload Instead
-        </Btn>
-      </Card>
+      </section>
     );
   }
+
 
   return (
     <Card className="space-y-6">

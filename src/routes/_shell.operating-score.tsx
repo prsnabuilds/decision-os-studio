@@ -31,7 +31,12 @@ function OperatingScorePage() {
   const s = operatingScore;
   return (
     <div>
-      <PageHeader eyebrow="How well the business is being run" title="Operating Score" />
+      <PageHeader
+        eyebrow="How well the business is being run"
+        title="Operating Score"
+        backTo="/brief"
+        backLabel="Back To CEO Brief"
+      />
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-1">

@@ -2,6 +2,7 @@ import * as React from "react";
 import { Paperclip, UserCog, Plus } from "lucide-react";
 import { Btn, Card, Meta, StatusBadge } from "@/components/ds";
 import { PersonChip, SourceLabel } from "@/components/ds/bits";
+import { VoiceReply } from "@/components/desk/VoiceReply";
 import type { Decision } from "@/data/demo";
 import { inr } from "@/lib/format";
 
@@ -75,6 +76,15 @@ export function ApprovalCard({ decision }: { decision: Decision }) {
       <Btn size="sm" variant="tertiary">
         <Plus className="size-4" aria-hidden="true" /> Add Team Member / Task
       </Btn>
+
+      <div className="border-t border-hairline pt-4">
+        <p className="mb-2 text-label text-tertiary-foreground">Add A Note Or Send It Back</p>
+        <VoiceReply
+          ariaLabel={`Your note to ${decision.raisedBy}`}
+          placeholder={`Speak or type — this goes back to ${decision.raisedBy}`}
+          sendLabel="Send Note"
+        />
+      </div>
 
       <div className="flex flex-wrap items-center gap-2 border-t border-hairline pt-4">
         <Btn variant="primary" onClick={() => setOutcome("approved")}>

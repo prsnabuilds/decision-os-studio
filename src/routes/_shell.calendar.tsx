@@ -35,7 +35,12 @@ function CalendarPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="What is due, and when" title="Calendar">
+      <PageHeader
+        eyebrow="What is due, and when"
+        title="Calendar"
+        backTo="/my-work"
+        backLabel="Back To My Work"
+      >
         <Btn variant="secondary">Add An Entry</Btn>
       </PageHeader>
 

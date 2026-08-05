@@ -45,7 +45,12 @@ function JournalPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="The record of how this business was run" title="Decision Journal" />
+      <PageHeader
+        eyebrow="The record of how this business was run"
+        title="Decision Journal"
+        backTo="/brief"
+        backLabel="Back To CEO Brief"
+      />
 
       <div className="mb-6 flex flex-wrap gap-2">
         {filters.map((f) => (

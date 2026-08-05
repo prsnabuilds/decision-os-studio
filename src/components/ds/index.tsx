@@ -1,6 +1,9 @@
 import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
+import { Link } from "@tanstack/react-router";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+
 import {
   Tooltip,
   TooltipContent,
@@ -301,25 +304,45 @@ export function Card({
 }
 
 
+export function BackLink({ to, label }: { to: string; label: string }) {
+  return (
+    <Link
+      to={to}
+      className="mb-3 inline-flex items-center gap-1.5 text-small text-secondary-foreground transition-colors duration-150 hover:text-foreground"
+    >
+      <ArrowLeft className="size-4" aria-hidden="true" />
+      {label}
+    </Link>
+  );
+}
+
 export function PageHeader({
   eyebrow,
   title,
+  backTo,
+  backLabel,
   children,
 }: {
   eyebrow?: string | undefined;
   title: string;
+  backTo?: string | undefined;
+  backLabel?: string | undefined;
   children?: React.ReactNode;
 }) {
   return (
-    <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        {eyebrow ? <p className="text-label text-tertiary-foreground">{eyebrow}</p> : null}
-        <h1 className="text-h1 text-foreground">{title}</h1>
+    <header className="mb-6">
+      {backTo ? <BackLink to={backTo} label={backLabel ?? "Back"} /> : null}
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          {eyebrow ? <p className="text-label text-tertiary-foreground">{eyebrow}</p> : null}
+          <h1 className="text-h1 text-foreground">{title}</h1>
+        </div>
+        {children ? <div className="flex flex-wrap items-center gap-2">{children}</div> : null}
       </div>
-      {children ? <div className="flex flex-wrap items-center gap-2">{children}</div> : null}
     </header>
   );
 }
+
 
 export function SectionHeading({
   title,
@@ -409,6 +432,76 @@ export function TextInput({
 }: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(inputClass, className)} {...props} />;
 }
+
+export function Select({
+  className,
+  options,
+  placeholder,
+  ...props
+}: React.SelectHTMLAttributes<HTMLSelectElement> & {
+  options: readonly string[];
+  placeholder?: string | undefined;
+}) {
+  return (
+    <div className="relative">
+      <select
+        className={cn(inputClass, "appearance-none pr-9", className)}
+        defaultValue={props.value === undefined ? "" : undefined}
+        {...props}
+      >
+        <option value="" disabled>
+          {placeholder ?? "Choose one"}
+        </option>
+        {options.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
+      </select>
+      <ChevronDown
+        className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-tertiary-foreground"
+        aria-hidden="true"
+      />
+    </div>
+  );
+}
+
+/** A dropdown that reveals a free-text box when "Other" is chosen. */
+export function SelectWithOther({
+  id,
+  options,
+  placeholder,
+  otherPlaceholder,
+}: {
+  id: string;
+  options: readonly string[];
+  placeholder?: string | undefined;
+  otherPlaceholder?: string | undefined;
+}) {
+  const [value, setValue] = React.useState("");
+  const opts = React.useMemo(
+    () => (options.includes("Other") ? options : [...options, "Other"]),
+    [options],
+  );
+  return (
+    <div className="space-y-2">
+      <Select
+        id={id}
+        options={opts}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+      {value === "Other" ? (
+        <TextInput
+          aria-label="Please specify"
+          placeholder={otherPlaceholder ?? "Please specify"}
+        />
+      ) : null}
+    </div>
+  );
+}
+
 
 export function TextArea({
   className,

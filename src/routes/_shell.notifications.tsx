@@ -30,7 +30,12 @@ function NotificationsPage() {
 
   return (
     <div>
-      <PageHeader eyebrow={`${unread} unread`} title="Notifications">
+      <PageHeader
+        eyebrow={`${unread} unread`}
+        title="Notifications"
+        backTo="/inbox"
+        backLabel="Back To Decision Desk"
+      >
         <Btn
           variant="primary"
           onClick={() => setItems((xs) => xs.map((x) => ({ ...x, unread: false })))}
