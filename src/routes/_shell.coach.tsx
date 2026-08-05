@@ -46,7 +46,12 @@ function CoachPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Coach from the record, not from memory" title="Coaching" />
+      <PageHeader
+        eyebrow="Coach from the record, not from memory"
+        title="Coaching"
+        backTo="/brief"
+        backLabel="Back To CEO Brief"
+      />
 
       <div className="mb-6">
         <Segmented options={names} value={who} onChange={setWho} label="Person" />
