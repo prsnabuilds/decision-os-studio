@@ -48,7 +48,8 @@ export function Btn({
   return (
     <Comp
       // Busy keeps its colour; only genuinely disabled goes neutral.
-      disabled={disabled || loading}
+      // Slot forwards to an anchor/Link, which has no disabled attribute.
+      {...(asChild ? {} : { disabled: disabled || loading })}
       aria-busy={loading || undefined}
       className={cn(
         "inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap transition-colors duration-150",
@@ -61,10 +62,18 @@ export function Btn({
       )}
       {...props}
     >
-      {loading ? <Spinner /> : null}
-      {children}
+      {/* Slot needs exactly one child, so only the plain button gets a spinner slot. */}
+      {asChild ? (
+        children
+      ) : (
+        <>
+          {loading ? <Spinner /> : null}
+          {children}
+        </>
+      )}
     </Comp>
   );
+
 }
 
 export function Spinner({ className }: { className?: string }) {
