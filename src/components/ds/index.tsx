@@ -530,31 +530,32 @@ export function Segmented<T extends string>({
   label: string;
 }) {
   return (
-    <div
-      role="tablist"
-      aria-label={label}
-      className="inline-flex flex-wrap gap-1 rounded-md border border-hairline bg-surface p-1"
-    >
-      {options.map((opt) => (
-        <button
-          key={opt}
-          role="tab"
-          type="button"
-          aria-selected={value === opt}
-          onClick={() => onChange(opt)}
-          className={cn(
-            "h-8 rounded-sm px-3 text-small font-semibold transition-colors duration-150",
-            value === opt
-              ? "bg-brand-tint text-brand-on-tint"
-              : "text-secondary-foreground hover:bg-surface-hover",
-          )}
-        >
-          {opt}
-        </button>
-      ))}
+    <div className="-mx-4 max-w-full overflow-x-auto px-4 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div
+        role="tablist"
+        aria-label={label}
+        className="inline-flex w-max gap-1 rounded-md border border-hairline bg-surface p-1"
+      >
+        {options.map((opt) => (
+          <button
+            key={opt}
+            role="tab"
+            type="button"
+            aria-selected={value === opt}
+            onClick={() => onChange(opt)}
+            className={cn(
+              "h-8 shrink-0 whitespace-nowrap rounded-sm px-3 text-small font-semibold transition-colors duration-150",
+              value === opt
+                ? "bg-brand-tint text-brand-on-tint"
+                : "text-secondary-foreground hover:bg-surface-hover",
+            )}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
     </div>
-  );
-}
+
 
 export function FilterPill({
   label,
