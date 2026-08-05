@@ -6,11 +6,13 @@ import {
   Card,
   EmptyState,
   Field,
+  Meta,
   PageHeader,
   SectionHeading,
   StatusBadge,
   TextInput,
 } from "@/components/ds";
+
 import { Avatar } from "@/components/ds/bits";
 import { people, workspace } from "@/data/demo";
 
