@@ -283,21 +283,30 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         className="fixed inset-x-0 bottom-0 z-40 flex border-t border-hairline bg-surface/95 backdrop-blur lg:hidden"
       >
         {mobileTabs.map((t) => {
-          const active = pathname === t.to;
+          const active = pathname === t.to || pathname.startsWith(`${t.to}/`);
           return (
             <Link
               key={t.to}
               to={t.to}
               className={cn(
-                "flex flex-1 flex-col items-center gap-0.5 py-2.5 text-label",
+                "flex flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-center text-label",
                 active ? "text-brand" : "text-secondary-foreground",
               )}
             >
               <t.icon className="size-5" aria-hidden="true" />
-              {t.label}
+              <span className="leading-tight">{t.label}</span>
             </Link>
           );
         })}
+        <button
+          type="button"
+          onClick={() => setDrawer(true)}
+          className="flex flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-center text-label text-secondary-foreground"
+        >
+          <Menu className="size-5" aria-hidden="true" />
+          <span className="leading-tight">All Menu</span>
+        </button>
+
       </nav>
     </div>
   );
