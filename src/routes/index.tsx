@@ -12,10 +12,10 @@ export const Route = createFileRoute("/")({
         content:
           "Speak the decision and DecisionOS structures it into tasks, approvals and workflows — tracked, chased and permanently searchable.",
       },
-      { property: "og:title", content: "DecisionOS — Speak The Decision. We Run The Company." },
+      { property: "og:title", content: "DecisionOS — The Operating Brain For Founder-Led Businesses" },
       {
         property: "og:description",
-        content: "Voice, text, WhatsApp and documents — captured once, executed forever.",
+        content: "Speak the decision and DecisionOS structures it into tasks, approvals and workflows — tracked, chased and permanently searchable.",
       },
     ],
   }),
