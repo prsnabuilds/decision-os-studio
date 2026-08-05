@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Flame } from "lucide-react";
+import { ArrowRight, CheckCircle2, Flame } from "lucide-react";
 import { Btn, Card, Meta, PageHeader, SectionHeading, Segmented, StatusBadge } from "@/components/ds";
 import { buildRanked, decisions, tasks } from "@/data/demo";
 import { inr, joinReadably, plural } from "@/lib/format";
@@ -49,6 +49,13 @@ function BriefPage() {
     Monthly:
       "Spend held at ₹4,82,000 with packaging at 38% of it, concentrated in a single vendor. Net profit is ₹11,39,000. Execution is the weakest of the four operating categories and it is a follow-through problem, not a workload one.",
   };
+
+  const completed = [
+    { title: "Leave request approved", by: "Ravi Kumar", when: "Yesterday" },
+    { title: "Packaging rate held until October", by: "Meena Raghavan", when: "2 days ago" },
+    { title: "Coimbatore consignment dispatched", by: "Ops team", when: "3 days ago" },
+    { title: "Invoice #4791 settled in full", by: "Finance", when: "4 days ago" },
+  ];
 
   return (
     <div>
