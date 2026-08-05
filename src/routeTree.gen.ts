@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShellRouteImport } from './routes/_shell'
+import { Route as DesignSystemRouteImport } from './routes/design-system'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ShellBrainRouteImport } from './routes/_shell.brain'
 import { Route as ShellBriefRouteImport } from './routes/_shell.brief'
@@ -36,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const ShellRoute = ShellRouteImport.update({
   id: '/_shell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DesignSystemRoute = DesignSystemRouteImport.update({
+  id: '/design-system',
+  path: '/design-system',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -126,6 +132,7 @@ const ShellContactsIdRoute = ShellContactsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/design-system': typeof DesignSystemRoute
   '/login': typeof LoginRoute
   '/brain': typeof ShellBrainRoute
   '/brief': typeof ShellBriefRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/design-system': typeof DesignSystemRoute
   '/login': typeof LoginRoute
   '/brain': typeof ShellBrainRoute
   '/brief': typeof ShellBriefRoute
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_shell': typeof ShellRouteWithChildren
+  '/design-system': typeof DesignSystemRoute
   '/login': typeof LoginRoute
   '/_shell/brain': typeof ShellBrainRoute
   '/_shell/brief': typeof ShellBriefRoute
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/design-system'
     | '/login'
     | '/brain'
     | '/brief'
@@ -210,6 +220,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/design-system'
     | '/login'
     | '/brain'
     | '/brief'
@@ -231,6 +242,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_shell'
+    | '/design-system'
     | '/login'
     | '/_shell/brain'
     | '/_shell/brief'
@@ -253,6 +265,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ShellRoute: typeof ShellRouteWithChildren
+  DesignSystemRoute: typeof DesignSystemRoute
   LoginRoute: typeof LoginRoute
 }
 
@@ -270,6 +283,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof ShellRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/design-system': {
+      id: '/design-system'
+      path: '/design-system'
+      fullPath: '/design-system'
+      preLoaderRoute: typeof DesignSystemRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -437,6 +457,7 @@ const ShellRouteWithChildren = ShellRoute._addFileChildren(ShellRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ShellRoute: ShellRouteWithChildren,
+  DesignSystemRoute: DesignSystemRoute,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
