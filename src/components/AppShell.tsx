@@ -21,27 +21,28 @@ import { cn } from "@/lib/utils";
 import { Btn, CountBadge, IconBtn, StatusBadge } from "@/components/ds";
 import { currentUser, notifications } from "@/data/demo";
 import { relativeTime } from "@/lib/format";
-import logoOnLight from "@/assets/decisionos-logo-dark-text.svg.asset.json";
-import logoOnDark from "@/assets/decisionos-logo-light-text.svg.asset.json";
+import logoOnLight from "@/assets/decisionos-wordmark-dark-text.svg.asset.json";
+import logoOnDark from "@/assets/decisionos-wordmark-light-text.svg.asset.json";
 
 const nav = [
-  { to: "/inbox", label: "Decision Desk", icon: Inbox, count: 6, tone: "neutral" as const },
-  { to: "/brief", label: "CEO Brief", icon: Newspaper, count: 5, tone: "danger" as const },
-  { to: "/my-work", label: "My Work", icon: ListChecks },
-  { to: "/contacts", label: "People", icon: Users },
-  { to: "/brain", label: "Company Brain", icon: Brain },
-  { to: "/ledger", label: "Finance", icon: Wallet },
-  { to: "/ingest", label: "Capture", icon: Upload, count: 5, tone: "neutral" as const },
-  { to: "/meetings", label: "Meeting Notes", icon: Mic2 },
-  { to: "/settings", label: "Settings", icon: SettingsIcon },
+  { to: "/inbox", label: "Decision Desk", short: "Desk", icon: Inbox, count: 6, tone: "neutral" as const },
+  { to: "/brief", label: "CEO Brief", short: "Brief", icon: Newspaper, count: 5, tone: "danger" as const },
+  { to: "/my-work", label: "My Work", short: "Work", icon: ListChecks },
+  { to: "/contacts", label: "People", short: "People", icon: Users },
+  { to: "/brain", label: "Company Brain", short: "Brain", icon: Brain },
+  { to: "/ledger", label: "Finance", short: "Finance", icon: Wallet },
+  { to: "/ingest", label: "Capture", short: "Capture", icon: Upload, count: 5, tone: "neutral" as const },
+  { to: "/meetings", label: "Meeting Notes", short: "Notes", icon: Mic2 },
+  { to: "/settings", label: "Settings", short: "Settings", icon: SettingsIcon },
 ];
 
 /* The bottom bar is the primary route set; the drawer holds the same names in full. */
 const mobileTabs = nav.slice(0, 4);
 
 
-export function Wordmark({ size = "md" }: { size?: "md" | "lg" }) {
-  const width = size === "lg" ? "w-[164px]" : "w-[137px]";
+
+export function Wordmark({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+  const width = size === "lg" ? "w-[164px]" : size === "sm" ? "w-[118px]" : "w-[137px]";
   return (
     <span className="inline-flex items-center">
       <img
@@ -264,14 +265,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Mobile app bar */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-hairline bg-surface/85 px-4 backdrop-blur lg:hidden">
-          <Wordmark />
-          <div className="flex items-center">
-            {themeControls}
-            <IconBtn label="Open Navigation" onClick={() => setDrawer(true)}>
-              <Menu className="size-4" />
-            </IconBtn>
-          </div>
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-hairline bg-surface/85 px-4 backdrop-blur lg:hidden">
+          <Wordmark size="sm" />
+          <div className="flex shrink-0 items-center">{themeControls}</div>
         </header>
 
         <main className="mx-auto w-full max-w-[1200px] px-4 pb-28 pt-6 sm:px-6 lg:pb-16 lg:pt-8">
@@ -282,7 +278,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Mobile bottom tabs */}
       <nav
         aria-label="Primary"
-        className="fixed inset-x-0 bottom-0 z-40 flex border-t border-hairline bg-surface/95 backdrop-blur lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 flex border-t border-hairline bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
       >
         {mobileTabs.map((t) => {
           const active = pathname === t.to || pathname.startsWith(`${t.to}/`);
@@ -291,23 +287,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               key={t.to}
               to={t.to}
               className={cn(
-                "flex flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-center text-label",
+                "flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-center text-label",
                 active ? "text-brand" : "text-secondary-foreground",
               )}
             >
-              <t.icon className="size-5" aria-hidden="true" />
-              <span className="leading-tight">{t.label}</span>
+              <t.icon className="size-5 shrink-0" aria-hidden="true" />
+              <span className="w-full truncate whitespace-nowrap leading-tight">{t.short}</span>
             </Link>
           );
         })}
         <button
           type="button"
           onClick={() => setDrawer(true)}
-          className="flex flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-center text-label text-secondary-foreground"
+          className="flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-center text-label text-secondary-foreground"
         >
-          <Menu className="size-5" aria-hidden="true" />
-          <span className="leading-tight">All Menu</span>
+          <Menu className="size-5 shrink-0" aria-hidden="true" />
+          <span className="w-full truncate whitespace-nowrap leading-tight">Menu</span>
         </button>
+
 
       </nav>
     </div>
