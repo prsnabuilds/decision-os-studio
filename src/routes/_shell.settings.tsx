@@ -120,7 +120,7 @@ function SettingsPage() {
                   <p className="text-body-strong text-foreground">{p.name}</p>
                   <p className="text-small text-tertiary-foreground">{p.role}</p>
                 </div>
-                <StatusBadge kind="neutral">{p.type === "employee" ? "Team" : p.type === "vendor" ? workspace.vendorLabel : workspace.customerLabel}</StatusBadge>
+                <StatusBadge kind="neutral">{p.type === "employee" ? "Team" : p.type === "vendor" ? "Vendor" : "Customer"}</StatusBadge>
                 <Btn size="sm" variant="tertiary">
                   Change Access
                 </Btn>
