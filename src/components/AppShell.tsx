@@ -41,8 +41,8 @@ const mobileTabs = nav.slice(0, 4);
 
 
 
-export function Wordmark({ size = "md" }: { size?: "md" | "lg" }) {
-  const width = size === "lg" ? "w-[164px]" : "w-[137px]";
+export function Wordmark({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+  const width = size === "lg" ? "w-[164px]" : size === "sm" ? "w-[118px]" : "w-[137px]";
   return (
     <span className="inline-flex items-center">
       <img
