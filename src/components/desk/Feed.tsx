@@ -12,7 +12,7 @@ import {
   Stamp,
   Bell,
 } from "lucide-react";
-import { Btn, Card, EmptyState, FilterPill, IconBtn, StatusBadge } from "@/components/ds";
+import { Btn, Card, EmptyState, FilterPill, IconBtn, Meta } from "@/components/ds";
 import { SourceLabel } from "@/components/ds/bits";
 import { feed, type FeedClass, type FeedItem } from "@/data/demo";
 import { inr } from "@/lib/format";
