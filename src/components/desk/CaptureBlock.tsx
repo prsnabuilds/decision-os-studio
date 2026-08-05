@@ -5,6 +5,14 @@ import { cn } from "@/lib/utils";
 
 const languages = ["Auto", "English", "தமிழ்", "Tanglish"] as const;
 
+function timeGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Good Morning";
+  if (h < 17) return "Good Afternoon";
+  return "Good Evening";
+}
+
+
 export function CaptureBlock({ onSubmit }: { onSubmit: () => void }) {
   const [expanded, setExpanded] = React.useState(false);
   const [typed, setTyped] = React.useState("");
