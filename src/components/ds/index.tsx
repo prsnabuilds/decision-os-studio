@@ -514,3 +514,70 @@ export function Quarters({ value }: { value: number }) {
     </div>
   );
 }
+
+/* ------------------------------ Detail panel ------------------------------ */
+
+/*
+ * A focused slide-over. Detail belongs in a deliberate surface, never at the
+ * bottom of a long scroll.
+ */
+export function DetailPanel({
+  open,
+  onClose,
+  title,
+  subtitle,
+  children,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  subtitle?: string | undefined;
+  children: React.ReactNode;
+}) {
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50">
+      <button
+        type="button"
+        aria-label="Close detail"
+        onClick={onClose}
+        className="absolute inset-0 bg-neutral-900/40"
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        className="absolute inset-y-0 right-0 flex w-full max-w-xl flex-col bg-surface shadow-lg sm:w-[560px]"
+      >
+        <div className="flex items-start gap-3 border-b border-hairline px-5 py-4">
+          <div className="min-w-0 flex-1">
+            <h2 className="truncate text-h3 text-foreground">{title}</h2>
+            {subtitle ? (
+              <p className="mt-0.5 text-small text-tertiary-foreground">{subtitle}</p>
+            ) : null}
+          </div>
+          <IconBtn label="Close" onClick={onClose}>
+            <span aria-hidden="true" className="text-body">
+              ✕
+            </span>
+          </IconBtn>
+        </div>
+        <div className="flex-1 overflow-y-auto p-5">{children}</div>
+      </div>
+    </div>
+  );
+}
