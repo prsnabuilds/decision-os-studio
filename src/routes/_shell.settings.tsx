@@ -73,10 +73,10 @@ function SettingsPage() {
           <Card className="space-y-3">
             <h2 className="text-h3 text-foreground">Company Profile</h2>
             <Field label="Company Name" htmlFor="s-name">
-              <TextInput id="s-name" defaultValue={workspace.company} />
+              <TextInput id="s-name" defaultValue={workspace.name} />
             </Field>
             <Field label="Industry" htmlFor="s-ind">
-              <TextInput id="s-ind" defaultValue={workspace.industry} />
+              <TextInput id="s-ind" defaultValue="Packaging manufacturing" />
             </Field>
             <Field label="Base Currency" htmlFor="s-cur" hint="Amounts are grouped in the Indian style.">
               <TextInput id="s-cur" defaultValue="Indian rupee" />
@@ -120,7 +120,7 @@ function SettingsPage() {
                   <p className="text-body-strong text-foreground">{p.name}</p>
                   <p className="text-small text-tertiary-foreground">{p.role}</p>
                 </div>
-                <StatusBadge kind="neutral">{p.type === "internal" ? "Team" : "External"}</StatusBadge>
+                <StatusBadge kind="neutral">{p.type === "employee" ? "Team" : p.type === "vendor" ? workspace.vendorLabel : workspace.customerLabel}</StatusBadge>
                 <Btn size="sm" variant="tertiary">
                   Change Access
                 </Btn>

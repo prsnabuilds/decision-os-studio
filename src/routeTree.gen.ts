@@ -15,6 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ShellBrainRouteImport } from './routes/_shell.brain'
 import { Route as ShellBriefRouteImport } from './routes/_shell.brief'
 import { Route as ShellCalendarRouteImport } from './routes/_shell.calendar'
+import { Route as ShellCoachRouteImport } from './routes/_shell.coach'
 import { Route as ShellFinanceRouteImport } from './routes/_shell.finance'
 import { Route as ShellInboxRouteImport } from './routes/_shell.inbox'
 import { Route as ShellIngestRouteImport } from './routes/_shell.ingest'
@@ -24,6 +25,7 @@ import { Route as ShellMeetingsRouteImport } from './routes/_shell.meetings'
 import { Route as ShellMyWorkRouteImport } from './routes/_shell.my-work'
 import { Route as ShellNotificationsRouteImport } from './routes/_shell.notifications'
 import { Route as ShellOperatingScoreRouteImport } from './routes/_shell.operating-score'
+import { Route as ShellSettingsRouteImport } from './routes/_shell.settings'
 import { Route as ShellContactsIndexRouteImport } from './routes/_shell.contacts.index'
 import { Route as ShellContactsIdRouteImport } from './routes/_shell.contacts.$id'
 
@@ -54,6 +56,11 @@ const ShellBriefRoute = ShellBriefRouteImport.update({
 const ShellCalendarRoute = ShellCalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellCoachRoute = ShellCoachRouteImport.update({
+  id: '/coach',
+  path: '/coach',
   getParentRoute: () => ShellRoute,
 } as any)
 const ShellFinanceRoute = ShellFinanceRouteImport.update({
@@ -101,6 +108,11 @@ const ShellOperatingScoreRoute = ShellOperatingScoreRouteImport.update({
   path: '/operating-score',
   getParentRoute: () => ShellRoute,
 } as any)
+const ShellSettingsRoute = ShellSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => ShellRoute,
+} as any)
 const ShellContactsIndexRoute = ShellContactsIndexRouteImport.update({
   id: '/contacts/',
   path: '/contacts/',
@@ -118,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/brain': typeof ShellBrainRoute
   '/brief': typeof ShellBriefRoute
   '/calendar': typeof ShellCalendarRoute
+  '/coach': typeof ShellCoachRoute
   '/finance': typeof ShellFinanceRoute
   '/inbox': typeof ShellInboxRoute
   '/ingest': typeof ShellIngestRoute
@@ -127,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/my-work': typeof ShellMyWorkRoute
   '/notifications': typeof ShellNotificationsRoute
   '/operating-score': typeof ShellOperatingScoreRoute
+  '/settings': typeof ShellSettingsRoute
   '/contacts/$id': typeof ShellContactsIdRoute
   '/contacts/': typeof ShellContactsIndexRoute
 }
@@ -136,6 +150,7 @@ export interface FileRoutesByTo {
   '/brain': typeof ShellBrainRoute
   '/brief': typeof ShellBriefRoute
   '/calendar': typeof ShellCalendarRoute
+  '/coach': typeof ShellCoachRoute
   '/finance': typeof ShellFinanceRoute
   '/inbox': typeof ShellInboxRoute
   '/ingest': typeof ShellIngestRoute
@@ -145,6 +160,7 @@ export interface FileRoutesByTo {
   '/my-work': typeof ShellMyWorkRoute
   '/notifications': typeof ShellNotificationsRoute
   '/operating-score': typeof ShellOperatingScoreRoute
+  '/settings': typeof ShellSettingsRoute
   '/contacts/$id': typeof ShellContactsIdRoute
   '/contacts': typeof ShellContactsIndexRoute
 }
@@ -156,6 +172,7 @@ export interface FileRoutesById {
   '/_shell/brain': typeof ShellBrainRoute
   '/_shell/brief': typeof ShellBriefRoute
   '/_shell/calendar': typeof ShellCalendarRoute
+  '/_shell/coach': typeof ShellCoachRoute
   '/_shell/finance': typeof ShellFinanceRoute
   '/_shell/inbox': typeof ShellInboxRoute
   '/_shell/ingest': typeof ShellIngestRoute
@@ -165,6 +182,7 @@ export interface FileRoutesById {
   '/_shell/my-work': typeof ShellMyWorkRoute
   '/_shell/notifications': typeof ShellNotificationsRoute
   '/_shell/operating-score': typeof ShellOperatingScoreRoute
+  '/_shell/settings': typeof ShellSettingsRoute
   '/_shell/contacts/$id': typeof ShellContactsIdRoute
   '/_shell/contacts/': typeof ShellContactsIndexRoute
 }
@@ -176,6 +194,7 @@ export interface FileRouteTypes {
     | '/brain'
     | '/brief'
     | '/calendar'
+    | '/coach'
     | '/finance'
     | '/inbox'
     | '/ingest'
@@ -185,6 +204,7 @@ export interface FileRouteTypes {
     | '/my-work'
     | '/notifications'
     | '/operating-score'
+    | '/settings'
     | '/contacts/$id'
     | '/contacts/'
   fileRoutesByTo: FileRoutesByTo
@@ -194,6 +214,7 @@ export interface FileRouteTypes {
     | '/brain'
     | '/brief'
     | '/calendar'
+    | '/coach'
     | '/finance'
     | '/inbox'
     | '/ingest'
@@ -203,6 +224,7 @@ export interface FileRouteTypes {
     | '/my-work'
     | '/notifications'
     | '/operating-score'
+    | '/settings'
     | '/contacts/$id'
     | '/contacts'
   id:
@@ -213,6 +235,7 @@ export interface FileRouteTypes {
     | '/_shell/brain'
     | '/_shell/brief'
     | '/_shell/calendar'
+    | '/_shell/coach'
     | '/_shell/finance'
     | '/_shell/inbox'
     | '/_shell/ingest'
@@ -222,6 +245,7 @@ export interface FileRouteTypes {
     | '/_shell/my-work'
     | '/_shell/notifications'
     | '/_shell/operating-score'
+    | '/_shell/settings'
     | '/_shell/contacts/$id'
     | '/_shell/contacts/'
   fileRoutesById: FileRoutesById
@@ -274,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/calendar'
       fullPath: '/calendar'
       preLoaderRoute: typeof ShellCalendarRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/coach': {
+      id: '/_shell/coach'
+      path: '/coach'
+      fullPath: '/coach'
+      preLoaderRoute: typeof ShellCoachRouteImport
       parentRoute: typeof ShellRoute
     }
     '/_shell/finance': {
@@ -339,6 +370,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellOperatingScoreRouteImport
       parentRoute: typeof ShellRoute
     }
+    '/_shell/settings': {
+      id: '/_shell/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof ShellSettingsRouteImport
+      parentRoute: typeof ShellRoute
+    }
     '/_shell/contacts/': {
       id: '/_shell/contacts/'
       path: '/contacts'
@@ -360,6 +398,7 @@ interface ShellRouteChildren {
   ShellBrainRoute: typeof ShellBrainRoute
   ShellBriefRoute: typeof ShellBriefRoute
   ShellCalendarRoute: typeof ShellCalendarRoute
+  ShellCoachRoute: typeof ShellCoachRoute
   ShellFinanceRoute: typeof ShellFinanceRoute
   ShellInboxRoute: typeof ShellInboxRoute
   ShellIngestRoute: typeof ShellIngestRoute
@@ -369,6 +408,7 @@ interface ShellRouteChildren {
   ShellMyWorkRoute: typeof ShellMyWorkRoute
   ShellNotificationsRoute: typeof ShellNotificationsRoute
   ShellOperatingScoreRoute: typeof ShellOperatingScoreRoute
+  ShellSettingsRoute: typeof ShellSettingsRoute
   ShellContactsIdRoute: typeof ShellContactsIdRoute
   ShellContactsIndexRoute: typeof ShellContactsIndexRoute
 }
@@ -377,6 +417,7 @@ const ShellRouteChildren: ShellRouteChildren = {
   ShellBrainRoute: ShellBrainRoute,
   ShellBriefRoute: ShellBriefRoute,
   ShellCalendarRoute: ShellCalendarRoute,
+  ShellCoachRoute: ShellCoachRoute,
   ShellFinanceRoute: ShellFinanceRoute,
   ShellInboxRoute: ShellInboxRoute,
   ShellIngestRoute: ShellIngestRoute,
@@ -386,6 +427,7 @@ const ShellRouteChildren: ShellRouteChildren = {
   ShellMyWorkRoute: ShellMyWorkRoute,
   ShellNotificationsRoute: ShellNotificationsRoute,
   ShellOperatingScoreRoute: ShellOperatingScoreRoute,
+  ShellSettingsRoute: ShellSettingsRoute,
   ShellContactsIdRoute: ShellContactsIdRoute,
   ShellContactsIndexRoute: ShellContactsIndexRoute,
 }
