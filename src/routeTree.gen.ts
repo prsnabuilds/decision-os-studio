@@ -10,33 +10,118 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShellRouteImport } from './routes/_shell'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ShellBriefRouteImport } from './routes/_shell.brief'
+import { Route as ShellInboxRouteImport } from './routes/_shell.inbox'
+import { Route as ShellMyWorkRouteImport } from './routes/_shell.my-work'
+import { Route as ShellContactsIndexRouteImport } from './routes/_shell.contacts.index'
+import { Route as ShellContactsIdRouteImport } from './routes/_shell.contacts.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShellRoute = ShellRouteImport.update({
+  id: '/_shell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShellBriefRoute = ShellBriefRouteImport.update({
+  id: '/brief',
+  path: '/brief',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellInboxRoute = ShellInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellMyWorkRoute = ShellMyWorkRouteImport.update({
+  id: '/my-work',
+  path: '/my-work',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellContactsIndexRoute = ShellContactsIndexRouteImport.update({
+  id: '/contacts/',
+  path: '/contacts/',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellContactsIdRoute = ShellContactsIdRouteImport.update({
+  id: '/contacts/$id',
+  path: '/contacts/$id',
+  getParentRoute: () => ShellRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/brief': typeof ShellBriefRoute
+  '/inbox': typeof ShellInboxRoute
+  '/my-work': typeof ShellMyWorkRoute
+  '/contacts/$id': typeof ShellContactsIdRoute
+  '/contacts/': typeof ShellContactsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/brief': typeof ShellBriefRoute
+  '/inbox': typeof ShellInboxRoute
+  '/my-work': typeof ShellMyWorkRoute
+  '/contacts/$id': typeof ShellContactsIdRoute
+  '/contacts': typeof ShellContactsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_shell': typeof ShellRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_shell/brief': typeof ShellBriefRoute
+  '/_shell/inbox': typeof ShellInboxRoute
+  '/_shell/my-work': typeof ShellMyWorkRoute
+  '/_shell/contacts/$id': typeof ShellContactsIdRoute
+  '/_shell/contacts/': typeof ShellContactsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/brief'
+    | '/inbox'
+    | '/my-work'
+    | '/contacts/$id'
+    | '/contacts/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/login'
+    | '/brief'
+    | '/inbox'
+    | '/my-work'
+    | '/contacts/$id'
+    | '/contacts'
+  id:
+    | '__root__'
+    | '/'
+    | '/_shell'
+    | '/login'
+    | '/_shell/brief'
+    | '/_shell/inbox'
+    | '/_shell/my-work'
+    | '/_shell/contacts/$id'
+    | '/_shell/contacts/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ShellRoute: typeof ShellRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +133,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_shell': {
+      id: '/_shell'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ShellRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_shell/brief': {
+      id: '/_shell/brief'
+      path: '/brief'
+      fullPath: '/brief'
+      preLoaderRoute: typeof ShellBriefRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/inbox': {
+      id: '/_shell/inbox'
+      path: '/inbox'
+      fullPath: '/inbox'
+      preLoaderRoute: typeof ShellInboxRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/my-work': {
+      id: '/_shell/my-work'
+      path: '/my-work'
+      fullPath: '/my-work'
+      preLoaderRoute: typeof ShellMyWorkRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/contacts/': {
+      id: '/_shell/contacts/'
+      path: '/contacts'
+      fullPath: '/contacts/'
+      preLoaderRoute: typeof ShellContactsIndexRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/contacts/$id': {
+      id: '/_shell/contacts/$id'
+      path: '/contacts/$id'
+      fullPath: '/contacts/$id'
+      preLoaderRoute: typeof ShellContactsIdRouteImport
+      parentRoute: typeof ShellRoute
+    }
   }
 }
 
+interface ShellRouteChildren {
+  ShellBriefRoute: typeof ShellBriefRoute
+  ShellInboxRoute: typeof ShellInboxRoute
+  ShellMyWorkRoute: typeof ShellMyWorkRoute
+  ShellContactsIdRoute: typeof ShellContactsIdRoute
+  ShellContactsIndexRoute: typeof ShellContactsIndexRoute
+}
+
+const ShellRouteChildren: ShellRouteChildren = {
+  ShellBriefRoute: ShellBriefRoute,
+  ShellInboxRoute: ShellInboxRoute,
+  ShellMyWorkRoute: ShellMyWorkRoute,
+  ShellContactsIdRoute: ShellContactsIdRoute,
+  ShellContactsIndexRoute: ShellContactsIndexRoute,
+}
+
+const ShellRouteWithChildren = ShellRoute._addFileChildren(ShellRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ShellRoute: ShellRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
