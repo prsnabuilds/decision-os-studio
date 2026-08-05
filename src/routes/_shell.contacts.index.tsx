@@ -141,51 +141,56 @@ function PeoplePage() {
                 helper="Clear the search or change the status filter to see the rest."
               />
             ) : (
-              <ul className="space-y-2">
+              <ul className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
                 {g.items.map((p) => (
                   <li key={p.id}>
-                    <Card compact interactive className="flex flex-wrap items-center gap-3">
-                      <Avatar name={p.name} size={32} />
-                      <div className="min-w-40 flex-1">
-                        <p className="text-body-strong text-foreground">{p.name}</p>
-                        <p className="text-small text-secondary-foreground">
-                          {p.company ?? p.role} · {p.phone}
-                        </p>
+                    <Card compact interactive className="h-full">
+                      <div className="flex items-start gap-3">
+                        <Avatar name={p.name} size={36} />
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-body-strong text-foreground">{p.name}</p>
+                          <Meta
+                            items={[
+                              p.type === "employee"
+                                ? p.role
+                                : p.type === "customer"
+                                  ? "Customer"
+                                  : "Vendor",
+                              p.company ?? null,
+                              p.phone,
+                            ].filter(Boolean)}
+                          />
+                        </div>
+                        {p.status === "inactive" ? (
+                          <StatusBadge kind="neutral">Inactive</StatusBadge>
+                        ) : null}
                       </div>
-                      <StatusBadge kind="neutral">
-                        {p.type === "employee"
-                          ? p.role
-                          : p.type === "customer"
-                            ? "Customer"
-                            : "Vendor"}
-                      </StatusBadge>
-                      <StatusBadge kind={p.status === "active" ? "completed" : "rejected"}>
-                        {p.status === "active" ? "Active" : "Inactive"}
-                      </StatusBadge>
-                      <Btn
-                        size="sm"
-                        variant="tertiary"
-                        onClick={() => setComplaintFor(complaintFor === p.id ? null : p.id)}
-                      >
-                        Log Complaint
-                      </Btn>
-                      <Btn size="sm" variant="secondary" asChild>
-                        <Link to="/contacts/$id" params={{ id: p.id }}>
-                          Open <ChevronRight className="size-4" aria-hidden="true" />
-                        </Link>
-                      </Btn>
+                      <div className="mt-3 flex items-center gap-1">
+                        <Btn size="sm" variant="secondary" asChild>
+                          <Link to="/contacts/$id" params={{ id: p.id }}>
+                            Open <ChevronRight className="size-4" aria-hidden="true" />
+                          </Link>
+                        </Btn>
+                        <Btn
+                          size="sm"
+                          variant="tertiary"
+                          onClick={() => setComplaintFor(complaintFor === p.id ? null : p.id)}
+                        >
+                          Log Complaint
+                        </Btn>
+                      </div>
                       {complaintFor === p.id ? (
-                        <div className="flex w-full items-end gap-2 border-t border-hairline pt-3">
+                        <div className="mt-3 flex w-full items-end gap-2 border-t border-hairline pt-3">
                           <div className="flex-1">
                             <Field label="Complaint" htmlFor={`comp-${p.id}`}>
                               <TextInput
                                 id={`comp-${p.id}`}
-                                placeholder="Four cartons arrived crushed in the last consignment"
+                                placeholder="Four cartons arrived crushed"
                               />
                             </Field>
                           </div>
                           <Btn size="sm" variant="secondary" onClick={() => setComplaintFor(null)}>
-                            Save Complaint
+                            Save
                           </Btn>
                         </div>
                       ) : null}
@@ -193,6 +198,7 @@ function PeoplePage() {
                   </li>
                 ))}
               </ul>
+
             )}
           </section>
         ))}
