@@ -4,13 +4,16 @@ import { Loader2 } from "lucide-react";
 import {
   Btn,
   Card,
+  DetailPanel,
   EmptyState,
+  Meta,
   Skel,
   StatusBadge,
   PriorityBadge,
   SectionHeading,
   TextArea,
 } from "@/components/ds";
+
 import { CaptureBlock } from "@/components/desk/CaptureBlock";
 import { ApprovalCard } from "@/components/desk/ApprovalCard";
 import { TasksAndActivity } from "@/components/desk/Feed";
