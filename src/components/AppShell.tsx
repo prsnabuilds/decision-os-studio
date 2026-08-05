@@ -39,21 +39,21 @@ const mobileTabs = nav.slice(0, 4);
 
 
 export function Wordmark({ size = "md" }: { size?: "md" | "lg" }) {
+  const h = size === "lg" ? "h-9" : "h-7";
   return (
-    <span className="inline-flex items-center gap-2.5">
-      <span
-        className={cn(
-          "inline-flex items-center justify-center rounded-lg bg-brand font-bold text-on-primary",
-          size === "lg" ? "size-10 text-lg" : "size-8 text-body-strong",
-        )}
-        aria-hidden="true"
-      >
-        D
-      </span>
-      <span className={cn("font-bold tracking-tight", size === "lg" ? "text-h2" : "text-h3")}>
-        <span className="text-foreground">Decision</span>
-        <span className="text-brand">OS</span>
-      </span>
+    <span className="inline-flex items-center">
+      <img
+        src={logoOnLight.url}
+        alt="DecisionOS"
+        className={cn(h, "w-auto dark:hidden")}
+        draggable={false}
+      />
+      <img
+        src={logoOnDark.url}
+        alt="DecisionOS"
+        className={cn(h, "hidden w-auto dark:block")}
+        draggable={false}
+      />
     </span>
   );
 }
