@@ -41,19 +41,19 @@ const mobileTabs = nav.slice(0, 4);
 
 
 export function Wordmark({ size = "md" }: { size?: "md" | "lg" }) {
-  const h = size === "lg" ? "h-9" : "h-7";
+  const width = size === "lg" ? "w-[164px]" : "w-[137px]";
   return (
     <span className="inline-flex items-center">
       <img
         src={logoOnLight.url}
         alt="DecisionOS"
-        className={cn(h, "w-auto dark:hidden")}
+        className={cn(width, "h-auto dark:hidden")}
         draggable={false}
       />
       <img
         src={logoOnDark.url}
         alt="DecisionOS"
-        className={cn(h, "hidden w-auto dark:block")}
+        className={cn(width, "hidden h-auto dark:block")}
         draggable={false}
       />
     </span>
