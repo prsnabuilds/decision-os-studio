@@ -81,8 +81,26 @@ function TaskCard({ task, aiScore }: { task: Task; aiScore?: number }) {
       urgency={groupOf(task) === "overdue" || groupOf(task) === "today" ? groupOf(task) : undefined}
       className="pl-5"
     >
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="min-w-40 flex-1 text-body-strong text-foreground">{task.title}</span>
+      <div className="flex flex-wrap items-start gap-2">
+        <div className="min-w-40 flex-1">
+          <p className="text-body-strong text-foreground">{task.title}</p>
+          <Meta
+            items={[
+              task.priority === "high" ? <PriorityBadge priority="high" /> : null,
+              task.status !== "todo" ? statusLabels[task.status] : null,
+              task.assignee,
+              task.dueInDays < 0
+                ? `Due ${Math.abs(task.dueInDays)} ${Math.abs(task.dueInDays) === 1 ? "day" : "days"} ago`
+                : task.dueInDays === 0
+                  ? "Due today"
+                  : `Due in ${task.dueInDays} days`,
+              task.requireProof ? "Proof required" : null,
+              `${task.progress}% done`,
+              typeof aiScore === "number" ? `AI score ${aiScore}` : null,
+            ].filter(Boolean)}
+            className="mt-1"
+          />
+        </div>
         {task.amount ? (
           <span className="tabular text-body-strong text-foreground">{inr(task.amount)}</span>
         ) : null}
@@ -97,37 +115,6 @@ function TaskCard({ task, aiScore }: { task: Task; aiScore?: number }) {
         </button>
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        <PriorityBadge priority={task.priority} />
-        <StatusBadge
-          kind={
-            task.status === "done" ? "completed" : task.status === "blocked" ? "pending" : "neutral"
-          }
-        >
-          {statusLabels[task.status]}
-        </StatusBadge>
-        <PersonChip name={task.assignee} />
-        <span className="text-label text-tertiary-foreground">
-          {task.dueInDays < 0
-            ? `Due ${Math.abs(task.dueInDays)} ${Math.abs(task.dueInDays) === 1 ? "day" : "days"} ago`
-            : task.dueInDays === 0
-              ? "Due today"
-              : `Due in ${task.dueInDays} days`}
-        </span>
-        {task.requireProof ? <StatusBadge kind="pending">Proof Required</StatusBadge> : null}
-      </div>
-
-      <div className="mt-3 flex flex-wrap items-center gap-4">
-        <Quarters value={task.progress} />
-        {typeof aiScore === "number" ? (
-          <span className="flex items-center gap-2">
-            <span className="h-1.5 w-20 overflow-hidden rounded-pill bg-surface-sunken">
-              <span className="block h-full rounded-pill bg-brand" style={{ width: `${aiScore}%` }} />
-            </span>
-            <span className="text-label tabular text-tertiary-foreground">AI Score {aiScore}</span>
-          </span>
-        ) : null}
-      </div>
 
       {open ? (
         <div className="mt-4 space-y-4 border-t border-hairline pt-4">
