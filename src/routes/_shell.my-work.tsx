@@ -314,11 +314,13 @@ function BoardView() {
         </Card>
       ) : null}
 
-      <div className="grid gap-4 lg:grid-cols-4">
+      <div className="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
+        <div className="flex min-w-max gap-3">
         {columns.map((c) => {
           const items = tasks.filter((t) => t.status === c);
           return (
-            <div key={c} className="rounded-lg border border-hairline bg-surface-sunken p-3">
+            <div key={c} className="w-72 shrink-0 rounded-lg bg-surface-sunken p-3">
+
               <div className="mb-3 flex items-center justify-between">
                 <p className="text-label text-tertiary-foreground">{statusLabels[c]}</p>
                 <span className="text-label tabular text-tertiary-foreground">{items.length}</span>
