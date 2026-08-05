@@ -10,33 +10,263 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShellRouteImport } from './routes/_shell'
+import { Route as DesignSystemRouteImport } from './routes/design-system'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ShellBrainRouteImport } from './routes/_shell.brain'
+import { Route as ShellBriefRouteImport } from './routes/_shell.brief'
+import { Route as ShellCalendarRouteImport } from './routes/_shell.calendar'
+import { Route as ShellCoachRouteImport } from './routes/_shell.coach'
+import { Route as ShellFinanceRouteImport } from './routes/_shell.finance'
+import { Route as ShellInboxRouteImport } from './routes/_shell.inbox'
+import { Route as ShellIngestRouteImport } from './routes/_shell.ingest'
+import { Route as ShellJournalRouteImport } from './routes/_shell.journal'
+import { Route as ShellLedgerRouteImport } from './routes/_shell.ledger'
+import { Route as ShellMeetingsRouteImport } from './routes/_shell.meetings'
+import { Route as ShellMyWorkRouteImport } from './routes/_shell.my-work'
+import { Route as ShellNotificationsRouteImport } from './routes/_shell.notifications'
+import { Route as ShellOperatingScoreRouteImport } from './routes/_shell.operating-score'
+import { Route as ShellSettingsRouteImport } from './routes/_shell.settings'
+import { Route as ShellContactsIndexRouteImport } from './routes/_shell.contacts.index'
+import { Route as ShellContactsIdRouteImport } from './routes/_shell.contacts.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShellRoute = ShellRouteImport.update({
+  id: '/_shell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DesignSystemRoute = DesignSystemRouteImport.update({
+  id: '/design-system',
+  path: '/design-system',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShellBrainRoute = ShellBrainRouteImport.update({
+  id: '/brain',
+  path: '/brain',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellBriefRoute = ShellBriefRouteImport.update({
+  id: '/brief',
+  path: '/brief',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellCalendarRoute = ShellCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellCoachRoute = ShellCoachRouteImport.update({
+  id: '/coach',
+  path: '/coach',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellFinanceRoute = ShellFinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellInboxRoute = ShellInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellIngestRoute = ShellIngestRouteImport.update({
+  id: '/ingest',
+  path: '/ingest',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellJournalRoute = ShellJournalRouteImport.update({
+  id: '/journal',
+  path: '/journal',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellLedgerRoute = ShellLedgerRouteImport.update({
+  id: '/ledger',
+  path: '/ledger',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellMeetingsRoute = ShellMeetingsRouteImport.update({
+  id: '/meetings',
+  path: '/meetings',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellMyWorkRoute = ShellMyWorkRouteImport.update({
+  id: '/my-work',
+  path: '/my-work',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellNotificationsRoute = ShellNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellOperatingScoreRoute = ShellOperatingScoreRouteImport.update({
+  id: '/operating-score',
+  path: '/operating-score',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellSettingsRoute = ShellSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellContactsIndexRoute = ShellContactsIndexRouteImport.update({
+  id: '/contacts/',
+  path: '/contacts/',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellContactsIdRoute = ShellContactsIdRouteImport.update({
+  id: '/contacts/$id',
+  path: '/contacts/$id',
+  getParentRoute: () => ShellRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/design-system': typeof DesignSystemRoute
+  '/login': typeof LoginRoute
+  '/brain': typeof ShellBrainRoute
+  '/brief': typeof ShellBriefRoute
+  '/calendar': typeof ShellCalendarRoute
+  '/coach': typeof ShellCoachRoute
+  '/finance': typeof ShellFinanceRoute
+  '/inbox': typeof ShellInboxRoute
+  '/ingest': typeof ShellIngestRoute
+  '/journal': typeof ShellJournalRoute
+  '/ledger': typeof ShellLedgerRoute
+  '/meetings': typeof ShellMeetingsRoute
+  '/my-work': typeof ShellMyWorkRoute
+  '/notifications': typeof ShellNotificationsRoute
+  '/operating-score': typeof ShellOperatingScoreRoute
+  '/settings': typeof ShellSettingsRoute
+  '/contacts/$id': typeof ShellContactsIdRoute
+  '/contacts/': typeof ShellContactsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/design-system': typeof DesignSystemRoute
+  '/login': typeof LoginRoute
+  '/brain': typeof ShellBrainRoute
+  '/brief': typeof ShellBriefRoute
+  '/calendar': typeof ShellCalendarRoute
+  '/coach': typeof ShellCoachRoute
+  '/finance': typeof ShellFinanceRoute
+  '/inbox': typeof ShellInboxRoute
+  '/ingest': typeof ShellIngestRoute
+  '/journal': typeof ShellJournalRoute
+  '/ledger': typeof ShellLedgerRoute
+  '/meetings': typeof ShellMeetingsRoute
+  '/my-work': typeof ShellMyWorkRoute
+  '/notifications': typeof ShellNotificationsRoute
+  '/operating-score': typeof ShellOperatingScoreRoute
+  '/settings': typeof ShellSettingsRoute
+  '/contacts/$id': typeof ShellContactsIdRoute
+  '/contacts': typeof ShellContactsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_shell': typeof ShellRouteWithChildren
+  '/design-system': typeof DesignSystemRoute
+  '/login': typeof LoginRoute
+  '/_shell/brain': typeof ShellBrainRoute
+  '/_shell/brief': typeof ShellBriefRoute
+  '/_shell/calendar': typeof ShellCalendarRoute
+  '/_shell/coach': typeof ShellCoachRoute
+  '/_shell/finance': typeof ShellFinanceRoute
+  '/_shell/inbox': typeof ShellInboxRoute
+  '/_shell/ingest': typeof ShellIngestRoute
+  '/_shell/journal': typeof ShellJournalRoute
+  '/_shell/ledger': typeof ShellLedgerRoute
+  '/_shell/meetings': typeof ShellMeetingsRoute
+  '/_shell/my-work': typeof ShellMyWorkRoute
+  '/_shell/notifications': typeof ShellNotificationsRoute
+  '/_shell/operating-score': typeof ShellOperatingScoreRoute
+  '/_shell/settings': typeof ShellSettingsRoute
+  '/_shell/contacts/$id': typeof ShellContactsIdRoute
+  '/_shell/contacts/': typeof ShellContactsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/design-system'
+    | '/login'
+    | '/brain'
+    | '/brief'
+    | '/calendar'
+    | '/coach'
+    | '/finance'
+    | '/inbox'
+    | '/ingest'
+    | '/journal'
+    | '/ledger'
+    | '/meetings'
+    | '/my-work'
+    | '/notifications'
+    | '/operating-score'
+    | '/settings'
+    | '/contacts/$id'
+    | '/contacts/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/design-system'
+    | '/login'
+    | '/brain'
+    | '/brief'
+    | '/calendar'
+    | '/coach'
+    | '/finance'
+    | '/inbox'
+    | '/ingest'
+    | '/journal'
+    | '/ledger'
+    | '/meetings'
+    | '/my-work'
+    | '/notifications'
+    | '/operating-score'
+    | '/settings'
+    | '/contacts/$id'
+    | '/contacts'
+  id:
+    | '__root__'
+    | '/'
+    | '/_shell'
+    | '/design-system'
+    | '/login'
+    | '/_shell/brain'
+    | '/_shell/brief'
+    | '/_shell/calendar'
+    | '/_shell/coach'
+    | '/_shell/finance'
+    | '/_shell/inbox'
+    | '/_shell/ingest'
+    | '/_shell/journal'
+    | '/_shell/ledger'
+    | '/_shell/meetings'
+    | '/_shell/my-work'
+    | '/_shell/notifications'
+    | '/_shell/operating-score'
+    | '/_shell/settings'
+    | '/_shell/contacts/$id'
+    | '/_shell/contacts/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ShellRoute: typeof ShellRouteWithChildren
+  DesignSystemRoute: typeof DesignSystemRoute
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +278,188 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_shell': {
+      id: '/_shell'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ShellRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/design-system': {
+      id: '/design-system'
+      path: '/design-system'
+      fullPath: '/design-system'
+      preLoaderRoute: typeof DesignSystemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_shell/brain': {
+      id: '/_shell/brain'
+      path: '/brain'
+      fullPath: '/brain'
+      preLoaderRoute: typeof ShellBrainRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/brief': {
+      id: '/_shell/brief'
+      path: '/brief'
+      fullPath: '/brief'
+      preLoaderRoute: typeof ShellBriefRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/calendar': {
+      id: '/_shell/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof ShellCalendarRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/coach': {
+      id: '/_shell/coach'
+      path: '/coach'
+      fullPath: '/coach'
+      preLoaderRoute: typeof ShellCoachRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/finance': {
+      id: '/_shell/finance'
+      path: '/finance'
+      fullPath: '/finance'
+      preLoaderRoute: typeof ShellFinanceRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/inbox': {
+      id: '/_shell/inbox'
+      path: '/inbox'
+      fullPath: '/inbox'
+      preLoaderRoute: typeof ShellInboxRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/ingest': {
+      id: '/_shell/ingest'
+      path: '/ingest'
+      fullPath: '/ingest'
+      preLoaderRoute: typeof ShellIngestRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/journal': {
+      id: '/_shell/journal'
+      path: '/journal'
+      fullPath: '/journal'
+      preLoaderRoute: typeof ShellJournalRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/ledger': {
+      id: '/_shell/ledger'
+      path: '/ledger'
+      fullPath: '/ledger'
+      preLoaderRoute: typeof ShellLedgerRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/meetings': {
+      id: '/_shell/meetings'
+      path: '/meetings'
+      fullPath: '/meetings'
+      preLoaderRoute: typeof ShellMeetingsRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/my-work': {
+      id: '/_shell/my-work'
+      path: '/my-work'
+      fullPath: '/my-work'
+      preLoaderRoute: typeof ShellMyWorkRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/notifications': {
+      id: '/_shell/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof ShellNotificationsRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/operating-score': {
+      id: '/_shell/operating-score'
+      path: '/operating-score'
+      fullPath: '/operating-score'
+      preLoaderRoute: typeof ShellOperatingScoreRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/settings': {
+      id: '/_shell/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof ShellSettingsRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/contacts/': {
+      id: '/_shell/contacts/'
+      path: '/contacts'
+      fullPath: '/contacts/'
+      preLoaderRoute: typeof ShellContactsIndexRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/contacts/$id': {
+      id: '/_shell/contacts/$id'
+      path: '/contacts/$id'
+      fullPath: '/contacts/$id'
+      preLoaderRoute: typeof ShellContactsIdRouteImport
+      parentRoute: typeof ShellRoute
+    }
   }
 }
 
+interface ShellRouteChildren {
+  ShellBrainRoute: typeof ShellBrainRoute
+  ShellBriefRoute: typeof ShellBriefRoute
+  ShellCalendarRoute: typeof ShellCalendarRoute
+  ShellCoachRoute: typeof ShellCoachRoute
+  ShellFinanceRoute: typeof ShellFinanceRoute
+  ShellInboxRoute: typeof ShellInboxRoute
+  ShellIngestRoute: typeof ShellIngestRoute
+  ShellJournalRoute: typeof ShellJournalRoute
+  ShellLedgerRoute: typeof ShellLedgerRoute
+  ShellMeetingsRoute: typeof ShellMeetingsRoute
+  ShellMyWorkRoute: typeof ShellMyWorkRoute
+  ShellNotificationsRoute: typeof ShellNotificationsRoute
+  ShellOperatingScoreRoute: typeof ShellOperatingScoreRoute
+  ShellSettingsRoute: typeof ShellSettingsRoute
+  ShellContactsIdRoute: typeof ShellContactsIdRoute
+  ShellContactsIndexRoute: typeof ShellContactsIndexRoute
+}
+
+const ShellRouteChildren: ShellRouteChildren = {
+  ShellBrainRoute: ShellBrainRoute,
+  ShellBriefRoute: ShellBriefRoute,
+  ShellCalendarRoute: ShellCalendarRoute,
+  ShellCoachRoute: ShellCoachRoute,
+  ShellFinanceRoute: ShellFinanceRoute,
+  ShellInboxRoute: ShellInboxRoute,
+  ShellIngestRoute: ShellIngestRoute,
+  ShellJournalRoute: ShellJournalRoute,
+  ShellLedgerRoute: ShellLedgerRoute,
+  ShellMeetingsRoute: ShellMeetingsRoute,
+  ShellMyWorkRoute: ShellMyWorkRoute,
+  ShellNotificationsRoute: ShellNotificationsRoute,
+  ShellOperatingScoreRoute: ShellOperatingScoreRoute,
+  ShellSettingsRoute: ShellSettingsRoute,
+  ShellContactsIdRoute: ShellContactsIdRoute,
+  ShellContactsIndexRoute: ShellContactsIndexRoute,
+}
+
+const ShellRouteWithChildren = ShellRoute._addFileChildren(ShellRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ShellRoute: ShellRouteWithChildren,
+  DesignSystemRoute: DesignSystemRoute,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
