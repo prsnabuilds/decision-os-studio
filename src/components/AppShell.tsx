@@ -265,14 +265,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Mobile app bar */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-hairline bg-surface/85 px-4 backdrop-blur lg:hidden">
-          <Wordmark />
-          <div className="flex items-center">
-            {themeControls}
-            <IconBtn label="Open Navigation" onClick={() => setDrawer(true)}>
-              <Menu className="size-4" />
-            </IconBtn>
-          </div>
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-hairline bg-surface/85 px-4 backdrop-blur lg:hidden">
+          <Wordmark size="sm" />
+          <div className="flex shrink-0 items-center">{themeControls}</div>
         </header>
 
         <main className="mx-auto w-full max-w-[1200px] px-4 pb-28 pt-6 sm:px-6 lg:pb-16 lg:pt-8">
@@ -283,7 +278,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Mobile bottom tabs */}
       <nav
         aria-label="Primary"
-        className="fixed inset-x-0 bottom-0 z-40 flex border-t border-hairline bg-surface/95 backdrop-blur lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 flex border-t border-hairline bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
       >
         {mobileTabs.map((t) => {
           const active = pathname === t.to || pathname.startsWith(`${t.to}/`);
@@ -292,23 +287,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               key={t.to}
               to={t.to}
               className={cn(
-                "flex flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-center text-label",
+                "flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-center text-label",
                 active ? "text-brand" : "text-secondary-foreground",
               )}
             >
-              <t.icon className="size-5" aria-hidden="true" />
-              <span className="leading-tight">{t.label}</span>
+              <t.icon className="size-5 shrink-0" aria-hidden="true" />
+              <span className="w-full truncate whitespace-nowrap leading-tight">{t.short}</span>
             </Link>
           );
         })}
         <button
           type="button"
           onClick={() => setDrawer(true)}
-          className="flex flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-center text-label text-secondary-foreground"
+          className="flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-center text-label text-secondary-foreground"
         >
-          <Menu className="size-5" aria-hidden="true" />
-          <span className="leading-tight">All Menu</span>
+          <Menu className="size-5 shrink-0" aria-hidden="true" />
+          <span className="w-full truncate whitespace-nowrap leading-tight">Menu</span>
         </button>
+
 
       </nav>
     </div>
