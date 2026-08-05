@@ -108,7 +108,7 @@ export function TasksAndActivity() {
                   }
                   className="group flex flex-wrap items-center gap-3 pl-5"
                 >
-                  <div className="min-w-48 flex-1">
+                  <div className="w-full min-w-0 flex-1 sm:w-auto sm:min-w-48">
                     <p className="text-body-strong text-foreground">{item.title}</p>
                     <Meta
                       items={[
@@ -118,7 +118,8 @@ export function TasksAndActivity() {
                         </>,
                         <SourceLabel source={item.source} />,
                         item.duplicates ? `${item.duplicates}× captured` : null,
-                        <span className="truncate">{item.preview}</span>,
+                        <span className="block w-full truncate">{item.preview}</span>,
+
                       ].filter(Boolean)}
                     />
                   </div>
