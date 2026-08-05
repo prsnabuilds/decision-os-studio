@@ -247,7 +247,7 @@ export function Meta({
               ·
             </span>
           ) : null}
-          <span className="inline-flex items-center gap-1.5">{item}</span>
+          <span className="inline-flex min-w-0 max-w-full items-center gap-1.5">{item}</span>
         </React.Fragment>
       ))}
     </p>
