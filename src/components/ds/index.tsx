@@ -555,6 +555,10 @@ export function Segmented<T extends string>({
         ))}
       </div>
     </div>
+  );
+}
+
+
 
 
 export function FilterPill({
