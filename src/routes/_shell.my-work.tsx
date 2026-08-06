@@ -62,12 +62,8 @@ function groupOf(t: Task): Urgency {
   return "later";
 }
 
-const groupLabels: Record<Urgency, string> = {
-  overdue: "Overdue",
-  today: "Today",
-  week: "This Week",
-  later: "Later",
-};
+
+
 
 const statusLabels = {
   todo: "To Do",
