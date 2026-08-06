@@ -6,12 +6,12 @@ import { tasks } from "@/data/demo";
 export const Route = createFileRoute("/_shell/calendar")({
   head: () => ({
     meta: [
-      { title: "Calendar — DecisionOS" },
+      { title: "Calendar - DecisionOS" },
       {
         name: "description",
         content: "Deadlines, follow-ups and meetings laid out as an agenda rather than a grid.",
       },
-      { property: "og:title", content: "Calendar — DecisionOS" },
+      { property: "og:title", content: "Calendar - DecisionOS" },
       { property: "og:description", content: "What is due, and when." },
     ],
   }),

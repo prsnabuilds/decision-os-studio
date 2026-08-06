@@ -6,13 +6,13 @@ import { operatingScore } from "@/data/demo";
 export const Route = createFileRoute("/_shell/operating-score")({
   head: () => ({
     meta: [
-      { title: "Operating Score — DecisionOS" },
+      { title: "Operating Score - DecisionOS" },
       {
         name: "description",
         content:
           "How the business is running: execution, finance, sales and responsiveness, scored from your own records.",
       },
-      { property: "og:title", content: "Operating Score — DecisionOS" },
+      { property: "og:title", content: "Operating Score - DecisionOS" },
       { property: "og:description", content: "How well the business is being run." },
     ],
   }),

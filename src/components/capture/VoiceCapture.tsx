@@ -77,7 +77,7 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
     ? "Writing it up…"
     : recording
       ? paused
-        ? "Paused — pick up where you left off"
+        ? "Paused - pick up where you left off"
         : "Listening…"
       : "Tap to speak a decision";
 
@@ -97,7 +97,7 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
           Say What Needs To Happen
         </h1>
         <p className="mt-2 max-w-md text-lead text-secondary-foreground">
-          Speak it in Tamil, English or Tanglish — DecisionOS writes it up, assigns it and tracks it.
+          Speak it in Tamil, English or Tanglish - DecisionOS writes it up, assigns it and tracks it.
         </p>
 
         {/* Mic + live state */}
@@ -200,7 +200,7 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
           ) : null}
         </div>
 
-        {/* Mode switch — calm, no layout jump */}
+        {/* Mode switch - calm, no layout jump */}
         {!recording && !processing ? (
           <div className="mt-8 w-full">
             <div className="flex flex-wrap justify-center gap-1.5">
@@ -267,7 +267,7 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                     The file is the directive
                   </p>
                   <p className="mt-1 text-small text-secondary-foreground">
-                    Order photos, invoices, lists — plus PDF, Word and Excel.
+                    Order photos, invoices, lists - plus PDF, Word and Excel.
                   </p>
                   <div className="mt-4 flex flex-wrap justify-center gap-2">
                     <Btn size="sm" variant="secondary">

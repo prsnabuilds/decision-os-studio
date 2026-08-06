@@ -24,13 +24,13 @@ import { inr } from "@/lib/format";
 export const Route = createFileRoute("/design-system")({
   head: () => ({
     meta: [
-      { title: "Design System — DecisionOS" },
+      { title: "Design System - DecisionOS" },
       {
         name: "description",
         content:
           "The DecisionOS component gallery: colour, type, buttons, badges, cards, forms and states.",
       },
-      { property: "og:title", content: "Design System — DecisionOS" },
+      { property: "og:title", content: "Design System - DecisionOS" },
       { property: "og:description", content: "Every primitive in one place." },
     ],
   }),
@@ -90,7 +90,7 @@ function DesignSystemPage() {
         <section className="space-y-3">
           <h2 className="text-h3 text-foreground">Typography</h2>
           <Card className="space-y-2">
-            <p className="text-display text-foreground">Display — the morning surface</p>
+            <p className="text-display text-foreground">Display - the morning surface</p>
             <p className="text-h1 text-foreground">Heading one</p>
             <p className="text-h2 text-foreground">Heading two</p>
             <p className="text-h3 text-foreground">Heading three</p>
@@ -98,7 +98,7 @@ function DesignSystemPage() {
               Lead text carries the sentence that explains the screen.
             </p>
             <p className="text-body text-foreground">
-              Body text is the default. Sentence case throughout — nothing is set in capitals.
+              Body text is the default. Sentence case throughout - nothing is set in capitals.
             </p>
             <p className="text-body-strong text-foreground">Body strong for record titles.</p>
             <p className="text-small text-secondary-foreground">Small text for supporting detail.</p>
@@ -220,7 +220,7 @@ function DesignSystemPage() {
         <section className="space-y-3">
           <h2 className="text-h3 text-foreground">Terminal</h2>
           <div className="rounded-lg bg-terminal-bg p-5 text-code text-terminal-fg">
-            <p className="text-terminal-label">&gt; Ask AI — grounded in your company data.</p>
+            <p className="text-terminal-label">&gt; Ask AI - grounded in your company data.</p>
             <p className="text-terminal-dim">&gt; thinking…</p>
             <p className="mt-2">
               Six purchases are waiting on you, worth {inr(1015000)} in total.

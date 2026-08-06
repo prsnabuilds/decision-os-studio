@@ -16,12 +16,12 @@ import { currentUser, people, workspace } from "@/data/demo";
 export const Route = createFileRoute("/_shell/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — DecisionOS" },
+      { title: "Settings - DecisionOS" },
       {
         name: "description",
         content: "Company profile, team access, capture channels and what DecisionOS is allowed to decide.",
       },
-      { property: "og:title", content: "Settings — DecisionOS" },
+      { property: "og:title", content: "Settings - DecisionOS" },
       { property: "og:description", content: "Company, team and automation preferences." },
     ],
   }),

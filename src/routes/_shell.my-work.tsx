@@ -40,13 +40,13 @@ const counterpartyOptions = people
 export const Route = createFileRoute("/_shell/my-work")({
   head: () => ({
     meta: [
-      { title: "My Work — DecisionOS" },
+      { title: "My Work - DecisionOS" },
       {
         name: "description",
         content:
           "Execute the work: tasks grouped by urgency, a status board, operational pipelines and leave.",
       },
-      { property: "og:title", content: "My Work — DecisionOS" },
+      { property: "og:title", content: "My Work - DecisionOS" },
       { property: "og:description", content: "Where the decisions become finished work." },
     ],
   }),
@@ -154,7 +154,7 @@ function TaskCard({
             <p className="text-label text-tertiary-foreground">Execution Steps</p>
             {steps.length === 0 ? (
               <p className="mt-1 text-small text-secondary-foreground">
-                No steps yet — add one if the work needs breaking down.
+                No steps yet - add one if the work needs breaking down.
               </p>
             ) : (
               <ul className="mt-2 space-y-1">
@@ -576,7 +576,7 @@ function LeaveView() {
             <Field label="Portion" htmlFor="lv-portion">
               <Select
                 id="lv-portion"
-                options={["Full Day", "Half Day — Morning", "Half Day — Afternoon"]}
+                options={["Full Day", "Half Day - Morning", "Half Day - Afternoon"]}
                 placeholder="Choose a portion"
               />
             </Field>
@@ -597,7 +597,7 @@ function LeaveView() {
             <div className="rounded-md border border-hairline bg-surface-sunken p-4">
               <p className="text-body-strong text-foreground">Operational Impact</p>
               <ul className="mt-2 space-y-1 text-small text-secondary-foreground">
-                <li>2 tasks fall inside these dates — dispatch confirmation and the Delhi quote.</li>
+                <li>2 tasks fall inside these dates - dispatch confirmation and the Delhi quote.</li>
                 <li>1 pipeline card (Order #4823) has no second owner on those days.</li>
               </ul>
               <Btn size="sm" variant="secondary" className="mt-3">

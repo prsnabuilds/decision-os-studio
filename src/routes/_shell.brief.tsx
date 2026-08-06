@@ -9,13 +9,13 @@ import { inr, joinReadably, plural } from "@/lib/format";
 export const Route = createFileRoute("/_shell/brief")({
   head: () => ({
     meta: [
-      { title: "CEO Brief — DecisionOS" },
+      { title: "CEO Brief - DecisionOS" },
       {
         name: "description",
         content:
           "A periodic narrative summary of the business: fires, decisions, tasks and what moved this period.",
       },
-      { property: "og:title", content: "CEO Brief — DecisionOS" },
+      { property: "og:title", content: "CEO Brief - DecisionOS" },
       { property: "og:description", content: "The deeper review surface for founder-led businesses." },
     ],
   }),
@@ -46,7 +46,7 @@ function BriefPage() {
     Evening:
       "Three of today's five commitments closed. The dispatch schedule was confirmed and payroll is signed off. The Delhi quote did not go out and now runs into tomorrow's negotiation window.",
     Weekly:
-      "Dispatch slipped four times this week — always on the second shift, which is the case for the coordinator hire you raised on Tuesday. Revenue billed is ₹18,42,300 against ₹16,21,000 received; the gap is one retailer.",
+      "Dispatch slipped four times this week - always on the second shift, which is the case for the coordinator hire you raised on Tuesday. Revenue billed is ₹18,42,300 against ₹16,21,000 received; the gap is one retailer.",
     Monthly:
       "Spend held at ₹4,82,000 with packaging at 38% of it, concentrated in a single vendor. Net profit is ₹11,39,000. Execution is the weakest of the four operating categories and it is a follow-through problem, not a workload one.",
   };
@@ -183,7 +183,7 @@ function BriefPage() {
       </section>
 
       <section>
-        <SectionHeading title="Go Deeper" sub="Three views behind this brief — each one comes back here." />
+        <SectionHeading title="Go Deeper" sub="Three views behind this brief - each one comes back here." />
         <div className="grid gap-3 sm:grid-cols-3">
           {[
             { to: "/operating-score", title: "Operating Score", sub: "How well the business is being run" },

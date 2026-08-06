@@ -30,7 +30,7 @@ const variants: Record<Variant, string> = {
   tertiary: "text-secondary-foreground hover:bg-surface-hover",
   destructive:
     "bg-transparent border border-destructive-border text-destructive hover:bg-destructive-hover",
-  // Anything the AI does for you is always this shape — a tinted, sparkled pill.
+  // Anything the AI does for you is always this shape - a tinted, sparkled pill.
   ai: "rounded-pill bg-brand-tint text-brand-on-tint border border-brand-tint-border hover:bg-brand-tint-hover",
 };
 

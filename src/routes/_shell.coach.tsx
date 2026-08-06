@@ -9,13 +9,13 @@ import { operatingScore } from "@/data/demo";
 export const Route = createFileRoute("/_shell/coach")({
   head: () => ({
     meta: [
-      { title: "Coaching — DecisionOS" },
+      { title: "Coaching - DecisionOS" },
       {
         name: "description",
         content:
           "Per-person coaching notes grounded in what actually happened: completions, delays and escalations.",
       },
-      { property: "og:title", content: "Coaching — DecisionOS" },
+      { property: "og:title", content: "Coaching - DecisionOS" },
       { property: "og:description", content: "Coach from the record, not from memory." },
     ],
   }),
@@ -29,7 +29,7 @@ const notes: Record<string, { strengths: string[]; watch: string[]; suggested: s
     suggested: "Delegate the packaging approvals below ₹1,00,000 so the queue keeps moving.",
   },
   "Ravi Kumar": {
-    strengths: ["Fastest on customer callbacks — median under two hours."],
+    strengths: ["Fastest on customer callbacks - median under two hours."],
     watch: ["Escalates pricing questions that fall inside his own discount limit."],
     suggested: "Agree a written discount ceiling so fewer calls come back to the desk.",
   },

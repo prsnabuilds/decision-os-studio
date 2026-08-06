@@ -98,7 +98,7 @@ export function VoiceReply({
           {sendLabel}
         </Btn>
         <span className="text-small text-tertiary-foreground">
-          Or tap the mic — speaking is faster than typing.
+          Or tap the mic - speaking is faster than typing.
         </span>
       </div>
     </div>

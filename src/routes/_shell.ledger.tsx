@@ -9,13 +9,13 @@ import { inr } from "@/lib/format";
 export const Route = createFileRoute("/_shell/ledger")({
   head: () => ({
     meta: [
-      { title: "Finance — DecisionOS" },
+      { title: "Finance - DecisionOS" },
       {
         name: "description",
         content:
           "Money in one place: revenue, spend, assets and inventory with an AI brief over your own records.",
       },
-      { property: "og:title", content: "Finance — DecisionOS" },
+      { property: "og:title", content: "Finance - DecisionOS" },
       { property: "og:description", content: "Revenue, spend, assets and inventory in one place." },
     ],
   }),

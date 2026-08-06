@@ -81,7 +81,7 @@ export function ApprovalCard({ decision }: { decision: Decision }) {
         <p className="mb-2 text-label text-tertiary-foreground">Add A Note Or Send It Back</p>
         <VoiceReply
           ariaLabel={`Your note to ${decision.raisedBy}`}
-          placeholder={`Speak or type — this goes back to ${decision.raisedBy}`}
+          placeholder={`Speak or type - this goes back to ${decision.raisedBy}`}
           sendLabel="Send Note"
         />
       </div>

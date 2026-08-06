@@ -6,12 +6,12 @@ import { Wordmark } from "@/components/AppShell";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign In — DecisionOS" },
+      { title: "Sign In - DecisionOS" },
       {
         name: "description",
         content: "Sign in to DecisionOS with a password or a one-time code sent to your phone.",
       },
-      { property: "og:title", content: "Sign In — DecisionOS" },
+      { property: "og:title", content: "Sign In - DecisionOS" },
       { property: "og:description", content: "Your business decisions, structured and tracked." },
     ],
   }),
@@ -40,7 +40,7 @@ function LoginPage() {
         </span>
         <div>
           <p className="max-w-md text-h2 text-white">
-            Speak the decision. It becomes tasks, approvals and memory — before you reach the
+            Speak the decision. It becomes tasks, approvals and memory - before you reach the
             godown.
           </p>
           <p className="mt-3 max-w-md text-body text-neutral-300">

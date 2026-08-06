@@ -6,13 +6,13 @@ import { journalDays } from "@/data/demo";
 export const Route = createFileRoute("/_shell/journal")({
   head: () => ({
     meta: [
-      { title: "Decision Journal — DecisionOS" },
+      { title: "Decision Journal - DecisionOS" },
       {
         name: "description",
         content:
           "A permanent record of every decision captured, approved or rejected, and the work each one created.",
       },
-      { property: "og:title", content: "Decision Journal — DecisionOS" },
+      { property: "og:title", content: "Decision Journal - DecisionOS" },
       { property: "og:description", content: "The record of how this business was run." },
     ],
   }),

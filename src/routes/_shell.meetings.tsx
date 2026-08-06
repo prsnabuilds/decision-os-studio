@@ -9,13 +9,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_shell/meetings")({
   head: () => ({
     meta: [
-      { title: "Meeting Notes — DecisionOS" },
+      { title: "Meeting Notes - DecisionOS" },
       {
         name: "description",
         content:
           "Record a meeting or paste a transcript and DecisionOS extracts the decisions and the tasks they create.",
       },
-      { property: "og:title", content: "Meeting Notes — DecisionOS" },
+      { property: "og:title", content: "Meeting Notes - DecisionOS" },
       { property: "og:description", content: "Meetings turned into decisions and tasks." },
     ],
   }),
@@ -141,8 +141,8 @@ function MeetingsPage() {
             <div>
               <p className="text-label text-tertiary-foreground">Tasks Created</p>
               <ul className="mt-1 space-y-1 text-small text-foreground">
-                <li>Confirm the rate hold in writing — Meena Raghavan</li>
-                <li>Draft the coordinator role — Meena Raghavan</li>
+                <li>Confirm the rate hold in writing - Meena Raghavan</li>
+                <li>Draft the coordinator role - Meena Raghavan</li>
               </ul>
             </div>
             <div className="flex justify-end gap-2">

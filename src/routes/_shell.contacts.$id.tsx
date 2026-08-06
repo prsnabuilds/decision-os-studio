@@ -8,13 +8,13 @@ import { inr } from "@/lib/format";
 export const Route = createFileRoute("/_shell/contacts/$id")({
   head: () => ({
     meta: [
-      { title: "Contact Profile — DecisionOS" },
+      { title: "Contact Profile - DecisionOS" },
       {
         name: "description",
         content:
           "Everything about one relationship: decisions, tasks, workflows, invoices, payments and complaints.",
       },
-      { property: "og:title", content: "Contact Profile — DecisionOS" },
+      { property: "og:title", content: "Contact Profile - DecisionOS" },
       { property: "og:description", content: "One relationship, its whole history." },
     ],
   }),
@@ -39,14 +39,14 @@ function ContactMissing() {
 const history = [
   { kind: "Decision", title: "Delhi retailer wants revised quote", meta: "Pending your approval" },
   { kind: "Task", title: "Send the revised Delhi quote", meta: "Due today · Ravi Kumar" },
-  { kind: "Workflow", title: "Order #4823 — Quoted", meta: "Sales orders pipeline" },
+  { kind: "Workflow", title: "Order #4823 - Quoted", meta: "Sales orders pipeline" },
   { kind: "Invoice", title: "Invoice #4823", meta: inr(820000) },
   { kind: "Payment", title: "Payment received", meta: inr(998700) },
   { kind: "Complaint", title: "Crushed cartons in the July consignment", meta: "Open" },
 ];
 
 const signals = [
-  "Pays within terms — nine of the last ten invoices settled on or before the due date.",
+  "Pays within terms - nine of the last ten invoices settled on or before the due date.",
   "Negotiates on price every quarter; last three asks averaged 7%.",
   "Order volume up 18% year on year.",
   "One open complaint on packaging damage, unresolved for 6 days.",
