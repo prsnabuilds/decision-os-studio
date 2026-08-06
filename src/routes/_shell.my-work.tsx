@@ -6,6 +6,7 @@ import {
   Card,
   EmptyState,
   Field,
+  FilterPill,
   Meta,
   PageHeader,
   Select,
@@ -61,12 +62,8 @@ function groupOf(t: Task): Urgency {
   return "later";
 }
 
-const groupLabels: Record<Urgency, string> = {
-  overdue: "Overdue",
-  today: "Today",
-  week: "This Week",
-  later: "Later",
-};
+
+
 
 const statusLabels = {
   todo: "To Do",
@@ -246,56 +243,58 @@ function TaskCard({
   );
 }
 
+const workFilters = ["All", "To Do", "In Progress", "Blocked", "Done"] as const;
+type WorkFilter = (typeof workFilters)[number];
+
+const filterStatus: Record<Exclude<WorkFilter, "All">, Task["status"]> = {
+  "To Do": "todo",
+  "In Progress": "in_progress",
+  Blocked: "blocked",
+  Done: "done",
+};
+
 function GroupedView({ aiPriority }: { aiPriority: boolean }) {
-  const [collapsed, setCollapsed] = React.useState<Record<string, boolean>>({
-    today: false,
-    week: true,
-    later: true,
-  });
-  const order: Urgency[] = ["overdue", "today", "week", "later"];
-  const active = tasks.filter((t) => t.status !== "done");
+  const [filter, setFilter] = React.useState<WorkFilter>("All");
+
+  const countOf = (f: WorkFilter) =>
+    f === "All"
+      ? tasks.filter((t) => t.status !== "done").length
+      : tasks.filter((t) => t.status === filterStatus[f]).length;
+
+  const items =
+    filter === "All"
+      ? tasks.filter((t) => t.status !== "done")
+      : tasks.filter((t) => t.status === filterStatus[filter]);
+
+  const sorted = [...items].sort((a, b) => a.dueInDays - b.dueInDays);
 
   return (
-    <div className="space-y-6">
-      {order.map((g) => {
-        const items = active.filter((t) => groupOf(t) === g);
-        const isCollapsed = collapsed[g] ?? false;
-        return (
-          <section key={g}>
-            <button
-              type="button"
-              onClick={() => setCollapsed((c) => ({ ...c, [g]: !isCollapsed }))}
-              aria-expanded={!isCollapsed}
-              className="mb-3 flex w-full items-center gap-2 text-left"
-            >
-              {isCollapsed ? (
-                <ChevronRight className="size-4 text-secondary-foreground" />
-              ) : (
-                <ChevronDown className="size-4 text-secondary-foreground" />
-              )}
-              <h2 className="text-h3 text-foreground">{groupLabels[g]}</h2>
-              <span className="text-label tabular text-tertiary-foreground">
-                {items.length} {items.length === 1 ? "task" : "tasks"}
-              </span>
-            </button>
-            {isCollapsed ? (
-              <p className="pl-6 text-small text-secondary-foreground">
-                {items.length} hidden in this group.
-              </p>
-            ) : items.length === 0 ? (
-              <EmptyState title="Nothing Here" helper="You're all caught up!" />
-            ) : (
-              <ul className="space-y-2">
-                {items.map((t, i) => (
-                  <li key={t.id}>
-                    <TaskCard task={t} {...(aiPriority ? { aiScore: 92 - i * 7 } : {})} />
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        );
-      })}
+    <div>
+      <div className="-mx-4 mb-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+        <div className="flex min-w-max gap-2">
+          {workFilters.map((f) => (
+            <FilterPill
+              key={f}
+              label={f}
+              count={countOf(f)}
+              active={filter === f}
+              onClick={() => setFilter(f)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {sorted.length === 0 ? (
+        <EmptyState title="Nothing Here" helper="You're all caught up!" />
+      ) : (
+        <ul className="space-y-2">
+          {sorted.map((t, i) => (
+            <li key={t.id}>
+              <TaskCard task={t} {...(aiPriority ? { aiScore: 92 - i * 7 } : {})} />
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
@@ -378,32 +377,20 @@ function BoardView() {
 }
 
 function WorkflowsView() {
-  const [tab, setTab] = React.useState<"Pipelines" | "Task Board">("Pipelines");
   const [note, setNote] = React.useState("");
   const [newCard, setNewCard] = React.useState(false);
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <Segmented
-          options={["Pipelines", "Task Board"] as const}
-          value={tab}
-          onChange={setTab}
-          label="Workflow view"
-        />
-        {tab === "Pipelines" ? (
-          <Btn variant="primary" onClick={() => setNewCard((n) => !n)}>
-            New Pipeline Card
-          </Btn>
-        ) : null}
+      <div className="mb-4 flex flex-wrap items-center justify-end gap-3">
+        <Btn variant="primary" onClick={() => setNewCard((n) => !n)}>
+          New Pipeline Card
+        </Btn>
       </div>
 
       {note ? <p className="mb-3 text-small text-secondary-foreground">{note}</p> : null}
 
-      {tab === "Task Board" ? (
-        <BoardView />
-      ) : (
-        <div className="space-y-8">
+      <div className="space-y-8">
           {newCard ? (
             <Card className="space-y-3">
               <h3 className="text-h3 text-foreground">New Card</h3>
@@ -489,8 +476,8 @@ function WorkflowsView() {
               </div>
             </section>
           ))}
-        </div>
-      )}
+      </div>
+
     </div>
   );
 }

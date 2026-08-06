@@ -193,9 +193,6 @@ function SettingsPage() {
             hint="Payment tasks cannot be marked done without an attachment."
             on
           />
-          <p className="mt-4 text-small text-secondary-foreground">
-            DecisionOS never approves, pays or sends on your behalf. It prepares; you decide.
-          </p>
         </Card>
       ) : null}
     </div>
