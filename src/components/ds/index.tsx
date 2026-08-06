@@ -581,7 +581,7 @@ export function FilterPill({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "inline-flex h-8 items-center gap-1.5 rounded-pill border px-3 text-label transition-colors duration-150",
+        "inline-flex h-8 shrink-0 items-center gap-1 whitespace-nowrap rounded-pill border px-2.5 text-label transition-colors duration-150 sm:gap-1.5 sm:px-3",
         active
           ? "border-brand-tint-border bg-brand-tint text-brand-on-tint"
           : "border-hairline bg-surface text-secondary-foreground hover:bg-surface-hover",
