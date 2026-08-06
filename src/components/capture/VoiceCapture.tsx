@@ -1,6 +1,5 @@
 import * as React from "react";
-import { Mic, Pause, Play, Square, Camera, Paperclip, Check, AudioLines, Type as TypeIcon } from "lucide-react";
-import { Btn, Field, TextArea } from "@/components/ds";
+import { Mic, Pause, Play, Square, Camera, Paperclip, Upload, AudioLines, Type as TypeIcon } from "lucide-react";
 import { currentUser } from "@/data/demo";
 import { cn } from "@/lib/utils";
 
@@ -13,25 +12,22 @@ function timeGreeting() {
   return "Good Evening";
 }
 
-/** Twenty bars whose heights drift, so the waveform never looks looped. */
-const BARS = Array.from({ length: 21 }, (_, i) => ({
-  delay: (i % 7) * 0.11 + (i % 3) * 0.05,
-  duration: 0.8 + ((i * 7) % 5) * 0.12,
-  base: 30 + ((i * 13) % 60),
+/** Dense waveform, 56 bars, heights drifting so it never looks looped. */
+const BARS = Array.from({ length: 56 }, (_, i) => ({
+  delay: ((i % 9) * 0.07 + (i % 4) * 0.05).toFixed(2),
+  duration: (0.7 + ((i * 7) % 6) * 0.1).toFixed(2),
+  base: 26 + ((i * 17) % 74),
 }));
 
 function Waveform({ active }: { active: boolean }) {
   return (
-    <div className="flex h-10 flex-1 items-center justify-center gap-1" aria-hidden="true">
+    <div className="flex h-14 w-full items-center justify-center gap-[3px]" aria-hidden="true">
       {BARS.map((b, i) => (
         <span
           key={i}
-          className={cn(
-            "w-1 rounded-pill bg-brand transition-[height,opacity] duration-500",
-            active ? "wave-bar" : "opacity-40",
-          )}
+          className={cn("w-[3px] rounded-pill bg-brand-500", active ? "wave-bar" : "opacity-40")}
           style={{
-            height: active ? `${b.base}%` : "18%",
+            height: `${b.base}%`,
             animationDelay: `${b.delay}s`,
             animationDuration: `${b.duration}s`,
           }}
@@ -44,268 +40,241 @@ function Waveform({ active }: { active: boolean }) {
 const MODES = [
   { id: "talk", label: "Talk", icon: AudioLines },
   { id: "type", label: "Type", icon: TypeIcon },
-  { id: "upload", label: "Upload Documents", icon: Paperclip },
-  { id: "camera", label: "Take A Photo", icon: Camera },
+  { id: "upload", label: "Documents", icon: Paperclip },
+  { id: "camera", label: "Photo", icon: Camera },
 ] as const;
+
+const COPY: Record<Mode, { heading: string; sub: string }> = {
+  talk: {
+    heading: "Say What Needs To Happen",
+    sub: "Speak in any language. DecisionOS writes it up, assigns it and tracks it.",
+  },
+  type: {
+    heading: "Type What You Want Done",
+    sub: "Write it in any language. DecisionOS structures it, assigns it and tracks it.",
+  },
+  upload: {
+    heading: "Drop In a Document",
+    sub: "Upload a bill, invoice or file. DecisionOS reads it, structures it and files it.",
+  },
+  camera: {
+    heading: "Point And Capture",
+    sub: "Capture a bill, receipt or note. DecisionOS reads it, structures it and files it.",
+  },
+};
+
+const SUGGESTIONS = ["List the overdue tasks", "Get me a To Do list", "Prioritize the tasks on fire"];
+
+const LIVE_TRANSCRIPT =
+  "Ask Priya to prepare a quotation for fifty cotton shirts for the Mumbai retailer and follow up by Wednesday.";
+
+/** The big gradient circle used by every capture control. */
+function CaptureCircle({
+  label,
+  icon: Icon,
+  onClick,
+  breathing,
+}: {
+  label: string;
+  icon: typeof Mic;
+  onClick?: () => void;
+  breathing?: boolean;
+}) {
+  return (
+    <div className="relative flex items-center justify-center">
+      <span
+        aria-hidden="true"
+        className={cn("absolute size-[124px] rounded-pill bg-brand-300/40", breathing && "halo-breathe")}
+      />
+      <button
+        type="button"
+        aria-label={label}
+        onClick={onClick}
+        className="brand-gradient relative flex size-[92px] items-center justify-center rounded-pill text-on-primary shadow-md transition-transform duration-200 hover:scale-[1.04]"
+      >
+        <Icon className="size-9" strokeWidth={1.75} aria-hidden="true" />
+      </button>
+    </div>
+  );
+}
 
 export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
   const [mode, setMode] = React.useState<Mode>("talk");
   const [recording, setRecording] = React.useState(false);
   const [paused, setPaused] = React.useState(false);
-  const [seconds, setSeconds] = React.useState(0);
-  const [processing, setProcessing] = React.useState(false);
-  const [captured, setCaptured] = React.useState<string | null>(null);
   const [typed, setTyped] = React.useState("");
   const [greeting, setGreeting] = React.useState("Welcome Back");
 
   React.useEffect(() => setGreeting(timeGreeting()), []);
 
-  React.useEffect(() => {
-    if (!recording || paused) return;
-    const id = window.setInterval(() => setSeconds((s) => s + 1), 1000);
-    return () => window.clearInterval(id);
-  }, [recording, paused]);
-
-  const timer = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
-
-  const finalise = (label: string) => {
+  const stop = () => {
     setRecording(false);
     setPaused(false);
-    setSeconds(0);
-    setProcessing(true);
     onSubmit?.();
-    window.setTimeout(() => {
-      setProcessing(false);
-      setCaptured(label);
-    }, 2200);
   };
 
-  const status = processing
-    ? "Writing it up…"
-    : recording
-      ? paused
-        ? "Paused - pick up where you left off"
-        : "Listening…"
-      : null;
-
-  const subline: Record<Mode, string> = {
-    talk: "Speak in any language. DecisionOS writes it up, assigns it and tracks it.",
-    type: "Type it out. DecisionOS writes it up, assigns it and tracks it.",
-    upload: "Drop in an invoice, order or list. DecisionOS reads it and drafts the work.",
-    camera: "Photograph a note, board or bill. DecisionOS reads it and drafts the work.",
-  };
+  const greetingLine = (
+    <p className="text-small text-secondary-foreground">
+      {greeting}, {currentUser.name.split(" ")[0]}
+    </p>
+  );
 
   return (
     <section aria-labelledby="capture-heading" className="flex flex-col gap-4">
-      {/* Hero card with the aurora bloom behind the copy */}
       <div className="relative isolate overflow-hidden rounded-xl bg-surface-sunken">
         <div aria-hidden="true" className="aurora-bloom pointer-events-none absolute inset-0 -z-10" />
 
-        <div className="flex min-h-[420px] flex-col items-center justify-center px-6 py-12 text-center sm:min-h-[520px] sm:px-10">
-          <p className="text-label text-secondary-foreground">
-            {greeting}, {currentUser.name.split(" ")[0]}
-          </p>
-          <h1
-            id="capture-heading"
-            className="mt-2 max-w-sm text-[1.75rem] font-extrabold leading-[1.15] tracking-tight text-foreground sm:text-[2.25rem]"
-          >
-            Say What Needs To Happen
-          </h1>
-          <p className="mt-3 max-w-xs text-small leading-relaxed text-secondary-foreground sm:max-w-sm">
-            {subline[mode]}
-          </p>
-
-          {/* Mic - voice capture only */}
-          {mode === "talk" ? (
-            <div className="relative mt-9 flex items-center justify-center">
-              {recording && !paused ? (
-                <span
-                  aria-hidden="true"
-                  className="halo-breathe absolute size-28 rounded-pill bg-brand/25 sm:size-32"
-                />
-              ) : null}
-              <button
-                type="button"
-                aria-label={recording ? "Stop Recording" : "Start Recording"}
-                disabled={processing}
-                onClick={() => {
-                  if (processing) return;
-                  if (recording) {
-                    finalise("Voice note");
-                  } else {
+        <div className="flex min-h-[560px] flex-col items-center justify-center px-6 py-14 text-center sm:min-h-[620px] sm:px-10">
+          {recording ? (
+            <>
+              <p className="text-small text-secondary-foreground">
+                {paused ? "Paused" : "Listening…"}
+              </p>
+              <div className="mt-10 w-full max-w-md">
+                <Waveform active={!paused} />
+              </div>
+              <div className="mt-10 flex items-center justify-center gap-3">
+                <button
+                  type="button"
+                  aria-label={paused ? "Resume Recording" : "Pause Recording"}
+                  onClick={() => setPaused((p) => !p)}
+                  className="flex size-11 items-center justify-center rounded-pill border border-hairline bg-surface/60 text-foreground transition-colors hover:bg-surface"
+                >
+                  {paused ? (
+                    <Play className="size-4" aria-hidden="true" />
+                  ) : (
+                    <Pause className="size-4" aria-hidden="true" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  aria-label="Stop Recording"
+                  onClick={stop}
+                  className="flex size-11 items-center justify-center rounded-pill border border-hairline bg-surface/60 text-foreground transition-colors hover:bg-surface"
+                >
+                  <Square className="size-4" aria-hidden="true" />
+                </button>
+              </div>
+              <p
+                className="mt-12 max-w-sm text-h2 font-normal italic leading-relaxed text-secondary-foreground"
+                style={{
+                  maskImage: "linear-gradient(to bottom, var(--foreground) 45%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, #000 45%, transparent 100%)",
+                }}
+              >
+                {LIVE_TRANSCRIPT}
+              </p>
+            </>
+          ) : mode === "talk" ? (
+            <>
+              {greetingLine}
+              <div className="mt-8">
+                <CaptureCircle
+                  label="Start Recording"
+                  icon={Mic}
+                  breathing
+                  onClick={() => {
                     setRecording(true);
                     setPaused(false);
-                    setSeconds(0);
-                  }
-                }}
-                className={cn(
-                  "relative flex size-20 items-center justify-center rounded-pill bg-brand text-on-primary shadow-md transition-all duration-200 hover:scale-[1.04] hover:bg-brand-hover disabled:opacity-70 sm:size-24",
-                  recording && !paused && "mic-recording",
-                )}
-              >
-                {processing ? (
-                  <span className="size-6 animate-spin rounded-pill border-2 border-on-primary/40 border-t-on-primary" />
-                ) : recording ? (
-                  <Square className="size-7" aria-hidden="true" />
-                ) : (
-                  <Mic className="size-8" aria-hidden="true" />
-                )}
-              </button>
-            </div>
-          ) : null}
-
-          {status ? (
-            <div className="mt-4">
-              <p className="text-body-strong text-brand-on-tint">{status}</p>
-              {recording ? (
-                <p className="text-small tabular text-secondary-foreground">{timer}</p>
-              ) : null}
-            </div>
-          ) : null}
-
-          {recording ? (
-            <div className="soft-rise mt-4 w-full max-w-md rounded-lg bg-surface/80 px-4 py-3 backdrop-blur-sm">
-              <Waveform active={!paused} />
-              <div className="mt-2 flex flex-wrap justify-center gap-2">
-                <Btn size="sm" variant="secondary" onClick={() => setPaused((p) => !p)}>
-                  {paused ? (
-                    <>
-                      <Play className="size-3.5" aria-hidden="true" /> Resume
-                    </>
-                  ) : (
-                    <>
-                      <Pause className="size-3.5" aria-hidden="true" /> Pause
-                    </>
-                  )}
-                </Btn>
-                <Btn size="sm" variant="primary" onClick={() => finalise("Voice note")}>
-                  Finalise
-                </Btn>
-                <Btn
-                  size="sm"
-                  variant="tertiary"
-                  onClick={() => {
-                    setRecording(false);
-                    setPaused(false);
-                    setSeconds(0);
                   }}
-                >
-                  Cancel
-                </Btn>
+                />
               </div>
-            </div>
-          ) : null}
-
-          {processing ? (
-            <div className="soft-rise processing-sheen mt-4 w-full max-w-md rounded-lg px-4 py-3 text-small text-secondary-foreground">
-              Transcribing, finding the people involved and drafting the tasks.
-            </div>
-          ) : null}
-
-          {captured && !recording && !processing ? (
-            <div className="soft-rise mt-4 flex w-full max-w-md items-center gap-3 rounded-lg bg-surface/85 px-4 py-3 text-left shadow-xs backdrop-blur-sm">
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-pill bg-brand-tint text-brand-on-tint">
-                <Check className="size-4" aria-hidden="true" />
-              </span>
-              <p className="flex-1 text-small text-secondary-foreground">
-                {captured} captured and structured. It's waiting on the Decision Desk.
+              <h1 id="capture-heading" className="mt-10 max-w-xs text-display text-foreground sm:max-w-sm">
+                {COPY.talk.heading}
+              </h1>
+              <p className="mt-4 max-w-xs text-small text-secondary-foreground sm:max-w-sm">
+                {COPY.talk.sub}
               </p>
-              <Btn size="sm" variant="tertiary" onClick={() => setCaptured(null)}>
-                Dismiss
-              </Btn>
-            </div>
-          ) : null}
-
-          {/* Typing */}
-          {!recording && !processing && mode === "type" ? (
-            <div className="soft-rise mt-8 w-full max-w-md rounded-lg bg-surface/90 p-4 text-left shadow-xs backdrop-blur-sm">
-              <Field label="The Directive" htmlFor="capture-type">
-                <TextArea
+            </>
+          ) : mode === "type" ? (
+            <>
+              {greetingLine}
+              <h1 id="capture-heading" className="mt-6 max-w-xs text-display text-foreground sm:max-w-sm">
+                {COPY.type.heading}
+              </h1>
+              <p className="mt-4 max-w-xs text-small text-secondary-foreground sm:max-w-sm">
+                {COPY.type.sub}
+              </p>
+              <div className="mt-8 w-full max-w-md">
+                <textarea
                   id="capture-type"
-                  rows={3}
+                  rows={2}
                   value={typed}
                   onChange={(e) => setTyped(e.target.value)}
-                  placeholder="Type what happened, or what you want done."
+                  placeholder="Ask Anything to DecisionOS"
+                  aria-label="Ask Anything to DecisionOS"
+                  className="w-full resize-y rounded-lg bg-surface/55 px-4 py-3 text-left text-small text-foreground placeholder:text-tertiary-foreground backdrop-blur-sm focus-visible:outline-none"
                 />
-              </Field>
-              <div className="mt-3">
-                <Btn
-                  variant="primary"
-                  size="sm"
-                  disabled={typed.trim().length === 0}
-                  onClick={() => {
-                    setTyped("");
-                    finalise("Directive");
-                  }}
+              </div>
+              <div className="mt-4 flex w-full max-w-md flex-wrap justify-start gap-2">
+                {SUGGESTIONS.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setTyped(s)}
+                    className="rounded-pill border border-hairline bg-surface/50 px-3.5 py-2 text-small text-secondary-foreground transition-colors hover:bg-surface"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : mode === "upload" ? (
+            <>
+              {greetingLine}
+              <div className="mt-8">
+                <CaptureCircle label="Upload Documents" icon={Upload} />
+              </div>
+              <div className="mt-6">
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-lg border border-hairline bg-surface/60 px-4 py-2.5 text-small font-medium text-foreground transition-colors hover:bg-surface"
                 >
-                  Structure It
-                </Btn>
-              </div>
-            </div>
-          ) : null}
-
-          {/* Documents */}
-          {!recording && !processing && mode === "upload" ? (
-            <div className="soft-rise mt-8 w-full max-w-md rounded-lg bg-surface/90 p-5 text-center shadow-xs backdrop-blur-sm">
-              <Paperclip className="mx-auto size-5 text-tertiary-foreground" aria-hidden="true" />
-              <p className="mt-2 text-body-strong text-foreground">The file is the directive</p>
-              <p className="mt-1 text-small text-secondary-foreground">
-                Invoices, lists, PDF, Word and Excel.
-              </p>
-              <div className="mt-4 flex flex-wrap justify-center gap-2">
-                <Btn size="sm" variant="secondary">
                   <Paperclip className="size-4" aria-hidden="true" /> Choose Files
-                </Btn>
-                <Btn size="sm" variant="primary" onClick={() => finalise("Upload")}>
-                  Analyse
-                </Btn>
+                </button>
               </div>
-            </div>
-          ) : null}
-
-          {/* Camera */}
-          {!recording && !processing && mode === "camera" ? (
-            <div className="soft-rise mt-8 w-full max-w-md rounded-lg bg-surface/90 p-5 text-center shadow-xs backdrop-blur-sm">
-              <Camera className="mx-auto size-5 text-tertiary-foreground" aria-hidden="true" />
-              <p className="mt-2 text-body-strong text-foreground">Point and shoot</p>
-              <p className="mt-1 text-small text-secondary-foreground">
-                Order slips, whiteboards, handwritten notes.
+              <h1 id="capture-heading" className="mt-8 max-w-xs text-display text-foreground sm:max-w-sm">
+                {COPY.upload.heading}
+              </h1>
+              <p className="mt-4 max-w-xs text-small text-secondary-foreground sm:max-w-sm">
+                {COPY.upload.sub}
               </p>
-              <div className="mt-4 flex flex-wrap justify-center gap-2">
-                <Btn size="sm" variant="secondary">
-                  <Camera className="size-4" aria-hidden="true" /> Open Camera
-                </Btn>
-                <Btn size="sm" variant="primary" onClick={() => finalise("Photo")}>
-                  Analyse
-                </Btn>
+            </>
+          ) : (
+            <>
+              {greetingLine}
+              <div className="mt-8">
+                <CaptureCircle label="Open Camera" icon={Camera} />
               </div>
-            </div>
-          ) : null}
+              <h1 id="capture-heading" className="mt-10 max-w-xs text-display text-foreground sm:max-w-sm">
+                {COPY.camera.heading}
+              </h1>
+              <p className="mt-4 max-w-xs text-small text-secondary-foreground sm:max-w-sm">
+                {COPY.camera.sub}
+              </p>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Icon-only mode pills */}
-      <div className="flex justify-center gap-3">
+      {/* Mode selector */}
+      <div className="no-scrollbar -mx-1 flex justify-center gap-2 overflow-x-auto px-1 pb-1">
         {MODES.map((m) => (
           <button
             key={m.id}
             type="button"
-            disabled={recording || processing}
-            onClick={() => {
-              setMode(m.id);
-              setCaptured(null);
-            }}
+            disabled={recording}
+            onClick={() => setMode(m.id)}
             aria-pressed={mode === m.id}
-            aria-label={m.label}
-            title={m.label}
             className={cn(
-              "inline-flex size-11 items-center justify-center rounded-pill border transition-colors duration-200 disabled:opacity-50",
+              "inline-flex shrink-0 items-center gap-2 rounded-pill px-4 py-2.5 text-small transition-colors duration-200 disabled:opacity-50",
               mode === m.id
-                ? "border-transparent bg-brand text-on-primary"
-                : "border-hairline bg-surface text-secondary-foreground hover:bg-surface-hover",
+                ? "border border-transparent bg-surface-sunken font-semibold text-foreground"
+                : "border border-hairline bg-surface text-secondary-foreground hover:bg-surface-hover",
             )}
           >
-            <m.icon className="size-[1.15rem]" aria-hidden="true" />
+            <m.icon className="size-4 shrink-0" aria-hidden="true" />
+            {m.label}
           </button>
         ))}
       </div>
