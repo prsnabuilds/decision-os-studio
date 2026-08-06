@@ -20,6 +20,7 @@ import {
   type Urgency,
 } from "@/components/ds";
 import { AiBtn } from "@/components/ds/ai";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { VoiceTextArea } from "@/components/ds/voice";
 import { leaves, people, pipelines, tasks, type Task } from "@/data/demo";
 import { inr } from "@/lib/format";
