@@ -36,7 +36,6 @@ function CalendarPage() {
   return (
     <div>
       <PageHeader
-        eyebrow="What is due, and when"
         title="Calendar"
         backTo="/my-work"
         backLabel="Back To My Work"

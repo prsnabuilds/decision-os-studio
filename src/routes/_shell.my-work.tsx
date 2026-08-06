@@ -636,7 +636,7 @@ function MyWorkPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Where decisions become finished work" title="My Work" />
+      <PageHeader title="My Work" />
 
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <Segmented options={views} value={view} onChange={setView} label="Work view" />

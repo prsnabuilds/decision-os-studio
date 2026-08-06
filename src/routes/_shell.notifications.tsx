@@ -31,7 +31,6 @@ function NotificationsPage() {
   return (
     <div>
       <PageHeader
-        eyebrow={`${unread} unread`}
         title="Notifications"
         backTo="/inbox"
         backLabel="Back To Decision Desk"

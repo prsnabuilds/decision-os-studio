@@ -244,7 +244,7 @@ function CapturePage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Bulk import & the review queue" title="Capture" />
+      <PageHeader title="Capture" />
       <div className="mb-6 flex items-center gap-2">
         <Segmented options={["Import", "Review"] as const} value={tab} onChange={setTab} label="Capture mode" />
         <CountBadge count={reviewCount} />

@@ -238,7 +238,7 @@ function BrainPage() {
   const [tab, setTab] = React.useState<"Ask" | "Search">("Ask");
   return (
     <div>
-      <PageHeader eyebrow="Everything your business knows" title="Company Brain" />
+      <PageHeader title="Company Brain" />
       <div className="mb-2">
         <Segmented options={["Ask", "Search"] as const} value={tab} onChange={setTab} label="Brain mode" />
       </div>

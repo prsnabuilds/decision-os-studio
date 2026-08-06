@@ -60,7 +60,6 @@ function PeoplePage() {
   return (
     <div>
       <PageHeader
-        eyebrow={`Your people — ${workspace.customerLabel} & ${workspace.vendorLabel}`}
         title="People"
       >
         <Btn variant="primary" onClick={() => setAdding((a) => !a)}>

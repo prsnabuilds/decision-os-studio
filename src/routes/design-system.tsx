@@ -68,7 +68,7 @@ function DesignSystemPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-5 py-10 lg:px-8">
-      <PageHeader eyebrow="Internal reference" title="Design System" />
+      <PageHeader title="Design System" />
 
       <div className="space-y-8">
         <section className="space-y-3">

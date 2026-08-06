@@ -60,7 +60,7 @@ function BriefPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Your business, in prose" title="CEO Brief">
+      <PageHeader title="CEO Brief">
         <Btn variant="secondary">Send Daily Digest</Btn>
       </PageHeader>
 

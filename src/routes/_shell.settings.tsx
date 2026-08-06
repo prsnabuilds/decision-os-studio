@@ -64,7 +64,7 @@ function SettingsPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Company, team and automation preferences" title="Settings" />
+      <PageHeader title="Settings" />
       <div className="mb-6">
         <Segmented options={tabs} value={tab} onChange={setTab} label="Settings section" />
       </div>

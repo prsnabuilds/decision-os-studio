@@ -46,7 +46,6 @@ function JournalPage() {
   return (
     <div>
       <PageHeader
-        eyebrow="The record of how this business was run"
         title="Decision Journal"
         backTo="/brief"
         backLabel="Back To CEO Brief"

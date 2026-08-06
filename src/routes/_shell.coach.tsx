@@ -49,7 +49,6 @@ function CoachPage() {
   return (
     <div>
       <PageHeader
-        eyebrow="Coach from the record, not from memory"
         title="Coaching"
         backTo="/brief"
         backLabel="Back To CEO Brief"
