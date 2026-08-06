@@ -32,7 +32,6 @@ function OperatingScorePage() {
   return (
     <div>
       <PageHeader
-        eyebrow="How well the business is being run"
         title="Operating Score"
         backTo="/brief"
         backLabel="Back To CEO Brief"

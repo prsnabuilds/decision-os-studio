@@ -229,7 +229,7 @@ function FinancePage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Money in one place" title="Finance">
+      <PageHeader title="Finance">
         <Btn variant="secondary">Upload Statement Or Bill</Btn>
         <Btn variant="secondary">Fix Old Purchases</Btn>
       </PageHeader>

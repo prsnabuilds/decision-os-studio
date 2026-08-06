@@ -39,7 +39,7 @@ function MeetingsPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Say it once, keep it forever" title="Meeting Notes" />
+      <PageHeader title="Meeting Notes" />
 
       <Card className="mb-8 flex flex-wrap items-center gap-5">
         <button
