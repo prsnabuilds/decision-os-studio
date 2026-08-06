@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2 } from "lucide-react";
+import { Stamp, Flame, CalendarClock, Star, ArrowRight } from "lucide-react";
 import {
   Btn,
   Card,
@@ -8,17 +8,13 @@ import {
   EmptyState,
   Meta,
   Skel,
-  StatusBadge,
-  PriorityBadge,
   SectionHeading,
 } from "@/components/ds";
-
-import { CaptureBlock } from "@/components/desk/CaptureBlock";
 import { ApprovalCard } from "@/components/desk/ApprovalCard";
 import { TasksAndActivity } from "@/components/desk/Feed";
 import { VoiceReply } from "@/components/desk/VoiceReply";
-import { buildRanked, decisions, tasks, topThree } from "@/data/demo";
-import { inr, joinReadably, plural } from "@/lib/format";
+import { decisions, tasks } from "@/data/demo";
+import { inr, plural } from "@/lib/format";
 
 export const Route = createFileRoute("/_shell/inbox")({
   head: () => ({
@@ -27,206 +23,272 @@ export const Route = createFileRoute("/_shell/inbox")({
       {
         name: "description",
         content:
-          "Your morning brief: what needs you today, the decisions waiting on your approval, and everything escalated to you.",
+          "What needs you today: decisions waiting on your approval, overdue work, what's due and what matters most.",
       },
       { property: "og:title", content: "Decision Desk — DecisionOS" },
       {
         property: "og:description",
         content: "Answer one question each morning: what needs me today?",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: DecisionDesk,
 });
 
-function BriefSkeleton() {
+function DeskSkeleton() {
   return (
-    <section className="mb-10" aria-busy="true" aria-label="Loading your brief">
+    <div className="space-y-4" aria-busy="true" aria-label="Loading your desk">
       <Skel className="h-9 w-40" />
-      <Skel className="mt-3 h-7 w-[36rem] max-w-full" />
-      <div className="mt-5 space-y-3">
-        <Skel className="h-[92px] w-full rounded-lg" />
-        <Skel className="h-[92px] w-full rounded-lg" />
-        <Skel className="h-[92px] w-full rounded-lg" />
-      </div>
-      <Skel className="mt-4 h-8 w-44" />
+      <Skel className="h-7 w-[28rem] max-w-full" />
+      <Skel className="h-24 w-full rounded-lg" />
+      <Skel className="h-24 w-full rounded-lg" />
+    </div>
+  );
+}
+
+type Tone = "decision" | "fire" | "due" | "important";
+
+const toneStyles: Record<Tone, { chip: string; edge: string }> = {
+  decision: { chip: "bg-brand-tint text-brand-on-tint", edge: "var(--edge-today)" },
+  fire: { chip: "bg-danger-50 text-danger-700 dark:bg-danger-800/30 dark:text-danger-300", edge: "var(--edge-overdue)" },
+  due: { chip: "bg-surface-sunken text-secondary-foreground", edge: "var(--edge-week)" },
+  important: { chip: "bg-surface-sunken text-secondary-foreground", edge: "var(--edge-later)" },
+};
+
+function Group({
+  tone,
+  icon: Icon,
+  title,
+  sub,
+  count,
+  children,
+}: {
+  tone: Tone;
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  sub: string;
+  count: number;
+  children: React.ReactNode;
+}) {
+  if (count === 0) return null;
+  const s = toneStyles[tone];
+  return (
+    <section aria-label={title} className="relative rounded-xl bg-surface-sunken/60 p-4 sm:p-5">
+      <span
+        aria-hidden="true"
+        className="absolute inset-y-0 left-0 w-[3px] rounded-l-xl"
+        style={{ backgroundColor: s.edge }}
+      />
+      <header className="mb-3 flex flex-wrap items-center gap-2">
+        <span className={`inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-label ${s.chip}`}>
+          <Icon className="size-3.5" aria-hidden="true" />
+          {title}
+        </span>
+        <span className="text-small tabular text-tertiary-foreground">{count}</span>
+        <p className="w-full text-small text-secondary-foreground">{sub}</p>
+      </header>
+      {children}
     </section>
+  );
+}
+
+/** Title leads; everything else recedes into a single quiet meta line. */
+function DeskRow({
+  title,
+  meta,
+  amount,
+  action,
+}: {
+  title: string;
+  meta: (React.ReactNode | null)[];
+  amount?: number | undefined;
+  action?: React.ReactNode;
+}) {
+  return (
+    <Card compact interactive className="flex flex-wrap items-center gap-3">
+      <div className="min-w-48 flex-1">
+        <p className="text-body-strong text-foreground">{title}</p>
+        <Meta className="mt-0.5" items={meta.filter(Boolean)} />
+      </div>
+      {amount ? (
+        <span className="tabular text-body-strong text-foreground">{inr(amount)}</span>
+      ) : null}
+      {action}
+    </Card>
   );
 }
 
 function DecisionDesk() {
   const [loading, setLoading] = React.useState(true);
-  const [processing, setProcessing] = React.useState(false);
-  const [showAllDecisions, setShowAllDecisions] = React.useState(false);
   const [reviewing, setReviewing] = React.useState<string | null>(null);
-
+  const [respondTo, setRespondTo] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    const id = window.setTimeout(() => setLoading(false), 700);
+    const id = window.setTimeout(() => setLoading(false), 500);
     return () => window.clearTimeout(id);
   }, []);
 
-  const ranked = React.useMemo(() => buildRanked(), []);
-  const top = React.useMemo(() => topThree(ranked), [ranked]);
-  const others = ranked.length - top.length;
-
-  const pending = decisions.filter((d) => d.status === "pending");
-  const longestWaiting = [...pending].sort((a, b) => b.waitingDays - a.waitingDays);
-  const escalations = tasks.filter(
-    (t) => (t.kind === "escalation" || t.kind === "handoff") && t.status !== "done",
+  const pending = [...decisions.filter((d) => d.status === "pending")].sort(
+    (a, b) => b.waitingDays - a.waitingDays,
+  );
+  const open = tasks.filter((t) => t.status !== "done");
+  const escalations = open.filter((t) => t.kind === "escalation" || t.kind === "handoff");
+  const overdue = open.filter((t) => t.kind === "task" && t.dueInDays < 0);
+  const dueToday = open.filter((t) => t.kind === "task" && t.dueInDays === 0);
+  const important = open.filter(
+    (t) => t.kind === "task" && t.priority === "high" && t.dueInDays > 0,
   );
 
-  const counts = {
-    decisions: pending.length,
-    escalated: escalations.length,
-    overdue: ranked.filter((r) => r.tier === "overdue").length,
-    today: ranked.filter((r) => r.tier === "today").length,
-  };
+  const onFire = [...escalations, ...overdue];
+  const escalated = escalations.find((t) => t.id === respondTo);
 
-  const todayLine = joinReadably(
-    [
-      counts.decisions
-        ? `${counts.decisions} ${plural(counts.decisions, "decision needs", "decisions need")} you`
-        : "",
-      counts.escalated ? `${counts.escalated} escalated to you` : "",
-      counts.overdue ? `${counts.overdue} overdue` : "",
-      counts.today ? `${counts.today} due today` : "",
-    ].filter(Boolean),
-  );
+  const headline = [
+    pending.length ? `${pending.length} ${plural(pending.length, "decision", "decisions")} waiting on you` : "",
+    onFire.length ? `${onFire.length} on fire` : "",
+    dueToday.length ? `${dueToday.length} due today` : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
-  const scrollToLists = () => {
-    document.getElementById("decision-approvals")?.scrollIntoView({ behavior: "smooth" });
-  };
+  if (loading) return <DeskSkeleton />;
 
   return (
-    <div className="space-y-10">
-      {processing ? (
-        <div className="sticky top-16 z-20 flex items-start gap-3 rounded-lg border border-brand-tint-border bg-brand-tint px-4 py-3">
-          <Loader2 className="mt-0.5 size-4 animate-spin text-brand-on-tint" aria-hidden="true" />
-          <div>
-            <p className="text-body-strong text-brand-on-tint">Thinking…</p>
-            <p className="text-small text-secondary-foreground">
-              DecisionOS is working through it for you — you can keep going. We'll pop up the summary
-              the moment it's ready.
-            </p>
-          </div>
-          <Btn
-            variant="tertiary"
-            size="sm"
-            className="ml-auto"
-            onClick={() => setProcessing(false)}
-          >
-            Review
-          </Btn>
-        </div>
+    <div className="space-y-8">
+      <header>
+        <h1 className="text-h1 text-foreground">Decision Desk</h1>
+        <p className="mt-1 text-lead text-secondary-foreground">
+          {headline || "Nothing needs you right now. You're clear."}
+        </p>
+      </header>
+
+      {pending.length + onFire.length + dueToday.length + important.length === 0 ? (
+        <EmptyState
+          title="Nothing Needs You Right Now"
+          helper="Decisions, escalations and overdue work land here the moment they appear."
+        />
       ) : null}
 
-      {/* Section 1 — Capture (the first thing you do each morning) */}
-      <CaptureBlock
-        onSubmit={() => {
-          setProcessing(true);
-          window.setTimeout(() => setProcessing(false), 4000);
-        }}
-      />
-
-      {/* Section 2 — Today */}
-      {loading ? (
-        <BriefSkeleton />
-      ) : (
-        <section aria-labelledby="today-heading">
-          <h1 id="today-heading" className="text-h1 text-foreground">
-            Today
-          </h1>
-          <p className="mt-2 text-lead text-secondary-foreground">
-            {todayLine ? `${todayLine}.` : "Nothing needs you right now. You're clear."}
-          </p>
-
-          {top.length === 0 ? (
-            <div className="mt-5">
-              <EmptyState
-                title="Nothing Needs You Right Now"
-                helper="Decisions awaiting approval, escalations and overdue work will be ranked here each morning."
-              />
-            </div>
-          ) : (
-            <ol className="mt-5 space-y-3">
-              {top.map((item, i) => (
-                <li key={item.id}>
-                  <Card urgency={item.urgency} className="flex flex-wrap items-center gap-4 pl-6">
-                    <span
-                      className="inline-flex size-7 shrink-0 items-center justify-center rounded-pill bg-surface-sunken text-label tabular text-secondary-foreground"
-                      aria-label={`Rank ${i + 1}`}
-                    >
-                      {i + 1}
-                    </span>
-                    <div className="min-w-48 flex-1">
-                      <p className="text-body-strong text-foreground">{item.title}</p>
-                      <p className="text-small text-secondary-foreground">{item.reason}</p>
-                    </div>
-                    {item.amount ? (
-                      <span className="tabular text-body-strong text-foreground">
-                        {inr(item.amount)}
-                      </span>
-                    ) : null}
-                    {item.kind === "decision" ? (
-                      <Btn variant="secondary" size="sm" onClick={() => setReviewing(item.id)}>
-                        Review →
-                      </Btn>
-                    ) : null}
-
-                  </Card>
-                </li>
-              ))}
-            </ol>
-          )}
-
-          <Btn variant="tertiary" className="mt-3" onClick={scrollToLists}>
-            {others > 0 ? `See The Other ${others} →` : "Nothing else is waiting →"}
-          </Btn>
-        </section>
-      )}
-
-      {/* Section 3 — Decision Approvals */}
-      <section id="decision-approvals">
-        <SectionHeading
-          title="Decision Approvals"
-          sub={`${pending.length} ${plural(pending.length, "decision still needs", "decisions still need")} you. Longest waiting first — open one to decide.`}
-        />
+      <Group
+        tone="decision"
+        icon={Stamp}
+        title="Needs Your Decision"
+        sub="Work stays blocked until you decide. Longest waiting first."
+        count={pending.length}
+      >
         <ul className="space-y-1.5">
-          {(showAllDecisions ? longestWaiting : longestWaiting.slice(0, 3)).map((d) => (
+          {pending.map((d) => (
             <li key={d.id}>
-              <Card compact interactive className="flex flex-wrap items-center gap-3">
-                <div className="min-w-48 flex-1">
-                  <p className="text-body-strong text-foreground">{d.title}</p>
-                  <Meta
-                    items={[
-                      `Waiting ${d.waitingDays} ${plural(d.waitingDays, "day", "days")}`,
-                      `Raised by ${d.raisedBy}`,
-                      `Unblocks ${d.unblocks.length} ${plural(d.unblocks.length, "task", "tasks")}`,
-                    ]}
-                    className="mt-1"
-                  />
-                </div>
-                {d.amount ? (
-                  <span className="tabular text-body-strong text-foreground">{inr(d.amount)}</span>
-                ) : null}
-                <Btn variant="secondary" size="sm" onClick={() => setReviewing(d.id)}>
-                  Review →
-                </Btn>
-              </Card>
+              <DeskRow
+                title={d.title}
+                amount={d.amount}
+                meta={[
+                  `Waiting ${d.waitingDays} ${plural(d.waitingDays, "day", "days")}`,
+                  `From ${d.raisedBy}`,
+                  `Unblocks ${d.unblocks.length} ${plural(d.unblocks.length, "task", "tasks")}`,
+                ]}
+                action={
+                  <Btn variant="secondary" size="sm" onClick={() => setReviewing(d.id)}>
+                    Review <ArrowRight className="size-3.5" aria-hidden="true" />
+                  </Btn>
+                }
+              />
             </li>
           ))}
         </ul>
-        <Btn
-          variant="secondary"
-          className="mt-4"
-          onClick={() => setShowAllDecisions((s) => !s)}
-        >
-          {showAllDecisions
-            ? "Show Only The Longest Waiting"
-            : `Show All ${pending.length} Decisions`}
-        </Btn>
-      </section>
+      </Group>
+
+      <Group
+        tone="fire"
+        icon={Flame}
+        title="On Fire"
+        sub="Escalated to you or already past its date."
+        count={onFire.length}
+      >
+        <ul className="space-y-1.5">
+          {onFire.map((t) => (
+            <li key={t.id}>
+              <DeskRow
+                title={t.title}
+                amount={t.amount}
+                meta={[
+                  t.kind === "task"
+                    ? `${Math.abs(t.dueInDays)} ${plural(Math.abs(t.dueInDays), "day", "days")} overdue`
+                    : t.kind === "escalation"
+                      ? `Escalated by ${t.raisedBy}`
+                      : `Handed to you by ${t.raisedBy}`,
+                  t.assignee ? `With ${t.assignee}` : null,
+                ]}
+                action={
+                  t.kind === "task" ? (
+                    <Btn variant="tertiary" size="sm">
+                      Chase
+                    </Btn>
+                  ) : (
+                    <Btn variant="secondary" size="sm" onClick={() => setRespondTo(t.id)}>
+                      Respond
+                    </Btn>
+                  )
+                }
+              />
+            </li>
+          ))}
+        </ul>
+      </Group>
+
+      <Group
+        tone="due"
+        icon={CalendarClock}
+        title="Due Today"
+        sub="On the date — nudge anything that looks slow."
+        count={dueToday.length}
+      >
+        <ul className="grid gap-1.5 sm:grid-cols-2">
+          {dueToday.map((t) => (
+            <li key={t.id}>
+              <DeskRow
+                title={t.title}
+                amount={t.amount}
+                meta={[t.assignee ? `With ${t.assignee}` : null]}
+                action={
+                  <Btn variant="tertiary" size="sm">
+                    Nudge
+                  </Btn>
+                }
+              />
+            </li>
+          ))}
+        </ul>
+      </Group>
+
+      <Group
+        tone="important"
+        icon={Star}
+        title="Important, Not Yet Due"
+        sub="High-value work worth keeping an eye on this week."
+        count={important.length}
+      >
+        <ul className="grid gap-1.5 sm:grid-cols-2">
+          {important.map((t) => (
+            <li key={t.id}>
+              <DeskRow
+                title={t.title}
+                amount={t.amount}
+                meta={[
+                  `Due in ${t.dueInDays} ${plural(t.dueInDays, "day", "days")}`,
+                  t.assignee ? `With ${t.assignee}` : null,
+                ]}
+              />
+            </li>
+          ))}
+        </ul>
+      </Group>
+
+      <div>
+        <SectionHeading title="Everything Else" sub="Captured, classified and waiting quietly." />
+        <TasksAndActivity />
+      </div>
 
       <DetailPanel
         open={reviewing !== null}
@@ -239,46 +301,25 @@ function DecisionDesk() {
         ) : null}
       </DetailPanel>
 
-
-      {/* Section 4 — Needs Your Attention */}
-      {escalations.length > 0 ? (
-        <section>
-          <SectionHeading title="Needs Your Attention" count={escalations.length} />
-          <div className="space-y-3">
-            {escalations.map((t) => (
-              <Card key={t.id} className="space-y-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <StatusBadge kind="directive">
-                    {t.kind === "escalation" ? "Escalation" : "Handoff"}
-                  </StatusBadge>
-                  <PriorityBadge priority={t.priority} />
-                  {t.amount ? (
-                    <span className="ml-auto tabular text-body-strong text-foreground">
-                      {inr(t.amount)}
-                    </span>
-                  ) : null}
-                </div>
-                <div>
-                  <h3 className="text-h3 text-foreground">{t.title}</h3>
-                  {t.description ? (
-                    <p className="mt-1 text-body text-secondary-foreground">{t.description}</p>
-                  ) : null}
-                  <p className="mt-1 text-small text-tertiary-foreground">
-                    {t.step ? `Raised on step: ${t.step} · ` : ""}Raised by {t.raisedBy}
-                  </p>
-                </div>
-                <VoiceReply
-                  ariaLabel={`Your response to ${t.raisedBy}`}
-                  placeholder={`Speak or type your decision — it goes back to ${t.raisedBy}`}
-                />
-              </Card>
-            ))}
+      <DetailPanel
+        open={escalated !== undefined}
+        onClose={() => setRespondTo(null)}
+        title={escalated ? escalated.title : "Respond"}
+        subtitle={escalated ? `Raised by ${escalated.raisedBy}` : undefined}
+      >
+        {escalated ? (
+          <div className="space-y-4">
+            {escalated.description ? (
+              <p className="text-body text-secondary-foreground">{escalated.description}</p>
+            ) : null}
+            <VoiceReply
+              ariaLabel={`Your response to ${escalated.raisedBy}`}
+              placeholder={`Speak or type your decision — it goes back to ${escalated.raisedBy}`}
+              onSend={() => setRespondTo(null)}
+            />
           </div>
-        </section>
-      ) : null}
-
-      {/* Section 5 — Tasks & Activity */}
-      <TasksAndActivity />
+        ) : null}
+      </DetailPanel>
     </div>
   );
 }

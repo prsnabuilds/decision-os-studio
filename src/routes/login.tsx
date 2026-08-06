@@ -120,7 +120,7 @@ function LoginPage() {
               {mode === "in" ? "Create An Account" : "I Already Have An Account"}
             </Btn>
             <Btn variant="tertiary" size="sm" asChild>
-              <Link to="/inbox">Continue To The Demo</Link>
+              <Link to="/home">Continue To The Demo</Link>
             </Btn>
           </div>
         </div>
