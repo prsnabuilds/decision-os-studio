@@ -18,6 +18,7 @@ import { Route as ShellBriefRouteImport } from './routes/_shell.brief'
 import { Route as ShellCalendarRouteImport } from './routes/_shell.calendar'
 import { Route as ShellCoachRouteImport } from './routes/_shell.coach'
 import { Route as ShellFinanceRouteImport } from './routes/_shell.finance'
+import { Route as ShellHomeRouteImport } from './routes/_shell.home'
 import { Route as ShellInboxRouteImport } from './routes/_shell.inbox'
 import { Route as ShellIngestRouteImport } from './routes/_shell.ingest'
 import { Route as ShellJournalRouteImport } from './routes/_shell.journal'
@@ -72,6 +73,11 @@ const ShellCoachRoute = ShellCoachRouteImport.update({
 const ShellFinanceRoute = ShellFinanceRouteImport.update({
   id: '/finance',
   path: '/finance',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellHomeRoute = ShellHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
   getParentRoute: () => ShellRoute,
 } as any)
 const ShellInboxRoute = ShellInboxRouteImport.update({
@@ -139,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/calendar': typeof ShellCalendarRoute
   '/coach': typeof ShellCoachRoute
   '/finance': typeof ShellFinanceRoute
+  '/home': typeof ShellHomeRoute
   '/inbox': typeof ShellInboxRoute
   '/ingest': typeof ShellIngestRoute
   '/journal': typeof ShellJournalRoute
@@ -160,6 +167,7 @@ export interface FileRoutesByTo {
   '/calendar': typeof ShellCalendarRoute
   '/coach': typeof ShellCoachRoute
   '/finance': typeof ShellFinanceRoute
+  '/home': typeof ShellHomeRoute
   '/inbox': typeof ShellInboxRoute
   '/ingest': typeof ShellIngestRoute
   '/journal': typeof ShellJournalRoute
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/_shell/calendar': typeof ShellCalendarRoute
   '/_shell/coach': typeof ShellCoachRoute
   '/_shell/finance': typeof ShellFinanceRoute
+  '/_shell/home': typeof ShellHomeRoute
   '/_shell/inbox': typeof ShellInboxRoute
   '/_shell/ingest': typeof ShellIngestRoute
   '/_shell/journal': typeof ShellJournalRoute
@@ -206,6 +215,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/coach'
     | '/finance'
+    | '/home'
     | '/inbox'
     | '/ingest'
     | '/journal'
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/coach'
     | '/finance'
+    | '/home'
     | '/inbox'
     | '/ingest'
     | '/journal'
@@ -249,6 +260,7 @@ export interface FileRouteTypes {
     | '/_shell/calendar'
     | '/_shell/coach'
     | '/_shell/finance'
+    | '/_shell/home'
     | '/_shell/inbox'
     | '/_shell/ingest'
     | '/_shell/journal'
@@ -332,6 +344,13 @@ declare module '@tanstack/react-router' {
       path: '/finance'
       fullPath: '/finance'
       preLoaderRoute: typeof ShellFinanceRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/home': {
+      id: '/_shell/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof ShellHomeRouteImport
       parentRoute: typeof ShellRoute
     }
     '/_shell/inbox': {
@@ -420,6 +439,7 @@ interface ShellRouteChildren {
   ShellCalendarRoute: typeof ShellCalendarRoute
   ShellCoachRoute: typeof ShellCoachRoute
   ShellFinanceRoute: typeof ShellFinanceRoute
+  ShellHomeRoute: typeof ShellHomeRoute
   ShellInboxRoute: typeof ShellInboxRoute
   ShellIngestRoute: typeof ShellIngestRoute
   ShellJournalRoute: typeof ShellJournalRoute
@@ -439,6 +459,7 @@ const ShellRouteChildren: ShellRouteChildren = {
   ShellCalendarRoute: ShellCalendarRoute,
   ShellCoachRoute: ShellCoachRoute,
   ShellFinanceRoute: ShellFinanceRoute,
+  ShellHomeRoute: ShellHomeRoute,
   ShellInboxRoute: ShellInboxRoute,
   ShellIngestRoute: ShellIngestRoute,
   ShellJournalRoute: ShellJournalRoute,
@@ -463,13 +484,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
