@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Mic, Pause, Play, Square, Keyboard, Upload, Camera, Paperclip, Check } from "lucide-react";
 import { Btn, Field, TextArea } from "@/components/ds";
+import { currentUser } from "@/data/demo";
 import { cn } from "@/lib/utils";
 
 const languages = ["Auto", "English", "தமிழ்", "Tanglish"] as const;
@@ -93,7 +94,7 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
       className="overflow-hidden rounded-xl bg-brand-tint px-5 py-8 sm:px-10 sm:py-12"
     >
       <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
-        <p className="text-label text-brand-on-tint">{greeting}, {"Ramesh".split(" ")[0]}</p>
+        <p className="text-label text-brand-on-tint">{greeting}, {currentUser.name.split(" ")[0]}</p>
         <h1 id="capture-heading" className="mt-1 text-h1 text-foreground">
           Say What Needs To Happen
         </h1>
