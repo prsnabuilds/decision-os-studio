@@ -533,7 +533,7 @@ export function Segmented<T extends string>({
   label: string;
 }) {
   return (
-    <div className="-mx-4 max-w-full overflow-x-auto px-4 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="no-scrollbar -mx-4 max-w-full overflow-x-auto px-4 sm:mx-0 sm:px-0">
       <div
         role="tablist"
         aria-label={label}

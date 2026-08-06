@@ -142,7 +142,7 @@ function ImportTab() {
 
       <section>
         <h2 className="mb-3 text-h3 text-foreground">Records</h2>
-        <div className="overflow-x-auto rounded-lg border border-hairline bg-surface">
+        <div className="no-scrollbar overflow-x-auto rounded-lg border border-hairline bg-surface">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-hairline">

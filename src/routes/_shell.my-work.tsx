@@ -321,7 +321,7 @@ function GroupedView() {
       </div>
 
       <div className="relative -mx-4 mb-4 sm:mx-0">
-        <div className="overflow-x-auto px-4 sm:px-0">
+        <div className="no-scrollbar overflow-x-auto px-4 sm:px-0">
           <div className="flex w-max gap-1.5 pr-6 sm:pr-0 sm:gap-2">
             {workFilters.map((f) => (
               <FilterPill
@@ -404,7 +404,7 @@ function BoardView() {
         </Card>
       ) : null}
 
-      <div className="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
+      <div className="no-scrollbar -mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
         <div className="flex min-w-max gap-3">
         {columns.map((c) => {
           const items = tasks.filter((t) => t.status === c);

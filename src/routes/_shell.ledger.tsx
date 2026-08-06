@@ -47,7 +47,7 @@ function Table({
     return <EmptyState title="Nothing Here Yet" helper={empty} />;
   }
   return (
-    <div className="overflow-x-auto rounded-lg border border-hairline bg-surface">
+    <div className="no-scrollbar overflow-x-auto rounded-lg border border-hairline bg-surface">
       <table className="w-full text-left">
         <thead>
           <tr className="border-b border-hairline">
