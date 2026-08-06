@@ -29,7 +29,7 @@ const nav = [
   { to: "/home", label: "Home", short: "Home", icon: Home },
   { to: "/inbox", label: "Decision Desk", short: "Desk", icon: Inbox, count: 6, tone: "neutral" as const },
   { to: "/brief", label: "CEO Brief", short: "Brief", icon: Newspaper, count: 5, tone: "danger" as const },
-  { to: "/my-work", label: "My Work", short: "Work", icon: ListChecks },
+  { to: "/my-work", label: "My Work", short: "My Work", icon: ListChecks },
   { to: "/contacts", label: "People", short: "People", icon: Users },
   { to: "/brain", label: "Company Brain", short: "Brain", icon: Brain },
   { to: "/ledger", label: "Finance", short: "Finance", icon: Wallet },
