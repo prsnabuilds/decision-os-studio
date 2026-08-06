@@ -491,8 +491,8 @@ function WorkflowsView() {
               </div>
             </section>
           ))}
-        </div>
-      )}
+      </div>
+
     </div>
   );
 }
