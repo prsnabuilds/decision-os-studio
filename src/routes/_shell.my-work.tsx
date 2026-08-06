@@ -20,6 +20,7 @@ import {
   type Urgency,
 } from "@/components/ds";
 import { AiBtn } from "@/components/ds/ai";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { VoiceTextArea } from "@/components/ds/voice";
 import { leaves, people, pipelines, tasks, type Task } from "@/data/demo";
 import { inr } from "@/lib/format";
@@ -253,8 +254,23 @@ const filterStatus: Record<Exclude<WorkFilter, "All">, Task["status"]> = {
   Done: "done",
 };
 
-function GroupedView({ aiPriority }: { aiPriority: boolean }) {
+function GroupedView() {
   const [filter, setFilter] = React.useState<WorkFilter>("All");
+  const [scope, setScope] = React.useState<(typeof scopes)[number]>("My Tasks");
+  const [ai, setAi] = React.useState(false);
+  const [scoring, setScoring] = React.useState(false);
+
+  const toggleAi = () => {
+    if (ai) {
+      setAi(false);
+      return;
+    }
+    setScoring(true);
+    window.setTimeout(() => {
+      setScoring(false);
+      setAi(true);
+    }, 900);
+  };
 
   const countOf = (f: WorkFilter) =>
     f === "All"
@@ -270,18 +286,58 @@ function GroupedView({ aiPriority }: { aiPriority: boolean }) {
 
   return (
     <div>
-      <div className="-mx-4 mb-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-        <div className="flex min-w-max gap-2">
-          {workFilters.map((f) => (
-            <FilterPill
-              key={f}
-              label={f}
-              count={countOf(f)}
-              active={filter === f}
-              onClick={() => setFilter(f)}
-            />
+      <div className="mb-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+        <div
+          role="group"
+          aria-label="Task scope"
+          className="inline-flex min-w-0 items-center gap-1 rounded-pill bg-surface-sunken p-1"
+        >
+          {scopes.map((s) => (
+            <button
+              key={s}
+              type="button"
+              aria-pressed={scope === s}
+              onClick={() => setScope(s)}
+              className={cn(
+                "h-8 shrink-0 rounded-pill px-3 text-label transition-colors duration-150",
+                scope === s
+                  ? "bg-surface text-foreground shadow-xs font-semibold"
+                  : "text-secondary-foreground hover:text-foreground",
+              )}
+            >
+              {s}
+            </button>
           ))}
         </div>
+        <AiBtn
+          size="sm"
+          onClick={toggleAi}
+          aria-pressed={ai}
+          loading={scoring}
+          className={cn("shrink-0", !ai && "bg-surface text-secondary-foreground border-hairline")}
+        >
+          {scoring ? "Scoring…" : ai ? "AI Priority Is On" : "Prioritise With AI"}
+        </AiBtn>
+      </div>
+
+      <div className="relative -mx-4 mb-4 sm:mx-0">
+        <div className="overflow-x-auto px-4 sm:px-0">
+          <div className="flex w-max gap-1.5 pr-6 sm:pr-0 sm:gap-2">
+            {workFilters.map((f) => (
+              <FilterPill
+                key={f}
+                label={f}
+                count={countOf(f)}
+                active={filter === f}
+                onClick={() => setFilter(f)}
+              />
+            ))}
+          </div>
+        </div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent sm:hidden"
+        />
       </div>
 
       {sorted.length === 0 ? (
@@ -290,7 +346,7 @@ function GroupedView({ aiPriority }: { aiPriority: boolean }) {
         <ul className="space-y-2">
           {sorted.map((t, i) => (
             <li key={t.id}>
-              <TaskCard task={t} {...(aiPriority ? { aiScore: 92 - i * 7 } : {})} />
+              <TaskCard task={t} {...(ai ? { aiScore: 92 - i * 7 } : {})} />
             </li>
           ))}
         </ul>
@@ -604,45 +660,34 @@ function LeaveView() {
 }
 
 function MyWorkPage() {
+  const isMobile = useIsMobile();
   const [view, setView] = React.useState<(typeof views)[number]>("My Work");
-  const [scope, setScope] = React.useState<(typeof scopes)[number]>("My Tasks");
-  const [ai, setAi] = React.useState(false);
-  const [scoring, setScoring] = React.useState(false);
 
-  const toggleAi = () => {
-    if (ai) {
-      setAi(false);
-      return;
-    }
-    setScoring(true);
-    window.setTimeout(() => {
-      setScoring(false);
-      setAi(true);
-    }, 900);
-  };
+  // The Kanban board stays available on tablet and desktop only; on phones the
+  // same tasks are shown as the list + status pills instead.
+  const available = React.useMemo(
+    () => (isMobile ? views.filter((v) => v !== "Board") : views),
+    [isMobile],
+  );
+  const activeView = isMobile && view === "Board" ? "My Work" : view;
 
   return (
     <div>
       <PageHeader title="My Work" />
 
-      <div className="mb-6 flex flex-wrap items-center gap-3">
-        <Segmented options={views} value={view} onChange={setView} label="Work view" />
-        <Segmented options={scopes} value={scope} onChange={setScope} label="Task scope" />
-        <AiBtn
-          size="sm"
-          onClick={toggleAi}
-          aria-pressed={ai}
-          loading={scoring}
-          className={cn(!ai && "bg-surface text-secondary-foreground border-hairline")}
-        >
-          {scoring ? "Scoring…" : ai ? "AI Priority Is On" : "Prioritise With AI"}
-        </AiBtn>
+      <div className="mb-6">
+        <Segmented
+          options={available}
+          value={activeView}
+          onChange={setView}
+          label="Work view"
+        />
       </div>
 
-      {view === "My Work" ? <GroupedView aiPriority={ai} /> : null}
-      {view === "Board" ? <BoardView /> : null}
-      {view === "Workflows" ? <WorkflowsView /> : null}
-      {view === "Leave" ? <LeaveView /> : null}
+      {activeView === "My Work" ? <GroupedView /> : null}
+      {activeView === "Board" ? <BoardView /> : null}
+      {activeView === "Workflows" ? <WorkflowsView /> : null}
+      {activeView === "Leave" ? <LeaveView /> : null}
     </div>
   );
 }
