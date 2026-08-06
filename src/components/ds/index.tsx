@@ -13,7 +13,7 @@ import {
 
 /* ------------------------------ Buttons ------------------------------ */
 
-type Variant = "primary" | "secondary" | "tertiary" | "destructive";
+type Variant = "primary" | "secondary" | "tertiary" | "destructive" | "ai";
 type Size = "sm" | "md" | "lg";
 
 const sizes: Record<Size, string> = {
@@ -30,7 +30,10 @@ const variants: Record<Variant, string> = {
   tertiary: "text-secondary-foreground hover:bg-surface-hover",
   destructive:
     "bg-transparent border border-destructive-border text-destructive hover:bg-destructive-hover",
+  // Anything the AI does for you is always this shape — a tinted, sparkled pill.
+  ai: "rounded-pill bg-brand-tint text-brand-on-tint border border-brand-tint-border hover:bg-brand-tint-hover",
 };
+
 
 export function Btn({
   variant = "secondary",

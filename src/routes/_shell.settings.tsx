@@ -6,6 +6,7 @@ import {
   Field,
   PageHeader,
   Segmented,
+  Select,
   StatusBadge,
   TextInput,
 } from "@/components/ds";
@@ -76,10 +77,25 @@ function SettingsPage() {
               <TextInput id="s-name" defaultValue={workspace.name} />
             </Field>
             <Field label="Industry" htmlFor="s-ind">
-              <TextInput id="s-ind" defaultValue="Packaging manufacturing" />
+              <Select
+                id="s-ind"
+                options={[
+                  "Packaging manufacturing",
+                  "General manufacturing",
+                  "Wholesale & distribution",
+                  "Retail",
+                  "Logistics & transport",
+                  "Services",
+                ]}
+                defaultValue="Packaging manufacturing"
+              />
             </Field>
             <Field label="Base Currency" htmlFor="s-cur" hint="Amounts are grouped in the Indian style.">
-              <TextInput id="s-cur" defaultValue="Indian rupee" />
+              <Select
+                id="s-cur"
+                options={["Indian rupee (₹)", "US dollar ($)", "Euro (€)", "UAE dirham (AED)"]}
+                defaultValue="Indian rupee (₹)"
+              />
             </Field>
             <Btn variant="secondary">Save Changes</Btn>
           </Card>
@@ -121,9 +137,12 @@ function SettingsPage() {
                   <p className="text-small text-tertiary-foreground">{p.role}</p>
                 </div>
                 <StatusBadge kind="neutral">{p.type === "employee" ? "Team" : p.type === "vendor" ? "Vendor" : "Customer"}</StatusBadge>
-                <Btn size="sm" variant="tertiary">
-                  Change Access
-                </Btn>
+                <Select
+                  aria-label={`Access level for ${p.name}`}
+                  className="h-8 w-40 text-small"
+                  options={["Owner", "Manager", "Team member", "View only"]}
+                  defaultValue={p.role === "Owner" ? "Owner" : p.type === "employee" ? "Team member" : "View only"}
+                />
               </li>
             ))}
           </ul>

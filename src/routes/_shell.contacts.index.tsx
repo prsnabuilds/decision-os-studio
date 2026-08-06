@@ -10,10 +10,12 @@ import {
   PageHeader,
   SectionHeading,
   StatusBadge,
+  Select,
   TextInput,
 } from "@/components/ds";
 
 import { Avatar } from "@/components/ds/bits";
+import { VoiceInput } from "@/components/ds/voice";
 import { people, workspace } from "@/data/demo";
 
 export const Route = createFileRoute("/_shell/contacts/")({
@@ -32,6 +34,7 @@ export const Route = createFileRoute("/_shell/contacts/")({
 });
 
 const statuses = ["All", "Active", "Inactive"] as const;
+const ownerOptions = people.filter((p) => p.type === "employee").map((p) => p.name);
 
 function PeoplePage() {
   const [query, setQuery] = React.useState("");
@@ -84,16 +87,13 @@ function PeoplePage() {
           </Field>
         </div>
         <Field label="Status" htmlFor="people-status">
-          <select
+          <Select
             id="people-status"
+            className="w-44"
+            options={statuses}
             value={status}
             onChange={(e) => setStatus(e.target.value as (typeof statuses)[number])}
-            className="h-10 rounded-md border border-hairline bg-surface px-3 text-body text-foreground"
-          >
-            {statuses.map((s) => (
-              <option key={s}>{s}</option>
-            ))}
-          </select>
+          />
         </Field>
       </div>
 
@@ -107,20 +107,34 @@ function PeoplePage() {
         <Card className="mb-6 space-y-3">
           <h2 className="text-h3 text-foreground">Add Contact</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              ["Name", "Trichy Dealer Co."],
-              ["Company", "Trichy Dealer Company"],
-              ["Phone", "+91 94430 22118"],
-              ["Email", "orders@trichydealer.in"],
-              ["Birthday", ""],
-              ["Type", "Customer / Vendor / Employee"],
-              ["Status", "Active"],
-              ["Assigned Owner", "Ravi Kumar"],
-            ].map(([label, ph]) => (
-              <Field key={label} label={label!} htmlFor={`ac-${label}`}>
-                <TextInput id={`ac-${label}`} placeholder={ph} />
-              </Field>
-            ))}
+            <Field label="Name" htmlFor="ac-name">
+              <TextInput id="ac-name" placeholder="Full name" />
+            </Field>
+            <Field label="Company" htmlFor="ac-company">
+              <TextInput id="ac-company" placeholder="Company name" />
+            </Field>
+            <Field label="Phone" htmlFor="ac-phone">
+              <TextInput id="ac-phone" inputMode="tel" placeholder="Mobile number" />
+            </Field>
+            <Field label="Email" htmlFor="ac-email">
+              <TextInput id="ac-email" type="email" placeholder="Email address" />
+            </Field>
+            <Field label="Birthday" htmlFor="ac-birthday">
+              <TextInput id="ac-birthday" type="date" />
+            </Field>
+            <Field label="Type" htmlFor="ac-type">
+              <Select
+                id="ac-type"
+                options={["Customer", "Vendor", "Employee"]}
+                placeholder="Choose a type"
+              />
+            </Field>
+            <Field label="Status" htmlFor="ac-status">
+              <Select id="ac-status" options={["Active", "Inactive"]} defaultValue="Active" />
+            </Field>
+            <Field label="Assigned Owner" htmlFor="ac-owner">
+              <Select id="ac-owner" options={ownerOptions} placeholder="Choose an owner" />
+            </Field>
           </div>
           <div className="flex gap-2">
             <Btn variant="secondary" onClick={() => setAdding(false)}>
@@ -185,9 +199,10 @@ function PeoplePage() {
                         <div className="mt-3 flex w-full items-end gap-2 border-t border-hairline pt-3">
                           <div className="flex-1">
                             <Field label="Complaint" htmlFor={`comp-${p.id}`}>
-                              <TextInput
+                              <VoiceInput
                                 id={`comp-${p.id}`}
-                                placeholder="Four cartons arrived crushed"
+                                micLabel="Speak The Complaint"
+                                placeholder="What went wrong?"
                               />
                             </Field>
                           </div>

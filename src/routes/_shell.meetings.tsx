@@ -2,6 +2,7 @@ import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Mic } from "lucide-react";
 import { Btn, Card, EmptyState, PageHeader, StatusBadge, TextArea } from "@/components/ds";
+import { AiBtn } from "@/components/ds/ai";
 import { meetings } from "@/data/demo";
 import { cn } from "@/lib/utils";
 
@@ -78,7 +79,7 @@ function MeetingsPage() {
             aria-label="Meeting transcript"
             placeholder="Paste the transcript or your own notes here…"
           />
-          <Btn variant="secondary">Summarise &amp; Extract Tasks</Btn>
+          <AiBtn>Summarise &amp; Extract Tasks</AiBtn>
         </Card>
       ) : null}
 

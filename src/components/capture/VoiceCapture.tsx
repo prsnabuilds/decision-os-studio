@@ -262,7 +262,7 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                       rows={3}
                       value={typed}
                       onChange={(e) => setTyped(e.target.value)}
-                      placeholder="Tell sales to send the revised quote to the Delhi retailer by Friday."
+                      placeholder="Type what happened, or what you want done."
                     />
                   </Field>
                   <div className="mt-3 flex flex-wrap gap-2">

@@ -1,7 +1,8 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Mic } from "lucide-react";
-import { Btn, Card, EmptyState, PageHeader, Segmented, StatusBadge, TextInput } from "@/components/ds";
+import { Btn, Card, EmptyState, PageHeader, Segmented, StatusBadge } from "@/components/ds";
+import { AiBtn } from "@/components/ds/ai";
+import { VoiceInput } from "@/components/ds/voice";
 
 export const Route = createFileRoute("/_shell/brain")({
   head: () => ({
@@ -128,19 +129,17 @@ function AskTab() {
           ask(question || suggestions[0]!);
         }}
       >
-        <TextInput
+        <VoiceInput
           aria-label="Ask anything about your operations"
           className="min-w-60 flex-1"
+          micLabel="Speak Your Question"
           placeholder="Ask anything about your operations…"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
         />
-        <Btn variant="secondary" type="button">
-          <Mic className="size-4" aria-hidden="true" /> Speak Your Question
-        </Btn>
-        <Btn variant="primary" type="submit" loading={state === "thinking"}>
-          Ask
-        </Btn>
+        <AiBtn type="submit" loading={state === "thinking"}>
+          Ask The Brain
+        </AiBtn>
       </form>
     </div>
   );
@@ -166,16 +165,14 @@ function SearchTab() {
           setSearched(true);
         }}
       >
-        <TextInput
+        <VoiceInput
           aria-label="Search decisions, tasks, workflows"
           className="min-w-60 flex-1"
+          micLabel="Speak Your Search"
           placeholder="Search decisions, tasks, workflows…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <Btn variant="secondary" type="button">
-          <Mic className="size-4" aria-hidden="true" /> Speak Your Search
-        </Btn>
         <Btn variant="primary" type="submit">
           Search
         </Btn>

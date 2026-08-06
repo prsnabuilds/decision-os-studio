@@ -15,13 +15,25 @@ import {
   SectionHeading,
   Segmented,
   StatusBadge,
-  TextArea,
   TextInput,
   type Urgency,
 } from "@/components/ds";
-import { leaves, pipelines, tasks, type Task } from "@/data/demo";
+import { AiBtn } from "@/components/ds/ai";
+import { VoiceTextArea } from "@/components/ds/voice";
+import { leaves, people, pipelines, tasks, type Task } from "@/data/demo";
 import { inr } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
+const assigneeOptions = [
+  ...people.filter((p) => p.type === "employee").map((p) => p.name),
+  "Sales",
+  "Operations",
+  "Finance",
+];
+const approverOptions = people.filter((p) => p.type === "employee").map((p) => p.name);
+const counterpartyOptions = people
+  .filter((p) => p.type !== "employee")
+  .map((p) => p.name);
 
 export const Route = createFileRoute("/_shell/my-work")({
   head: () => ({
@@ -206,7 +218,12 @@ function TaskCard({
 
           <div>
             <p className="text-label text-tertiary-foreground">Comments</p>
-            <TextArea rows={2} className="mt-2" placeholder="Add a comment for the team…" />
+            <VoiceTextArea
+              rows={2}
+              className="mt-2"
+              aria-label="Add a comment for the team"
+              placeholder="Add a comment for the team…"
+            />
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -299,20 +316,20 @@ function BoardView() {
           <h3 className="text-h3 text-foreground">New Task</h3>
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="Title" htmlFor="nt-title">
-              <TextInput id="nt-title" placeholder="Send the revised Delhi quote" />
+              <TextInput id="nt-title" placeholder="What needs to happen" />
             </Field>
             <Field label="Assignee (Person Or Role)" htmlFor="nt-assignee">
-              <TextInput id="nt-assignee" placeholder="Ravi Kumar or Sales" />
+              <Select id="nt-assignee" options={assigneeOptions} placeholder="Choose who owns it" />
             </Field>
             <Field label="Priority" htmlFor="nt-priority">
-              <TextInput id="nt-priority" placeholder="High / Medium / Low" />
+              <Select id="nt-priority" options={["High", "Medium", "Low"]} placeholder="Choose a priority" />
             </Field>
             <Field label="Due Date" htmlFor="nt-due">
               <TextInput id="nt-due" type="date" />
             </Field>
           </div>
           <Field label="Description" htmlFor="nt-desc">
-            <TextArea id="nt-desc" rows={2} placeholder="What does done look like?" />
+            <VoiceTextArea id="nt-desc" rows={2} placeholder="What does done look like?" />
           </Field>
           <label className="flex items-center gap-2 text-small text-secondary-foreground">
             <input
@@ -391,17 +408,25 @@ function WorkflowsView() {
             <Card className="space-y-3">
               <h3 className="text-h3 text-foreground">New Card</h3>
               <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="Pipeline" htmlFor="pc-pipeline">
+                  <Select
+                    id="pc-pipeline"
+                    options={pipelines.map((p) => p.name)}
+                    placeholder="Choose a pipeline"
+                  />
+                </Field>
                 <Field label="Title" htmlFor="pc-title">
-                  <TextInput id="pc-title" placeholder="Order #4827" />
+                  <TextInput id="pc-title" placeholder="Order or reference number" />
                 </Field>
                 <Field label="Counterparty" htmlFor="pc-party">
-                  <TextInput id="pc-party" placeholder="Delhi Retail Mart" />
+                  <Select
+                    id="pc-party"
+                    options={counterpartyOptions}
+                    placeholder="Choose a customer or vendor"
+                  />
                 </Field>
-                <Field label="Amount" htmlFor="pc-amount">
-                  <TextInput id="pc-amount" inputMode="numeric" placeholder="480000" />
-                </Field>
-                <Field label="Detail" htmlFor="pc-detail">
-                  <TextInput id="pc-detail" placeholder="Festive packaging line" />
+                <Field label="Amount In Rupees" htmlFor="pc-amount">
+                  <TextInput id="pc-amount" inputMode="numeric" placeholder="Amount in rupees" />
                 </Field>
               </div>
               <div className="flex gap-2">
@@ -520,7 +545,7 @@ function LeaveView() {
             </Field>
           </div>
           <Field label="Reason" htmlFor="lv-reason">
-            <TextArea id="lv-reason" rows={2} placeholder="Family function in Madurai" />
+            <VoiceTextArea id="lv-reason" rows={2} placeholder="Tell your team why, in a line" />
           </Field>
           <Btn variant="primary" onClick={() => setImpact(true)}>
             Check Impact &amp; Submit
@@ -550,7 +575,7 @@ function LeaveView() {
             />
           </Field>
           <Field label="Note" htmlFor="ab-note">
-            <TextArea id="ab-note" rows={2} placeholder="Anything the team should know today" />
+            <VoiceTextArea id="ab-note" rows={2} placeholder="Anything the team should know today" />
           </Field>
           <Btn variant="secondary">Report Absence</Btn>
         </Card>
@@ -580,7 +605,7 @@ function LeaveView() {
           {["Sales", "Operations", "Finance"].map((d) => (
             <div key={d} className="grid gap-3 sm:grid-cols-2">
               <Field label={d} htmlFor={`ap-${d}`}>
-                <TextInput id={`ap-${d}`} defaultValue="Prasanna Narayanan" />
+                <Select id={`ap-${d}`} options={approverOptions} defaultValue="Prasanna Narayanan" />
               </Field>
             </div>
           ))}
@@ -616,19 +641,15 @@ function MyWorkPage() {
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <Segmented options={views} value={view} onChange={setView} label="Work view" />
         <Segmented options={scopes} value={scope} onChange={setScope} label="Task scope" />
-        <button
-          type="button"
+        <AiBtn
+          size="sm"
           onClick={toggleAi}
           aria-pressed={ai}
-          className={cn(
-            "inline-flex h-8 items-center gap-2 rounded-pill border px-3 text-label transition-colors duration-150",
-            ai
-              ? "border-brand-tint-border bg-brand-tint text-brand-on-tint"
-              : "border-hairline bg-surface text-secondary-foreground hover:bg-surface-hover",
-          )}
+          loading={scoring}
+          className={cn(!ai && "bg-surface text-secondary-foreground border-hairline")}
         >
-          {scoring ? "Scoring…" : ai ? "AI Priority: On" : "AI Priority: Off"}
-        </button>
+          {scoring ? "Scoring…" : ai ? "AI Priority Is On" : "Prioritise With AI"}
+        </AiBtn>
       </div>
 
       {view === "My Work" ? <GroupedView aiPriority={ai} /> : null}

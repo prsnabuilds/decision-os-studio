@@ -1,7 +1,9 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Btn, Card, EmptyState, Field, PageHeader, Segmented, StatusBadge, TextInput } from "@/components/ds";
-import { finance } from "@/data/demo";
+import { Btn, Card, EmptyState, Field, PageHeader, Segmented, Select, StatusBadge, TextInput } from "@/components/ds";
+import { AiBtn, AiTag } from "@/components/ds/ai";
+import { VoiceInput } from "@/components/ds/voice";
+import { finance, people } from "@/data/demo";
 import { inr } from "@/lib/format";
 
 export const Route = createFileRoute("/_shell/ledger")({
@@ -105,15 +107,18 @@ function Overview() {
       </section>
 
       <Card className="space-y-3">
-        <h2 className="text-h3 text-foreground">AI Finance Brief</h2>
         <div className="flex flex-wrap items-center gap-2">
-          <TextInput
-            aria-label="Ask AI about your finances"
+          <h2 className="text-h3 text-foreground">Finance Brief</h2>
+          <AiTag>Answered by DecisionOS</AiTag>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <VoiceInput
+            aria-label="Ask about your finances"
             className="min-w-60 flex-1"
-            placeholder="e.g. Which vendor did I spend most on?"
+            micLabel="Speak Your Finance Question"
+            placeholder="Ask about spend, dues or margins"
           />
-          <Btn variant="primary">Ask AI About Your Finances</Btn>
-          <Btn variant="tertiary">Refresh</Btn>
+          <AiBtn>Ask</AiBtn>
         </div>
       </Card>
 
@@ -168,7 +173,10 @@ function Overview() {
       </Card>
 
       <section>
-        <h2 className="mb-3 text-h2 text-foreground">AI Insights</h2>
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <h2 className="text-h2 text-foreground">Insights</h2>
+          <AiTag>Spotted by DecisionOS</AiTag>
+        </div>
         <ul className="space-y-2">
           {finance.insights.map((i) => (
             <li key={i}>
@@ -197,7 +205,7 @@ function InsightRow({ insight }: { insight: string }) {
             <TextInput id="ins-title" defaultValue={insight.slice(0, 48)} />
           </Field>
           <Field label="Assignee" htmlFor="ins-assignee">
-            <TextInput id="ins-assignee" placeholder="Meena Raghavan" />
+            <Select id="ins-assignee" options={staffOptions} placeholder="Choose who owns it" />
           </Field>
           <div>
             <Btn size="sm" variant="secondary" onClick={() => setOpen(false)}>
@@ -209,6 +217,11 @@ function InsightRow({ insight }: { insight: string }) {
     </Card>
   );
 }
+
+const staffOptions = people.filter((p) => p.type === "employee").map((p) => p.name);
+const customerOptions = people.filter((p) => p.type === "customer").map((p) => p.name);
+const vendorOptions = people.filter((p) => p.type === "vendor").map((p) => p.name);
+const categoryOptions = finance.categories.map((c) => c.name);
 
 function FinancePage() {
   const [tab, setTab] = React.useState<(typeof tabs)[number]>("Overview");
@@ -247,17 +260,19 @@ function FinancePage() {
                 <TextInput id="fin-title" />
               </Field>
               <Field label={tab === "Revenue" ? "Customer" : "Vendor"} htmlFor="fin-party">
-                <TextInput id="fin-party" />
+                <Select
+                  id="fin-party"
+                  options={tab === "Revenue" ? customerOptions : vendorOptions}
+                  placeholder={tab === "Revenue" ? "Choose a customer" : "Choose a vendor"}
+                />
               </Field>
               <Field label="Amount" htmlFor="fin-amount">
                 <TextInput id="fin-amount" inputMode="numeric" />
               </Field>
               <Field label="Category" htmlFor="fin-cat">
                 <div className="flex gap-2">
-                  <TextInput id="fin-cat" />
-                  <Btn variant="secondary" type="button">
-                    Suggest Category
-                  </Btn>
+                  <Select id="fin-cat" options={categoryOptions} placeholder="Choose a category" className="flex-1" />
+                  <AiBtn type="button">Suggest</AiBtn>
                 </div>
               </Field>
               <div className="sm:col-span-2 flex gap-2">
