@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Upload, FileSpreadsheet, QrCode, Loader2 } from "lucide-react";
+import { Upload, FileSpreadsheet, FileText, QrCode, Loader2 } from "lucide-react";
 import {
   Btn,
   Card,
