@@ -542,7 +542,7 @@ function LeaveView() {
             <li key={l.id}>
               <Card compact className="flex flex-wrap items-center gap-3">
                 <span className="min-w-40 flex-1 text-body-strong text-foreground">
-                  {l.type} · {l.from} – {l.to}
+                  {l.type} · {l.from} to {l.to}
                 </span>
                 <span className="text-small text-secondary-foreground">{l.portion}</span>
                 <StatusBadge kind={l.status === "approved" ? "completed" : "pending"}>
@@ -621,7 +621,7 @@ function LeaveView() {
         <SectionHeading title="Leave Approvals" sub="Requests waiting on you." />
         <Card compact className="flex flex-wrap items-center gap-3">
           <span className="min-w-40 flex-1 text-body-strong text-foreground">
-            Ravi Kumar · Casual leave · 12 Aug – 13 Aug
+            Ravi Kumar · Casual leave · 12 Aug to 13 Aug
           </span>
           <Btn size="sm" variant="secondary">
             Approve

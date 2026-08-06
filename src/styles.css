@@ -13,7 +13,7 @@
 :root {
   --radius: 12px;
 
-  /* brand — indigo */
+  /* brand - indigo */
   --brand-50: #f0f1ff;
   --brand-100: #e0e2ff;
   --brand-200: #c7c9ff;
@@ -25,7 +25,7 @@
   --brand-800: #252a83;
   --brand-900: #202465;
 
-  /* danger — red */
+  /* danger - red */
   --danger-50: #fef1f1;
   --danger-100: #fee1e1;
   --danger-200: #fec8c8;
@@ -37,7 +37,7 @@
   --danger-800: #981b1b;
   --danger-900: #811d1d;
 
-  /* caution — amber */
+  /* caution - amber */
   --caution-50: #fffbeb;
   --caution-100: #fef3c8;
   --caution-200: #fde68b;
@@ -49,7 +49,7 @@
   --caution-800: #91400d;
   --caution-900: #76350f;
 
-  /* success — green */
+  /* success - green */
   --success-50: #f2fdf5;
   --success-100: #defce9;
   --success-200: #bbf7d0;
@@ -73,7 +73,7 @@
   --neutral-800: #171a21;
   --neutral-900: #111318;
 
-  /* semantic — light mode */
+  /* semantic - light mode */
   --background: var(--neutral-50);
   --surface: #ffffff;
   --surface-raised: #ffffff;
@@ -118,7 +118,7 @@
   --edge-week: var(--caution-600);
   --edge-later: var(--neutral-300);
 
-  /* terminal — dark in both themes */
+  /* terminal - dark in both themes */
   --terminal-bg: #111827;
   --terminal-row: #192134;
   --terminal-fg: #d1d5db;
