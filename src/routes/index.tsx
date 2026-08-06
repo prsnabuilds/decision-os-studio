@@ -100,7 +100,7 @@ function Landing() {
               <Link to="/login">Get Started Free</Link>
             </Btn>
             <Btn variant="secondary" size="lg" asChild>
-              <Link to="/inbox">See How It Works</Link>
+              <Link to="/home">See How It Works</Link>
             </Btn>
           </div>
           <p className="mt-6 text-small text-tertiary-foreground">

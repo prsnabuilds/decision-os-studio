@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
+  Home,
   Inbox,
   Newspaper,
   ListChecks,
@@ -25,6 +26,7 @@ import logoOnLight from "@/assets/decisionos-wordmark-dark-text.svg.asset.json";
 import logoOnDark from "@/assets/decisionos-wordmark-light-text.svg.asset.json";
 
 const nav = [
+  { to: "/home", label: "Home", short: "Home", icon: Home },
   { to: "/inbox", label: "Decision Desk", short: "Desk", icon: Inbox, count: 6, tone: "neutral" as const },
   { to: "/brief", label: "CEO Brief", short: "Brief", icon: Newspaper, count: 5, tone: "danger" as const },
   { to: "/my-work", label: "My Work", short: "Work", icon: ListChecks },

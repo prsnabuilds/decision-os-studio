@@ -52,7 +52,7 @@ type Tone = "decision" | "fire" | "due" | "important";
 
 const toneStyles: Record<Tone, { chip: string; edge: string }> = {
   decision: { chip: "bg-brand-tint text-brand-on-tint", edge: "var(--edge-today)" },
-  fire: { chip: "bg-danger-tint text-danger-on-tint", edge: "var(--edge-overdue)" },
+  fire: { chip: "bg-danger-50 text-danger-700 dark:bg-danger-800/30 dark:text-danger-300", edge: "var(--edge-overdue)" },
   due: { chip: "bg-surface-sunken text-secondary-foreground", edge: "var(--edge-week)" },
   important: { chip: "bg-surface-sunken text-secondary-foreground", edge: "var(--edge-later)" },
 };
