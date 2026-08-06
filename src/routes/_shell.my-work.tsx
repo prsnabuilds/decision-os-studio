@@ -380,32 +380,20 @@ function BoardView() {
 }
 
 function WorkflowsView() {
-  const [tab, setTab] = React.useState<"Pipelines" | "Task Board">("Pipelines");
   const [note, setNote] = React.useState("");
   const [newCard, setNewCard] = React.useState(false);
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <Segmented
-          options={["Pipelines", "Task Board"] as const}
-          value={tab}
-          onChange={setTab}
-          label="Workflow view"
-        />
-        {tab === "Pipelines" ? (
-          <Btn variant="primary" onClick={() => setNewCard((n) => !n)}>
-            New Pipeline Card
-          </Btn>
-        ) : null}
+      <div className="mb-4 flex flex-wrap items-center justify-end gap-3">
+        <Btn variant="primary" onClick={() => setNewCard((n) => !n)}>
+          New Pipeline Card
+        </Btn>
       </div>
 
       {note ? <p className="mb-3 text-small text-secondary-foreground">{note}</p> : null}
 
-      {tab === "Task Board" ? (
-        <BoardView />
-      ) : (
-        <div className="space-y-8">
+      <div className="space-y-8">
           {newCard ? (
             <Card className="space-y-3">
               <h3 className="text-h3 text-foreground">New Card</h3>
