@@ -320,25 +320,18 @@ function GroupedView() {
         </AiBtn>
       </div>
 
-      <div className="relative -mx-4 mb-4 sm:mx-0">
-        <div className="no-scrollbar overflow-x-auto px-4 sm:px-0">
-          <div className="flex w-max gap-1.5 pr-6 sm:pr-0 sm:gap-2">
-            {workFilters.map((f) => (
-              <FilterPill
-                key={f}
-                label={f}
-                count={countOf(f)}
-                active={filter === f}
-                onClick={() => setFilter(f)}
-              />
-            ))}
-          </div>
-        </div>
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent sm:hidden"
-        />
+      <div className="mb-4 flex flex-wrap gap-1.5 sm:gap-2">
+        {workFilters.map((f) => (
+          <FilterPill
+            key={f}
+            label={f}
+            count={countOf(f)}
+            active={filter === f}
+            onClick={() => setFilter(f)}
+          />
+        ))}
       </div>
+
 
       {sorted.length === 0 ? (
         <EmptyState title="Nothing Here" helper="You're all caught up!" />
