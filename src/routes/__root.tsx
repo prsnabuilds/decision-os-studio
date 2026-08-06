@@ -89,6 +89,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:description", content: "Speak the decision and DecisionOS structures it into tasks, approvals and workflows - tracked, chased and permanently searchable." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6059c28f-1b6c-4f2a-8648-d17ee694d448/id-preview-2be2012f--c4e80248-2d37-4200-a300-adbddd66e12a.lovable.app-1785940864913.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6059c28f-1b6c-4f2a-8648-d17ee694d448/id-preview-2be2012f--c4e80248-2d37-4200-a300-adbddd66e12a.lovable.app-1785940864913.png" },
+      { name: "theme-color", content: "#373ACD" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "DecisionOS" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
     ],
     links: [
       {
@@ -96,6 +100,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
     ],
   }),
   shellComponent: RootShell,
