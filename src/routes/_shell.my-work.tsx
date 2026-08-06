@@ -659,45 +659,34 @@ function LeaveView() {
 }
 
 function MyWorkPage() {
+  const isMobile = useIsMobile();
   const [view, setView] = React.useState<(typeof views)[number]>("My Work");
-  const [scope, setScope] = React.useState<(typeof scopes)[number]>("My Tasks");
-  const [ai, setAi] = React.useState(false);
-  const [scoring, setScoring] = React.useState(false);
 
-  const toggleAi = () => {
-    if (ai) {
-      setAi(false);
-      return;
-    }
-    setScoring(true);
-    window.setTimeout(() => {
-      setScoring(false);
-      setAi(true);
-    }, 900);
-  };
+  // The Kanban board stays available on tablet and desktop only; on phones the
+  // same tasks are shown as the list + status pills instead.
+  const available = React.useMemo(
+    () => (isMobile ? views.filter((v) => v !== "Board") : views),
+    [isMobile],
+  );
+  const activeView = isMobile && view === "Board" ? "My Work" : view;
 
   return (
     <div>
       <PageHeader title="My Work" />
 
-      <div className="mb-6 flex flex-wrap items-center gap-3">
-        <Segmented options={views} value={view} onChange={setView} label="Work view" />
-        <Segmented options={scopes} value={scope} onChange={setScope} label="Task scope" />
-        <AiBtn
-          size="sm"
-          onClick={toggleAi}
-          aria-pressed={ai}
-          loading={scoring}
-          className={cn(!ai && "bg-surface text-secondary-foreground border-hairline")}
-        >
-          {scoring ? "Scoring…" : ai ? "AI Priority Is On" : "Prioritise With AI"}
-        </AiBtn>
+      <div className="mb-6">
+        <Segmented
+          options={available}
+          value={activeView}
+          onChange={setView}
+          label="Work view"
+        />
       </div>
 
-      {view === "My Work" ? <GroupedView aiPriority={ai} /> : null}
-      {view === "Board" ? <BoardView /> : null}
-      {view === "Workflows" ? <WorkflowsView /> : null}
-      {view === "Leave" ? <LeaveView /> : null}
+      {activeView === "My Work" ? <GroupedView /> : null}
+      {activeView === "Board" ? <BoardView /> : null}
+      {activeView === "Workflows" ? <WorkflowsView /> : null}
+      {activeView === "Leave" ? <LeaveView /> : null}
     </div>
   );
 }
