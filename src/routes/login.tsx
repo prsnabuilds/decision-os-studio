@@ -83,7 +83,7 @@ function LoginPage() {
           >
             {mode === "up" ? (
               <Field label="Company Name" htmlFor="company">
-                <TextInput id="company" placeholder="Preview Industries" />
+                <TextInput id="company" placeholder="Your company name" />
               </Field>
             ) : null}
 

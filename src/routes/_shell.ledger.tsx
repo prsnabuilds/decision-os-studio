@@ -116,7 +116,7 @@ function Overview() {
             aria-label="Ask about your finances"
             className="min-w-60 flex-1"
             micLabel="Speak Your Finance Question"
-            placeholder="Which vendor did I spend most on?"
+            placeholder="Ask about spend, dues or margins"
           />
           <AiBtn>Ask</AiBtn>
         </div>
