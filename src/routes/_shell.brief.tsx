@@ -2,6 +2,7 @@ import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, Flame } from "lucide-react";
 import { Btn, Card, Meta, PageHeader, SectionHeading, Segmented, StatusBadge } from "@/components/ds";
+import { AiBtn, AiTag } from "@/components/ds/ai";
 import { buildRanked, decisions, tasks } from "@/data/demo";
 import { inr, joinReadably, plural } from "@/lib/format";
 
@@ -68,6 +69,12 @@ function BriefPage() {
       </div>
 
       <Card className="mb-6">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <AiTag>Written by DecisionOS</AiTag>
+          <AiBtn size="sm" className="ml-auto">
+            Rewrite Brief
+          </AiBtn>
+        </div>
         <p className="text-body text-foreground">{summaryByPeriod[period]}</p>
         <p className="mt-4 text-small text-secondary-foreground">
           {joinReadably(
