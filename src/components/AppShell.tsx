@@ -272,7 +272,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="flex shrink-0 items-center">{themeControls}</div>
         </header>
 
-        <main className="mx-auto w-full max-w-[1200px] px-4 pb-28 pt-6 sm:px-6 lg:pb-16 lg:pt-8">
+        <main className="mx-auto w-full max-w-[1200px] overflow-x-hidden px-4 pb-28 pt-6 sm:px-6 lg:pb-16 lg:pt-8">
           {children}
         </main>
       </div>

@@ -21,12 +21,12 @@ import { people, workspace } from "@/data/demo";
 export const Route = createFileRoute("/_shell/contacts/")({
   head: () => ({
     meta: [
-      { title: "People — DecisionOS" },
+      { title: "People - DecisionOS" },
       {
         name: "description",
-        content: "Everyone the business deals with — your team, your customers and your vendors.",
+        content: "Everyone the business deals with - your team, your customers and your vendors.",
       },
-      { property: "og:title", content: "People — DecisionOS" },
+      { property: "og:title", content: "People - DecisionOS" },
       { property: "og:description", content: "Team, customers and vendors in one place." },
     ],
   }),

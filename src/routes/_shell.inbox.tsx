@@ -19,13 +19,13 @@ import { inr, plural } from "@/lib/format";
 export const Route = createFileRoute("/_shell/inbox")({
   head: () => ({
     meta: [
-      { title: "Decision Desk — DecisionOS" },
+      { title: "Decision Desk - DecisionOS" },
       {
         name: "description",
         content:
           "What needs you today: decisions waiting on your approval, overdue work, what's due and what matters most.",
       },
-      { property: "og:title", content: "Decision Desk — DecisionOS" },
+      { property: "og:title", content: "Decision Desk - DecisionOS" },
       {
         property: "og:description",
         content: "Answer one question each morning: what needs me today?",
@@ -241,7 +241,7 @@ function DecisionDesk() {
         tone="due"
         icon={CalendarClock}
         title="Due Today"
-        sub="On the date — nudge anything that looks slow."
+        sub="On the date - nudge anything that looks slow."
         count={dueToday.length}
       >
         <ul className="grid gap-1.5 sm:grid-cols-2">
@@ -294,7 +294,7 @@ function DecisionDesk() {
         open={reviewing !== null}
         onClose={() => setReviewing(null)}
         title="Decision Review"
-        subtitle="Approve, reject or send it back — the tasks below unblock the moment you decide."
+        subtitle="Approve, reject or send it back - the tasks below unblock the moment you decide."
       >
         {reviewing ? (
           <ApprovalCard decision={decisions.find((d) => d.id === reviewing)!} />
@@ -314,7 +314,7 @@ function DecisionDesk() {
             ) : null}
             <VoiceReply
               ariaLabel={`Your response to ${escalated.raisedBy}`}
-              placeholder={`Speak or type your decision — it goes back to ${escalated.raisedBy}`}
+              placeholder={`Speak or type your decision - it goes back to ${escalated.raisedBy}`}
               onSend={() => setRespondTo(null)}
             />
           </div>

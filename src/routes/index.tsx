@@ -6,16 +6,16 @@ import { Wordmark } from "@/components/AppShell";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "DecisionOS — The Operating Brain For Founder-Led Businesses" },
+      { title: "DecisionOS - The Operating Brain For Founder-Led Businesses" },
       {
         name: "description",
         content:
-          "Speak the decision and DecisionOS structures it into tasks, approvals and workflows — tracked, chased and permanently searchable.",
+          "Speak the decision and DecisionOS structures it into tasks, approvals and workflows - tracked, chased and permanently searchable.",
       },
-      { property: "og:title", content: "DecisionOS — The Operating Brain For Founder-Led Businesses" },
+      { property: "og:title", content: "DecisionOS - The Operating Brain For Founder-Led Businesses" },
       {
         property: "og:description",
-        content: "Speak the decision and DecisionOS structures it into tasks, approvals and workflows — tracked, chased and permanently searchable.",
+        content: "Speak the decision and DecisionOS structures it into tasks, approvals and workflows - tracked, chased and permanently searchable.",
       },
     ],
   }),
@@ -92,7 +92,7 @@ function Landing() {
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lead text-secondary-foreground">
             The founder holds the whole business in their head. DecisionOS is where that knowledge
-            goes, so it stops living only there — structured into tasks, approvals and workflows the
+            goes, so it stops living only there - structured into tasks, approvals and workflows the
             moment it is spoken.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -104,7 +104,7 @@ function Landing() {
             </Btn>
           </div>
           <p className="mt-6 text-small text-tertiary-foreground">
-            Voice · Text · WhatsApp · Documents — captured once, executed forever.
+            Voice · Text · WhatsApp · Documents - captured once, executed forever.
           </p>
         </section>
 

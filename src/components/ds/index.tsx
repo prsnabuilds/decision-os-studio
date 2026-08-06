@@ -30,7 +30,7 @@ const variants: Record<Variant, string> = {
   tertiary: "text-secondary-foreground hover:bg-surface-hover",
   destructive:
     "bg-transparent border border-destructive-border text-destructive hover:bg-destructive-hover",
-  // Anything the AI does for you is always this shape — a tinted, sparkled pill.
+  // Anything the AI does for you is always this shape - a tinted, sparkled pill.
   ai: "rounded-pill bg-brand-tint text-brand-on-tint border border-brand-tint-border hover:bg-brand-tint-hover",
 };
 
@@ -533,7 +533,7 @@ export function Segmented<T extends string>({
   label: string;
 }) {
   return (
-    <div className="-mx-4 max-w-full overflow-x-auto px-4 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="no-scrollbar -mx-4 max-w-full overflow-x-auto px-4 sm:mx-0 sm:px-0">
       <div
         role="tablist"
         aria-label={label}

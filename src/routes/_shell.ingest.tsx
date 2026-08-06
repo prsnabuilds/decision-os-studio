@@ -17,13 +17,13 @@ import { inr } from "@/lib/format";
 export const Route = createFileRoute("/_shell/ingest")({
   head: () => ({
     meta: [
-      { title: "Capture — DecisionOS" },
+      { title: "Capture - DecisionOS" },
       {
         name: "description",
         content:
           "Bulk import invoices, bills and spreadsheets, then confirm what the AI read in the review queue.",
       },
-      { property: "og:title", content: "Capture — DecisionOS" },
+      { property: "og:title", content: "Capture - DecisionOS" },
       { property: "og:description", content: "Bulk import and the review queue." },
     ],
   }),
@@ -47,7 +47,7 @@ function ImportTab() {
             <Upload className="mx-auto size-6 text-tertiary-foreground" aria-hidden="true" />
             <p className="mt-2 text-body-strong text-foreground">Upload Document</p>
             <p className="mt-1 text-small text-secondary-foreground">
-              PDF / Photo — Invoice, bill, receipt or PO — AI reads it with OCR
+              PDF / Photo - Invoice, bill, receipt or PO - AI reads it with OCR
             </p>
             <Btn variant="primary" className="mt-4" onClick={() => setReading(true)}>
               Choose A Document
@@ -60,7 +60,7 @@ function ImportTab() {
             <FileSpreadsheet className="mx-auto size-6 text-tertiary-foreground" aria-hidden="true" />
             <p className="mt-2 text-body-strong text-foreground">Upload CSV</p>
             <p className="mt-1 text-small text-secondary-foreground">
-              CSV / Excel — bulk records in one go
+              CSV / Excel - bulk records in one go
             </p>
             <Btn variant="secondary" className="mt-4">
               Choose A Spreadsheet
@@ -74,7 +74,7 @@ function ImportTab() {
           <Loader2 className="size-4 animate-spin text-brand" aria-hidden="true" />
           <AiTag>Reading with OCR</AiTag>
           <p className="min-w-40 flex-1 text-body text-foreground">
-            Reading the document — extracting vendor, amount, date and line items.
+            Reading the document - extracting vendor, amount, date and line items.
           </p>
           <Btn size="sm" variant="tertiary" onClick={() => setReading(false)}>
             Cancel
@@ -99,7 +99,7 @@ function ImportTab() {
       <Card compact className="flex flex-wrap items-center gap-3">
         <StatusBadge kind="pending">Own Company</StatusBadge>
         <p className="min-w-40 flex-1 text-small text-secondary-foreground">
-          The seller on this document appears to be Preview Industries — your own company. Check
+          The seller on this document appears to be Preview Industries - your own company. Check
           before accepting it as a bill.
         </p>
       </Card>
@@ -142,7 +142,7 @@ function ImportTab() {
 
       <section>
         <h2 className="mb-3 text-h3 text-foreground">Records</h2>
-        <div className="overflow-x-auto rounded-lg border border-hairline bg-surface">
+        <div className="no-scrollbar overflow-x-auto rounded-lg border border-hairline bg-surface">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-hairline">
@@ -201,7 +201,7 @@ function ReviewTab() {
             <li key={i.id}>
               <Card className="flex flex-wrap gap-4">
                 <div>
-                  <p className="text-label text-tertiary-foreground">Under Review — Original File</p>
+                  <p className="text-label text-tertiary-foreground">Under Review - Original File</p>
                   <button
                     type="button"
                     aria-label={`Open the original file for ${i.name}`}

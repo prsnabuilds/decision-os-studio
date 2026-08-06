@@ -77,7 +77,7 @@ export function TasksAndActivity() {
         byFilter.length === 0 ? (
           <EmptyState
             title="Inbox Zero"
-            helper="Captured voice notes, uploads, invoices, payments and complaints will appear here — classified automatically."
+            helper="Captured voice notes, uploads, invoices, payments and complaints will appear here - classified automatically."
           />
         ) : (
           <EmptyState
@@ -152,7 +152,7 @@ export function TasksAndActivity() {
 
       )}
 
-      {/* Rendered unconditionally — the disclosure rule. */}
+      {/* Rendered unconditionally - the disclosure rule. */}
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <Btn variant="secondary" onClick={() => setShowEverything((s) => !s)}>
           {showEverything
@@ -163,7 +163,7 @@ export function TasksAndActivity() {
           {showEverything
             ? `Showing all ${byFilter.length}.`
             : hiddenCount > 0
-              ? `${hiddenCount} not needed today — scheduled later or already closed.`
+              ? `${hiddenCount} not needed today - scheduled later or already closed.`
               : "Nothing is hidden."}
         </p>
       </div>

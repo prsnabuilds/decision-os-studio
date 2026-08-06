@@ -31,7 +31,7 @@ function Waveform({ bars = 14 }: { bars?: number }) {
 
 /**
  * A textarea you can speak into. Typing stays available, but the mic is always
- * inside the field — speaking is the faster path on every screen.
+ * inside the field - speaking is the faster path on every screen.
  */
 export function VoiceTextArea({
   className,
@@ -78,7 +78,7 @@ export function VoiceTextArea({
           </>
         ) : (
           <span className="text-small text-tertiary-foreground">
-            Tap the mic and speak — Tamil, English or Tanglish.
+            Tap the mic and speak - Tamil, English or Tanglish.
           </span>
         )}
       </div>

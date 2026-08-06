@@ -7,13 +7,13 @@ import { VoiceInput } from "@/components/ds/voice";
 export const Route = createFileRoute("/_shell/brain")({
   head: () => ({
     meta: [
-      { title: "Company Brain — DecisionOS" },
+      { title: "Company Brain - DecisionOS" },
       {
         name: "description",
         content:
           "Institutional memory: ask a grounded question about your operations or search every decision, task and workflow.",
       },
-      { property: "og:title", content: "Company Brain — DecisionOS" },
+      { property: "og:title", content: "Company Brain - DecisionOS" },
       { property: "og:description", content: "Everything your business knows, retrievable." },
     ],
   }),
@@ -33,7 +33,7 @@ const answer = {
     "Decision · Approve supplier payment timing",
     "Decision · Write off the damaged carton stock",
     "Task · Confirm the monsoon leak repair quote",
-    "Invoice · AP-2291 — Acme Packaging",
+    "Invoice · AP-2291 - Acme Packaging",
   ],
 };
 
@@ -54,7 +54,7 @@ const searchResults = [
   },
   {
     group: "Workflows",
-    items: [{ title: "Order #4823 — Delhi Retail Mart", links: 4, tasks: [] }],
+    items: [{ title: "Order #4823 - Delhi Retail Mart", links: 4, tasks: [] }],
   },
   {
     group: "Contacts",
@@ -85,7 +85,7 @@ function AskTab() {
   return (
     <div className="space-y-4">
       <Terminal>
-        <p className="text-terminal-label">&gt; DecisionOS Ask AI — grounded in your company data.</p>
+        <p className="text-terminal-label">&gt; DecisionOS Ask AI - grounded in your company data.</p>
         <p className="text-terminal-dim">&gt; Try one of the queries below to begin.</p>
         {question ? <p className="mt-3">&gt; {question}</p> : null}
         {state === "thinking" ? <p className="mt-2 text-terminal-dim">&gt; thinking…</p> : null}
@@ -178,7 +178,7 @@ function SearchTab() {
         </Btn>
       </form>
       <p className="text-small text-secondary-foreground">
-        Find the exact records — decisions, tasks, workflows, contacts &amp; more that match your
+        Find the exact records - decisions, tasks, workflows, contacts &amp; more that match your
         words.
       </p>
 

@@ -8,12 +8,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_shell/notifications")({
   head: () => ({
     meta: [
-      { title: "Notifications — DecisionOS" },
+      { title: "Notifications - DecisionOS" },
       {
         name: "description",
         content: "Escalations, approvals and updates from your team, newest first.",
       },
-      { property: "og:title", content: "Notifications — DecisionOS" },
+      { property: "og:title", content: "Notifications - DecisionOS" },
       { property: "og:description", content: "Everything that happened while you were away." },
     ],
   }),
