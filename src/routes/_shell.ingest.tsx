@@ -10,6 +10,7 @@ import {
   Segmented,
   StatusBadge,
 } from "@/components/ds";
+import { AiTag } from "@/components/ds/ai";
 import { captureReview } from "@/data/demo";
 import { inr } from "@/lib/format";
 
@@ -71,6 +72,7 @@ function ImportTab() {
       {reading ? (
         <Card compact className="flex flex-wrap items-center gap-3">
           <Loader2 className="size-4 animate-spin text-brand" aria-hidden="true" />
+          <AiTag>Reading with OCR</AiTag>
           <p className="min-w-40 flex-1 text-body text-foreground">
             Reading the document — extracting vendor, amount, date and line items.
           </p>
@@ -203,9 +205,10 @@ function ReviewTab() {
                   <button
                     type="button"
                     aria-label={`Open the original file for ${i.name}`}
-                    className="mt-2 flex h-24 w-32 items-center justify-center rounded-md border border-hairline bg-surface-sunken text-small text-tertiary-foreground"
+                    className="mt-2 flex h-24 w-32 flex-col items-center justify-center gap-1 rounded-md border border-hairline bg-surface-sunken text-small text-tertiary-foreground hover:bg-surface-hover"
                   >
-                    Scan preview
+                    <FileText className="size-5" aria-hidden="true" />
+                    Open File
                   </button>
                 </div>
                 <div className="min-w-48 flex-1 space-y-2">

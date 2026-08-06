@@ -1,6 +1,8 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Btn, Card, PageHeader, Segmented, StatusBadge, TextArea } from "@/components/ds";
+import { Btn, Card, PageHeader, Segmented, StatusBadge } from "@/components/ds";
+import { AiTag } from "@/components/ds/ai";
+import { VoiceTextArea } from "@/components/ds/voice";
 import { Avatar } from "@/components/ds/bits";
 import { operatingScore } from "@/data/demo";
 
@@ -92,7 +94,10 @@ function CoachPage() {
       </div>
 
       <Card className="mt-4">
-        <h2 className="text-h3 text-foreground">Suggested Conversation</h2>
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 className="text-h3 text-foreground">Suggested Conversation</h2>
+          <AiTag>Drafted by DecisionOS</AiTag>
+        </div>
         <p className="mt-2 text-body text-secondary-foreground">{note.suggested}</p>
         <div className="mt-3 flex flex-wrap gap-2">
           <Btn variant="secondary">Create A Task From This</Btn>
@@ -102,7 +107,7 @@ function CoachPage() {
 
       <Card className="mt-4 space-y-3">
         <h2 className="text-h3 text-foreground">Your Private Note</h2>
-        <TextArea
+        <VoiceTextArea
           rows={4}
           aria-label={`Private coaching note about ${person.name}`}
           placeholder="Only you can see this. What did you agree in the last conversation?"
