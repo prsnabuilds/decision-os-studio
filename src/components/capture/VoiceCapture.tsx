@@ -4,7 +4,6 @@ import { Btn, Field, TextArea } from "@/components/ds";
 import { currentUser } from "@/data/demo";
 import { cn } from "@/lib/utils";
 
-const languages = ["Auto", "English", "தமிழ்", "Tanglish"] as const;
 type Mode = "speak" | "type" | "upload";
 
 function timeGreeting() {
@@ -50,7 +49,6 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
   const [processing, setProcessing] = React.useState(false);
   const [captured, setCaptured] = React.useState<string | null>(null);
   const [typed, setTyped] = React.useState("");
-  const [language, setLanguage] = React.useState<(typeof languages)[number]>("Auto");
   const [greeting, setGreeting] = React.useState("Welcome Back");
 
   React.useEffect(() => setGreeting(timeGreeting()), []);
@@ -232,28 +230,6 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
             </div>
 
             <div className="mt-4">
-              {mode === "speak" ? (
-                <div key="speak" className="soft-rise flex flex-wrap items-center justify-center gap-2">
-                  <span className="text-label text-tertiary-foreground">Language</span>
-                  {languages.map((l) => (
-                    <button
-                      key={l}
-                      type="button"
-                      onClick={() => setLanguage(l)}
-                      aria-pressed={language === l}
-                      className={cn(
-                        "h-8 rounded-pill px-3 text-label transition-colors duration-150",
-                        language === l
-                          ? "bg-surface text-brand-on-tint shadow-xs"
-                          : "text-secondary-foreground hover:bg-surface/60",
-                      )}
-                    >
-                      {l}
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-
               {mode === "type" ? (
                 <div key="type" className="soft-rise mx-auto max-w-xl rounded-lg bg-surface p-4 text-left shadow-xs">
                   <Field label="The Directive" htmlFor="capture-type">
