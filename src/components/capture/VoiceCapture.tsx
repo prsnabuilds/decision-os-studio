@@ -84,7 +84,6 @@ type SpeechRecognitionLike = {
  */
 function useLiveTranscript(recording: boolean, paused: boolean) {
   const [text, setText] = React.useState("");
-  const recRef = React.useRef<SpeechRecognitionLike | null>(null);
 
   React.useEffect(() => {
     if (!recording) {
@@ -92,6 +91,22 @@ function useLiveTranscript(recording: boolean, paused: boolean) {
       return;
     }
     if (paused) return;
+
+    let got = false;
+    let rec: SpeechRecognitionLike | null = null;
+    let fallbackId = 0;
+    let startId = 0;
+
+    const startFallback = () => {
+      if (got || fallbackId) return;
+      const words = DEMO_SPEECH.split(" ");
+      let i = 0;
+      fallbackId = window.setInterval(() => {
+        i += 1;
+        setText(words.slice(0, i).join(" "));
+        if (i >= words.length) window.clearInterval(fallbackId);
+      }, 220);
+    };
 
     const Ctor =
       (typeof window !== "undefined" &&
@@ -101,44 +116,45 @@ function useLiveTranscript(recording: boolean, paused: boolean) {
 
     if (Ctor) {
       try {
-        const rec = new (Ctor as new () => SpeechRecognitionLike)();
-        rec.continuous = true;
-        rec.interimResults = true;
-        rec.lang = "en-IN";
-        rec.onresult = (e) => {
+        const r = new (Ctor as new () => SpeechRecognitionLike)();
+        r.continuous = true;
+        r.interimResults = true;
+        r.lang = "en-IN";
+        r.onresult = (e) => {
           let out = "";
           for (let i = 0; i < e.results.length; i++) out += e.results[i]![0]!.transcript;
-          setText(out.trim());
-        };
-        rec.onerror = () => {};
-        rec.start();
-        recRef.current = rec;
-        return () => {
-          try {
-            rec.stop();
-          } catch {
-            /* already stopped */
+          if (out.trim()) {
+            got = true;
+            if (fallbackId) window.clearInterval(fallbackId);
+            setText(out.trim());
           }
-          recRef.current = null;
         };
+        r.onerror = () => startFallback();
+        r.start();
+        rec = r;
       } catch {
-        /* fall through to the demo typing fallback */
+        /* no live recognition available */
       }
     }
 
-    const words = DEMO_SPEECH.split(" ");
-    let i = 0;
-    setText((t) => t);
-    const id = window.setInterval(() => {
-      i += 1;
-      setText(words.slice(0, i).join(" "));
-      if (i >= words.length) window.clearInterval(id);
-    }, 260);
-    return () => window.clearInterval(id);
+    // If nothing is actually heard (no mic, denied permission, demo laptop),
+    // fall back to a progressively typed transcript so the field stays live.
+    startId = window.setTimeout(startFallback, 1200);
+
+    return () => {
+      window.clearTimeout(startId);
+      if (fallbackId) window.clearInterval(fallbackId);
+      try {
+        rec?.stop();
+      } catch {
+        /* already stopped */
+      }
+    };
   }, [recording, paused]);
 
   return text;
 }
+
 
 /** The gradient circle used by every capture control. */
 function CaptureCircle({
