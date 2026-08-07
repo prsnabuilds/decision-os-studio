@@ -314,9 +314,9 @@ function GroupedView() {
           onClick={toggleAi}
           aria-pressed={ai}
           loading={scoring}
-          className={cn("shrink-0", !ai && "bg-surface text-secondary-foreground border-hairline")}
+          className="h-9 shrink-0 gap-2 whitespace-nowrap px-3.5 active:scale-95"
         >
-          {scoring ? "Scoring…" : ai ? "AI Priority Is On" : "Prioritise With AI"}
+          <span>{scoring ? "Scoring…" : ai ? "AI priority is on" : "Prioritise with AI"}</span>
         </AiBtn>
       </div>
 
