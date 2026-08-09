@@ -4,6 +4,7 @@ import { ArrowRight, CheckCircle2, Flame } from "lucide-react";
 import {
   Btn,
   Card,
+  FilterPill,
   Meta,
   PageHeader,
   SectionHeading,
@@ -61,13 +62,12 @@ function BriefPage() {
   ];
 
   const filters = [
-    { id: "all", label: "All", count: fires.length + decisions.length + completed.length },
     { id: "fires", label: "Fires", count: fires.length },
     { id: "decisions", label: "Decisions", count: decisions.length },
     { id: "completed", label: "Work Completed", count: completed.length },
   ] as const;
 
-  const [filter, setFilter] = React.useState<(typeof filters)[number]["id"]>("all");
+  const [filter, setFilter] = React.useState<(typeof filters)[number]["id"] | "all">("all");
   const show = (id: (typeof filters)[number]["id"]) => filter === "all" || filter === id;
 
   return (
@@ -87,6 +87,18 @@ function BriefPage() {
           <AiBtn size="sm">Rewrite Brief</AiBtn>
         </div>
       </Card>
+
+      <div className="mb-5 flex flex-wrap gap-2">
+        {filters.map((f) => (
+          <FilterPill
+            key={f.id}
+            label={f.label}
+            count={f.count}
+            active={filter === f.id}
+            onClick={() => setFilter((c) => (c === f.id ? "all" : f.id))}
+          />
+        ))}
+      </div>
 
       {show("fires") ? (
         <section className="mb-8">

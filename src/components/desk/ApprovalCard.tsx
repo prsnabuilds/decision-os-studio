@@ -93,16 +93,10 @@ export function ApprovalCard({ decision }: { decision: Decision }) {
   return (
     <div className="space-y-5">
       <div>
-        <div className="flex flex-wrap items-start gap-2">
-          <h3 className="min-w-40 flex-1 text-h2 font-semibold text-foreground">
-            {decision.title}
-          </h3>
-          {decision.amount ? (
-            <span className="tabular text-h2 font-semibold text-foreground">
-              {inr(decision.amount)}
-            </span>
-          ) : null}
-        </div>
+        <h3 className="text-h2 font-semibold text-foreground">{decision.title}</h3>
+        {decision.amount ? (
+          <p className="mt-1 tabular text-h1 font-bold text-brand">{inr(decision.amount)}</p>
+        ) : null}
         {outcome !== "pending" ? (
           <div className="mt-2">
             <StatusBadge kind={outcome === "approved" ? "done" : "neutral"}>
