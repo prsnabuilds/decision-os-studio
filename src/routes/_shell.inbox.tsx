@@ -95,6 +95,18 @@ function Group({
         <span className="text-small tabular text-tertiary-foreground">{count}</span>
         <p className="w-full text-small text-secondary-foreground">{sub}</p>
       </header>
+
+      <div className="flex flex-wrap gap-2">
+        {filters.map((f) => (
+          <FilterPill
+            key={f.id}
+            label={f.label}
+            count={f.count}
+            active={filter === f.id}
+            onClick={() => setFilter((c) => (c === f.id ? "all" : f.id))}
+          />
+        ))}
+      </div>
       {children}
     </section>
   );
@@ -164,11 +176,6 @@ function DecisionDesk() {
     .join(" · ");
 
   const filters = [
-    {
-      id: "all",
-      label: "All",
-      count: pending.length + onFire.length + dueToday.length + important.length,
-    },
     { id: "decision", label: "Needs Your Decision", count: pending.length },
     { id: "fire", label: "On Fire", count: onFire.length },
     { id: "due", label: "Due Today", count: dueToday.length },
@@ -328,8 +335,6 @@ function DecisionDesk() {
       <BottomSheet
         open={reviewing !== null}
         onClose={() => setReviewing(null)}
-        title="Decision Review"
-        subtitle="Approve or reject. The detail is there if you want it."
       >
         {reviewing ? <ApprovalCard decision={decisions.find((d) => d.id === reviewing)!} /> : null}
       </BottomSheet>
