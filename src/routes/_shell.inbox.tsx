@@ -333,10 +333,7 @@ function DecisionDesk() {
         </div>
       ) : null}
 
-      <BottomSheet
-        open={reviewing !== null}
-        onClose={() => setReviewing(null)}
-      >
+      <BottomSheet open={reviewing !== null} onClose={() => setReviewing(null)}>
         {reviewing ? <ApprovalCard decision={decisions.find((d) => d.id === reviewing)!} /> : null}
       </BottomSheet>
 
