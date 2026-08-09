@@ -58,32 +58,47 @@ function BriefPage() {
     { title: "Invoice #4791 settled in full", by: "Finance", when: "4 days ago" },
   ];
 
+  const filters = [
+    { id: "all", label: "All", count: fires.length + decisions.length + completed.length },
+    { id: "fires", label: "Fires", count: fires.length },
+    { id: "decisions", label: "Decisions", count: decisions.length },
+    { id: "completed", label: "Work Completed", count: completed.length },
+  ] as const;
+
+  const [filter, setFilter] = React.useState<(typeof filters)[number]["id"]>("all");
+  const show = (id: (typeof filters)[number]["id"]) => filter === "all" || filter === id;
+
   return (
     <div>
       <PageHeader title="CEO Brief">
         <Btn variant="secondary">Send Daily Digest</Btn>
       </PageHeader>
 
-      <div className="mb-6">
+      <div className="mb-4">
         <Segmented options={periods} value={period} onChange={setPeriod} label="Brief period" />
       </div>
 
-      <Card className="mb-6">
-        <div className="mb-3 flex flex-wrap items-center gap-2">
-          <AiTag>Written by DecisionOS</AiTag>
-          <AiBtn size="sm" className="ml-auto">
-            Rewrite Brief
-          </AiBtn>
+      <Card compact className="mb-5">
+        <AiTag>Written by DecisionOS</AiTag>
+        <p className="mt-2 text-small leading-relaxed text-foreground">{summaryByPeriod[period]}</p>
+        <div className="mt-3">
+          <AiBtn size="sm">Rewrite Brief</AiBtn>
         </div>
-        <p className="text-body text-foreground">{summaryByPeriod[period]}</p>
-        <p className="mt-4 text-small text-secondary-foreground">
-          {joinReadably(
-            counters.map((c) => `${c.value} ${plural(c.value, c.label.replace(/s$/, ""), c.label).toLowerCase()}`),
-          )}
-          {counters.length ? " need attention this period." : "Nothing needs attention this period."}
-        </p>
       </Card>
 
+      <div className="mb-6 flex flex-wrap gap-2">
+        {filters.map((f) => (
+          <FilterPill
+            key={f.id}
+            label={f.label}
+            count={f.count}
+            active={filter === f.id}
+            onClick={() => setFilter(f.id)}
+          />
+        ))}
+      </div>
+
+      {show("fires") ? (
       <section className="mb-8">
         <div className="mb-3 flex items-center gap-2">
           <Flame className="size-4 text-danger-600" aria-hidden="true" />
@@ -118,9 +133,10 @@ function BriefPage() {
           ))}
         </ul>
       </section>
+      ) : null}
 
       <section className="mb-8 grid gap-6 lg:grid-cols-2">
-        <div>
+        {show("decisions") ? (
           <div className="mb-3 flex items-baseline gap-2">
             <h2 className="text-h2 text-foreground">Decisions This Period</h2>
             <span className="text-small text-tertiary-foreground">
