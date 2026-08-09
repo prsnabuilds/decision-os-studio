@@ -424,6 +424,42 @@ function BoardView() {
   );
 }
 
+/** Staged progress rail for a workflow card: done / current / upcoming. */
+function StageProgress({ stages, current }: { stages: string[]; current: string }) {
+  const idx = Math.max(0, stages.indexOf(current));
+  return (
+    <ol className="flex items-start gap-1.5" aria-label="Workflow stages">
+      {stages.map((s, i) => {
+        const state = i < idx ? "done" : i === idx ? "active" : "next";
+        return (
+          <li key={s} className="min-w-0 flex-1">
+            <span
+              aria-hidden="true"
+              className={cn(
+                "block h-1 rounded-pill",
+                state === "done" && "bg-success-600",
+                state === "active" && "brand-gradient",
+                state === "next" && "bg-hairline-strong opacity-60",
+              )}
+            />
+            <span
+              className={cn(
+                "mt-1.5 block truncate text-meta",
+                state === "done" && "text-secondary-foreground",
+                state === "active" && "font-semibold text-foreground",
+                state === "next" && "text-tertiary-foreground",
+              )}
+              title={s}
+            >
+              {s}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 function WorkflowsView() {
   const [note, setNote] = React.useState("");
   const [newCard, setNewCard] = React.useState(false);
@@ -432,8 +468,9 @@ function WorkflowsView() {
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-end gap-3">
         <Btn variant="primary" onClick={() => setNewCard((n) => !n)}>
-          New Pipeline Card
+          New Pipeline
         </Btn>
+
       </div>
 
       {note ? <p className="mb-3 text-small text-secondary-foreground">{note}</p> : null}
