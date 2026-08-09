@@ -196,11 +196,7 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
 
   React.useEffect(() => setGreeting(timeGreeting()), []);
 
-  const transcript = useLiveTranscript(recording, paused);
-  const [held, setHeld] = React.useState("");
-
   const stop = () => {
-    setHeld(transcript);
     setRecording(false);
     setPaused(false);
     setProcessing(true);
