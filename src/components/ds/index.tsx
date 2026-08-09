@@ -4,12 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ------------------------------ Buttons ------------------------------ */
 
@@ -23,17 +18,14 @@ const sizes: Record<Size, string> = {
 };
 
 const variants: Record<Variant, string> = {
-  primary:
-    "bg-brand text-on-primary shadow-xs hover:bg-brand-hover active:brightness-95",
-  secondary:
-    "bg-surface text-foreground border border-hairline-strong hover:bg-surface-hover",
+  primary: "bg-brand text-on-primary shadow-xs hover:bg-brand-hover active:brightness-95",
+  secondary: "bg-surface text-foreground border border-hairline-strong hover:bg-surface-hover",
   tertiary: "text-secondary-foreground hover:bg-surface-hover",
   destructive:
     "bg-transparent border border-destructive-border text-destructive hover:bg-destructive-hover",
   // Anything the AI does for you is always this shape - a tinted, sparkled pill.
   ai: "rounded-pill brand-gradient text-on-primary shadow-xs hover:brightness-110",
 };
-
 
 export function Btn({
   variant = "secondary",
@@ -79,7 +71,6 @@ export function Btn({
       )}
     </Comp>
   );
-
 }
 
 export function Spinner({ className }: { className?: string }) {
@@ -306,7 +297,6 @@ export function Card({
   );
 }
 
-
 export function BackLink({ to, label }: { to: string; label: string }) {
   return (
     <Link
@@ -345,7 +335,6 @@ export function PageHeader({
     </header>
   );
 }
-
 
 export function SectionHeading({
   title,
@@ -429,10 +418,7 @@ export function Field({
 export const inputClass =
   "h-10 w-full rounded-md border border-hairline bg-surface px-3 text-body text-foreground placeholder:text-tertiary-foreground focus-visible:border-brand";
 
-export function TextInput({
-  className,
-  ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) {
+export function TextInput({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(inputClass, className)} {...props} />;
 }
 
@@ -496,15 +482,11 @@ export function SelectWithOther({
         onChange={(e) => setValue(e.target.value)}
       />
       {value === "Other" ? (
-        <TextInput
-          aria-label="Please specify"
-          placeholder={otherPlaceholder ?? "Please specify"}
-        />
+        <TextInput aria-label="Please specify" placeholder={otherPlaceholder ?? "Please specify"} />
       ) : null}
     </div>
   );
 }
-
 
 export function TextArea({
   className,
@@ -561,9 +543,6 @@ export function Segmented<T extends string>({
   );
 }
 
-
-
-
 export function FilterPill({
   label,
   count,
@@ -604,10 +583,7 @@ export function Quarters({ value }: { value: number }) {
         {[25, 50, 75, 100].map((q) => (
           <span
             key={q}
-            className={cn(
-              "h-1.5 w-8 rounded-pill",
-              value >= q ? "bg-brand" : "bg-surface-sunken",
-            )}
+            className={cn("h-1.5 w-8 rounded-pill", value >= q ? "bg-brand" : "bg-surface-sunken")}
           />
         ))}
       </div>
@@ -678,6 +654,91 @@ export function DetailPanel({
           </IconBtn>
         </div>
         <div className="flex-1 overflow-y-auto p-5">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------ Bottom sheet ------------------------------ */
+
+/*
+ * Slides up over the current screen. Dismissed by swiping the handle down,
+ * tapping outside or pressing Escape - the user never leaves their context.
+ */
+export function BottomSheet({
+  open,
+  onClose,
+  title,
+  subtitle,
+  children,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  subtitle?: string | undefined;
+  children: React.ReactNode;
+}) {
+  const [drag, setDrag] = React.useState(0);
+  const startY = React.useRef<number | null>(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    setDrag(0);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50">
+      <button
+        type="button"
+        aria-label="Close"
+        onClick={onClose}
+        className="absolute inset-0 bg-neutral-900/40 animate-in fade-in"
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        style={{ transform: `translateY(${drag}px)` }}
+        className="absolute inset-x-0 bottom-0 mx-auto flex max-h-[86dvh] w-full max-w-xl flex-col rounded-t-xl bg-surface shadow-lg animate-in slide-in-from-bottom duration-200"
+      >
+        <div
+          className="shrink-0 cursor-grab touch-none px-5 pb-2 pt-3"
+          onTouchStart={(e) => {
+            startY.current = e.touches[0]!.clientY;
+          }}
+          onTouchMove={(e) => {
+            if (startY.current === null) return;
+            setDrag(Math.max(0, e.touches[0]!.clientY - startY.current));
+          }}
+          onTouchEnd={() => {
+            if (drag > 96) onClose();
+            else setDrag(0);
+            startY.current = null;
+          }}
+        >
+          <span
+            aria-hidden="true"
+            className="mx-auto block h-1 w-10 rounded-pill bg-hairline-strong"
+          />
+          <div className="mt-3">
+            <h2 className="text-h3 text-foreground">{title}</h2>
+            {subtitle ? (
+              <p className="mt-0.5 text-small text-tertiary-foreground">{subtitle}</p>
+            ) : null}
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto px-5 pb-6 pt-1">{children}</div>
       </div>
     </div>
   );

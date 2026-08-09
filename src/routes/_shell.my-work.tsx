@@ -11,7 +11,6 @@ import {
   PageHeader,
   Select,
   SelectWithOther,
-
   PriorityBadge,
   SectionHeading,
   Segmented,
@@ -33,9 +32,7 @@ const assigneeOptions = [
   "Finance",
 ];
 const approverOptions = people.filter((p) => p.type === "employee").map((p) => p.name);
-const counterpartyOptions = people
-  .filter((p) => p.type !== "employee")
-  .map((p) => p.name);
+const counterpartyOptions = people.filter((p) => p.type !== "employee").map((p) => p.name);
 
 export const Route = createFileRoute("/_shell/my-work")({
   head: () => ({
@@ -62,9 +59,6 @@ function groupOf(t: Task): Urgency {
   if (t.dueInDays <= 7) return "week";
   return "later";
 }
-
-
-
 
 const statusLabels = {
   todo: "To Do",
@@ -142,7 +136,6 @@ function TaskCard({
           {open ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
         </button>
       </div>
-
 
       {open ? (
         <div className="mt-4 space-y-4 border-t border-hairline pt-4">
@@ -332,7 +325,6 @@ function GroupedView() {
         ))}
       </div>
 
-
       {sorted.length === 0 ? (
         <EmptyState title="Nothing Here" helper="You're all caught up!" />
       ) : (
@@ -370,7 +362,11 @@ function BoardView() {
               <Select id="nt-assignee" options={assigneeOptions} placeholder="Choose who owns it" />
             </Field>
             <Field label="Priority" htmlFor="nt-priority">
-              <Select id="nt-priority" options={["High", "Medium", "Low"]} placeholder="Choose a priority" />
+              <Select
+                id="nt-priority"
+                options={["High", "Medium", "Low"]}
+                placeholder="Choose a priority"
+              />
             </Field>
             <Field label="Due Date" htmlFor="nt-due">
               <TextInput id="nt-due" type="date" />
@@ -399,28 +395,30 @@ function BoardView() {
 
       <div className="no-scrollbar -mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
         <div className="flex min-w-max gap-3">
-        {columns.map((c) => {
-          const items = tasks.filter((t) => t.status === c);
-          return (
-            <div key={c} className="w-72 shrink-0 rounded-lg bg-surface-sunken p-3">
-
-              <div className="mb-3 flex items-center justify-between">
-                <p className="text-label text-tertiary-foreground">{statusLabels[c]}</p>
-                <span className="text-label tabular text-tertiary-foreground">{items.length}</span>
+          {columns.map((c) => {
+            const items = tasks.filter((t) => t.status === c);
+            return (
+              <div key={c} className="w-72 shrink-0 rounded-lg bg-surface-sunken p-3">
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="text-label text-tertiary-foreground">{statusLabels[c]}</p>
+                  <span className="text-label tabular text-tertiary-foreground">
+                    {items.length}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  {items.length === 0 ? (
+                    <p className="px-1 text-small text-tertiary-foreground">
+                      No tasks in this column.
+                    </p>
+                  ) : (
+                    items.map((t) => <TaskCard key={t.id} task={t} dense />)
+                  )}
+                </div>
               </div>
-              <div className="space-y-2">
-                {items.length === 0 ? (
-                  <p className="px-1 text-small text-tertiary-foreground">No tasks in this column.</p>
-                ) : (
-                  items.map((t) => <TaskCard key={t.id} task={t} dense />)
-                )}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
         </div>
       </div>
-
     </div>
   );
 }
@@ -440,51 +438,55 @@ function WorkflowsView() {
       {note ? <p className="mb-3 text-small text-secondary-foreground">{note}</p> : null}
 
       <div className="space-y-8">
-          {newCard ? (
-            <Card className="space-y-3">
-              <h3 className="text-h3 text-foreground">New Card</h3>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Field label="Pipeline" htmlFor="pc-pipeline">
-                  <Select
-                    id="pc-pipeline"
-                    options={pipelines.map((p) => p.name)}
-                    placeholder="Choose a pipeline"
-                  />
-                </Field>
-                <Field label="Title" htmlFor="pc-title">
-                  <TextInput id="pc-title" placeholder="Order or reference number" />
-                </Field>
-                <Field label="Counterparty" htmlFor="pc-party">
-                  <Select
-                    id="pc-party"
-                    options={counterpartyOptions}
-                    placeholder="Choose a customer or vendor"
-                  />
-                </Field>
-                <Field label="Amount In Rupees" htmlFor="pc-amount">
-                  <TextInput id="pc-amount" inputMode="numeric" placeholder="Amount in rupees" />
-                </Field>
-              </div>
-              <div className="flex gap-2">
-                <Btn variant="secondary" onClick={() => setNewCard(false)}>
-                  Create Card
-                </Btn>
-                <Btn variant="tertiary" onClick={() => setNewCard(false)}>
-                  Cancel
-                </Btn>
-              </div>
-            </Card>
-          ) : null}
+        {newCard ? (
+          <Card className="space-y-3">
+            <h3 className="text-h3 text-foreground">New Card</h3>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Pipeline" htmlFor="pc-pipeline">
+                <Select
+                  id="pc-pipeline"
+                  options={pipelines.map((p) => p.name)}
+                  placeholder="Choose a pipeline"
+                />
+              </Field>
+              <Field label="Title" htmlFor="pc-title">
+                <TextInput id="pc-title" placeholder="Order or reference number" />
+              </Field>
+              <Field label="Counterparty" htmlFor="pc-party">
+                <Select
+                  id="pc-party"
+                  options={counterpartyOptions}
+                  placeholder="Choose a customer or vendor"
+                />
+              </Field>
+              <Field label="Amount In Rupees" htmlFor="pc-amount">
+                <TextInput id="pc-amount" inputMode="numeric" placeholder="Amount in rupees" />
+              </Field>
+            </div>
+            <div className="flex gap-2">
+              <Btn variant="secondary" onClick={() => setNewCard(false)}>
+                Create Card
+              </Btn>
+              <Btn variant="tertiary" onClick={() => setNewCard(false)}>
+                Cancel
+              </Btn>
+            </div>
+          </Card>
+        ) : null}
 
-          {pipelines.map((p) => (
-            <section key={p.name}>
-              <h2 className="mb-3 text-h3 text-foreground">{p.name}</h2>
+        {pipelines.map((p) => (
+          <section key={p.name}>
+            <h2 className="mb-3 text-h3 text-foreground">{p.name}</h2>
+            <div className="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
               <div
-                className="grid gap-3"
-                style={{ gridTemplateColumns: `repeat(${p.stages.length}, minmax(200px, 1fr))` }}
+                className="grid w-max gap-3"
+                style={{ gridTemplateColumns: `repeat(${p.stages.length}, minmax(220px, 1fr))` }}
               >
                 {p.stages.map((stage, si) => (
-                  <div key={stage} className="rounded-lg border border-hairline bg-surface-sunken p-3">
+                  <div
+                    key={stage}
+                    className="rounded-lg border border-hairline bg-surface-sunken p-3"
+                  >
                     <p className="mb-3 text-label text-tertiary-foreground">{stage}</p>
                     <div className="space-y-2">
                       {p.cards
@@ -494,7 +496,9 @@ function WorkflowsView() {
                             <p className="text-body-strong text-foreground">{c.title}</p>
                             <p className="text-small text-secondary-foreground">{c.counterparty}</p>
                             <p className="tabular text-small text-foreground">{inr(c.amount)}</p>
-                            <p className="text-label text-tertiary-foreground">Created {c.created}</p>
+                            <p className="text-label text-tertiary-foreground">
+                              Created {c.created}
+                            </p>
                             <div className="flex gap-1 pt-1">
                               <Btn
                                 size="sm"
@@ -523,10 +527,10 @@ function WorkflowsView() {
                   </div>
                 ))}
               </div>
-            </section>
-          ))}
+            </div>
+          </section>
+        ))}
       </div>
-
     </div>
   );
 }
@@ -590,7 +594,9 @@ function LeaveView() {
             <div className="rounded-md border border-hairline bg-surface-sunken p-4">
               <p className="text-body-strong text-foreground">Operational Impact</p>
               <ul className="mt-2 space-y-1 text-small text-secondary-foreground">
-                <li>2 tasks fall inside these dates - dispatch confirmation and the Delhi quote.</li>
+                <li>
+                  2 tasks fall inside these dates - dispatch confirmation and the Delhi quote.
+                </li>
                 <li>1 pipeline card (Order #4823) has no second owner on those days.</li>
               </ul>
               <Btn size="sm" variant="secondary" className="mt-3">
@@ -611,7 +617,11 @@ function LeaveView() {
             />
           </Field>
           <Field label="Note" htmlFor="ab-note">
-            <VoiceTextArea id="ab-note" rows={2} placeholder="Anything the team should know today" />
+            <VoiceTextArea
+              id="ab-note"
+              rows={2}
+              placeholder="Anything the team should know today"
+            />
           </Field>
           <Btn variant="secondary">Report Absence</Btn>
         </Card>
@@ -641,7 +651,11 @@ function LeaveView() {
           {["Sales", "Operations", "Finance"].map((d) => (
             <div key={d} className="grid gap-3 sm:grid-cols-2">
               <Field label={d} htmlFor={`ap-${d}`}>
-                <Select id={`ap-${d}`} options={approverOptions} defaultValue="Prasanna Narayanan" />
+                <Select
+                  id={`ap-${d}`}
+                  options={approverOptions}
+                  defaultValue="Prasanna Narayanan"
+                />
               </Field>
             </div>
           ))}
@@ -669,12 +683,7 @@ function MyWorkPage() {
       <PageHeader title="My Work" />
 
       <div className="mb-6">
-        <Segmented
-          options={available}
-          value={activeView}
-          onChange={setView}
-          label="Work view"
-        />
+        <Segmented options={available} value={activeView} onChange={setView} label="Work view" />
       </div>
 
       {activeView === "My Work" ? <GroupedView /> : null}

@@ -1,5 +1,16 @@
 import * as React from "react";
-import { Mic, Pause, Play, Square, Camera, Paperclip, Upload, AudioLines, Type as TypeIcon, Sparkles } from "lucide-react";
+import {
+  Mic,
+  Pause,
+  Play,
+  Square,
+  Camera,
+  Paperclip,
+  Upload,
+  AudioLines,
+  Type as TypeIcon,
+  Sparkles,
+} from "lucide-react";
 import { currentUser } from "@/data/demo";
 import { cn } from "@/lib/utils";
 
@@ -63,98 +74,11 @@ const COPY: Record<Mode, { heading: string; sub: string }> = {
   },
 };
 
-const SUGGESTIONS = ["List the overdue tasks", "Get me a To Do list", "Prioritize the tasks on fire"];
-
-const DEMO_SPEECH =
-  "Ask Priya to prepare a quotation for fifty cotton shirts for the Mumbai retailer and follow up by Wednesday.";
-
-type SpeechRecognitionLike = {
-  continuous: boolean;
-  interimResults: boolean;
-  lang: string;
-  start: () => void;
-  stop: () => void;
-  onresult: ((e: { resultIndex: number; results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
-  onerror: (() => void) | null;
-};
-
-/**
- * Live speech-to-text when the browser exposes the Web Speech API, otherwise a
- * progressive word-by-word fallback so the field still behaves like live dictation.
- */
-function useLiveTranscript(recording: boolean, paused: boolean) {
-  const [text, setText] = React.useState("");
-
-  React.useEffect(() => {
-    if (!recording) {
-      setText("");
-      return;
-    }
-    if (paused) return;
-
-    let got = false;
-    let rec: SpeechRecognitionLike | null = null;
-    let fallbackId = 0;
-    let startId = 0;
-
-    const startFallback = () => {
-      if (got || fallbackId) return;
-      const words = DEMO_SPEECH.split(" ");
-      let i = 0;
-      fallbackId = window.setInterval(() => {
-        i += 1;
-        setText(words.slice(0, i).join(" "));
-        if (i >= words.length) window.clearInterval(fallbackId);
-      }, 220);
-    };
-
-    const Ctor =
-      (typeof window !== "undefined" &&
-        ((window as unknown as Record<string, unknown>)["SpeechRecognition"] ||
-          (window as unknown as Record<string, unknown>)["webkitSpeechRecognition"])) ||
-      null;
-
-    if (Ctor) {
-      try {
-        const r = new (Ctor as new () => SpeechRecognitionLike)();
-        r.continuous = true;
-        r.interimResults = true;
-        r.lang = "en-IN";
-        r.onresult = (e) => {
-          let out = "";
-          for (let i = 0; i < e.results.length; i++) out += e.results[i]![0]!.transcript;
-          if (out.trim()) {
-            got = true;
-            if (fallbackId) window.clearInterval(fallbackId);
-            setText(out.trim());
-          }
-        };
-        r.onerror = () => startFallback();
-        r.start();
-        rec = r;
-      } catch {
-        /* no live recognition available */
-      }
-    }
-
-    // If nothing is actually heard (no mic, denied permission, demo laptop),
-    // fall back to a progressively typed transcript so the field stays live.
-    startId = window.setTimeout(startFallback, 1200);
-
-    return () => {
-      window.clearTimeout(startId);
-      if (fallbackId) window.clearInterval(fallbackId);
-      try {
-        rec?.stop();
-      } catch {
-        /* already stopped */
-      }
-    };
-  }, [recording, paused]);
-
-  return text;
-}
-
+const SUGGESTIONS = [
+  "List the overdue tasks",
+  "Get me a To Do list",
+  "Prioritize the tasks on fire",
+];
 
 /** The gradient circle used by every capture control. */
 function CaptureCircle({
@@ -172,7 +96,10 @@ function CaptureCircle({
     <div className="relative flex items-center justify-center">
       <span
         aria-hidden="true"
-        className={cn("absolute size-[96px] rounded-pill bg-brand-300/40", breathing && "halo-breathe")}
+        className={cn(
+          "absolute size-[96px] rounded-pill bg-brand-300/40",
+          breathing && "halo-breathe",
+        )}
       />
       <button
         type="button"
@@ -196,11 +123,7 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
 
   React.useEffect(() => setGreeting(timeGreeting()), []);
 
-  const transcript = useLiveTranscript(recording, paused);
-  const [held, setHeld] = React.useState("");
-
   const stop = () => {
-    setHeld(transcript);
     setRecording(false);
     setPaused(false);
     setProcessing(true);
@@ -225,7 +148,10 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
   return (
     <section aria-labelledby="capture-heading" className="flex flex-col gap-3">
       <div className="relative isolate overflow-hidden rounded-xl bg-surface-sunken">
-        <div aria-hidden="true" className="aurora-bloom pointer-events-none absolute inset-0 -z-10" />
+        <div
+          aria-hidden="true"
+          className="aurora-bloom pointer-events-none absolute inset-0 -z-10"
+        />
 
         <div className="flex h-[calc(100dvh-16rem)] min-h-[300px] flex-col items-center justify-center overflow-y-auto px-5 py-8 text-center sm:h-[calc(100dvh-15rem)] sm:max-h-[560px] sm:px-10">
           {processing ? (
@@ -237,16 +163,15 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
               <h1 id="capture-heading" className={heading}>
                 Making Sense Of It
               </h1>
-              <p className={sub}>DecisionOS is turning what you said into tasks, owners and dates.</p>
-              {(held || transcript) && (
-                <p className="mt-6 max-w-sm text-small italic leading-relaxed text-secondary-foreground">
-                  {held || transcript}
-                </p>
-              )}
+              <p className={sub}>
+                DecisionOS is turning what you said into tasks, owners and dates.
+              </p>
             </>
           ) : recording ? (
             <>
-              <p className="text-label text-secondary-foreground">{paused ? "Paused" : "Listening…"}</p>
+              <p className="text-label text-secondary-foreground">
+                {paused ? "Paused" : "Listening…"}
+              </p>
               <div className="mt-6 w-full max-w-md">
                 <Waveform active={!paused} />
               </div>
@@ -272,15 +197,8 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                   <Square className="size-4" aria-hidden="true" />
                 </button>
               </div>
-              <p
-                aria-live="polite"
-                className="mt-8 max-w-sm text-h2 font-normal italic leading-relaxed text-secondary-foreground"
-                style={{
-                  maskImage: "linear-gradient(to bottom, var(--foreground) 45%, transparent 100%)",
-                  WebkitMaskImage: "linear-gradient(to bottom, #000 45%, transparent 100%)",
-                }}
-              >
-                {transcript || (paused ? "" : "…")}
+              <p className="mt-8 max-w-[19rem] text-label leading-relaxed text-secondary-foreground">
+                Keep talking. Press stop when you are done and DecisionOS will structure it.
               </p>
             </>
           ) : mode === "talk" ? (
@@ -337,7 +255,6 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                   type="button"
                   disabled={!typed.trim()}
                   onClick={() => {
-                    setHeld(typed);
                     setTyped("");
                     setProcessing(true);
                     onSubmit?.();
@@ -353,7 +270,11 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
             <>
               {greetingLine}
               <div className="mt-6">
-                <CaptureCircle label="Upload Documents" icon={Upload} onClick={() => setProcessing(true)} />
+                <CaptureCircle
+                  label="Upload Documents"
+                  icon={Upload}
+                  onClick={() => setProcessing(true)}
+                />
               </div>
               <div className="mt-4">
                 <button
@@ -373,7 +294,11 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
             <>
               {greetingLine}
               <div className="mt-6">
-                <CaptureCircle label="Open Camera" icon={Camera} onClick={() => setProcessing(true)} />
+                <CaptureCircle
+                  label="Open Camera"
+                  icon={Camera}
+                  onClick={() => setProcessing(true)}
+                />
               </div>
               <h1 id="capture-heading" className={heading}>
                 {COPY.camera.heading}
