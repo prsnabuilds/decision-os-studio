@@ -2,9 +2,11 @@ import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Stamp, Flame, CalendarClock, Star, ArrowRight } from "lucide-react";
 import {
+  BottomSheet,
   Btn,
   Card,
   DetailPanel,
+  FilterPill,
   EmptyState,
   Meta,
   Skel,
@@ -124,6 +126,7 @@ function DecisionDesk() {
   const [loading, setLoading] = React.useState(true);
   const [reviewing, setReviewing] = React.useState<string | null>(null);
   const [respondTo, setRespondTo] = React.useState<string | null>(null);
+  const [filter, setFilter] = React.useState<"all" | "decision" | "fire" | "due" | "important">("all");
 
   React.useEffect(() => {
     const id = window.setTimeout(() => setLoading(false), 500);
@@ -221,7 +224,9 @@ function DecisionDesk() {
           ))}
         </ul>
       </Group>
+      ) : null}
 
+      {show("fire") ? (
       <Group
         tone="fire"
         icon={Flame}
@@ -259,7 +264,9 @@ function DecisionDesk() {
           ))}
         </ul>
       </Group>
+      ) : null}
 
+      {show("due") ? (
       <Group
         tone="due"
         icon={CalendarClock}
@@ -284,7 +291,9 @@ function DecisionDesk() {
           ))}
         </ul>
       </Group>
+      ) : null}
 
+      {show("important") ? (
       <Group
         tone="important"
         icon={Star}
@@ -307,13 +316,16 @@ function DecisionDesk() {
           ))}
         </ul>
       </Group>
+      ) : null}
 
+      {filter === "all" ? (
       <div>
         <SectionHeading title="Everything Else" sub="Captured, classified and waiting quietly." />
         <TasksAndActivity />
       </div>
+      ) : null}
 
-      <DetailPanel
+      <BottomSheet
         open={reviewing !== null}
         onClose={() => setReviewing(null)}
         title="Decision Review"
@@ -322,7 +334,7 @@ function DecisionDesk() {
         {reviewing ? (
           <ApprovalCard decision={decisions.find((d) => d.id === reviewing)!} />
         ) : null}
-      </DetailPanel>
+      </BottomSheet>
 
       <DetailPanel
         open={escalated !== undefined}
