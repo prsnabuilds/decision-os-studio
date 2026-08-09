@@ -8,7 +8,6 @@ import {
   Users,
   Brain,
   Wallet,
-  Upload,
   Settings as SettingsIcon,
   Globe,
   Moon,
@@ -46,14 +45,8 @@ const nav = [
   { to: "/contacts", label: "People", short: "People", icon: Users },
   { to: "/brain", label: "Company Brain", short: "Brain", icon: Brain },
   { to: "/ledger", label: "Finance", short: "Finance", icon: Wallet },
-  {
-    to: "/ingest",
-    label: "Capture",
-    short: "Capture",
-    icon: Upload,
-    count: 5,
-    tone: "neutral" as const,
-  },
+
+
 
   { to: "/settings", label: "Settings", short: "Settings", icon: SettingsIcon },
 ];

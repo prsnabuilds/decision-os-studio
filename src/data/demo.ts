@@ -782,3 +782,69 @@ export const captureReview = {
     { id: "rt1", name: "Call the Trichy dealer back", detail: "Extracted from a WhatsApp voice note", confidence: "Medium confidence - no deadline stated" },
   ],
 };
+
+/* ---------------- Workflow links ----------------
+ * A workflow (pipeline card) is the larger process; tasks and decisions belong
+ * to a stage inside it. Kept as lookup maps so the link reads both ways.
+ */
+
+export type WorkflowLink = { workflowId: string; stage: string };
+
+export const taskWorkflow: Record<string, WorkflowLink> = {
+  t2: { workflowId: "po1", stage: "Approved" },
+  t4: { workflowId: "po1", stage: "Received" },
+  t6: { workflowId: "po1", stage: "Reconciled" },
+  t5: { workflowId: "po2", stage: "Approved" },
+  t9: { workflowId: "so2", stage: "Dispatched" },
+  t7: { workflowId: "so2", stage: "Paid" },
+  t10: { workflowId: "so1", stage: "Quoted" },
+  t1: { workflowId: "so1", stage: "Quoted" },
+};
+
+export const decisionWorkflow: Record<string, WorkflowLink> = {
+  d1: { workflowId: "po1", stage: "Received" },
+  d2: { workflowId: "so1", stage: "Quoted" },
+};
+
+/** Workflow cards that cannot advance until a decision is answered. */
+export const workflowBlockers: Record<string, string> = { po1: "d1", so1: "d2" };
+
+export function findWorkflow(cardId: string) {
+  for (const p of pipelines) {
+    const card = p.cards.find((c) => c.id === cardId);
+    if (card) return { pipeline: p, card };
+  }
+  return null;
+}
+
+export function tasksOfWorkflow(cardId: string) {
+  return tasks.filter((t) => taskWorkflow[t.id]?.workflowId === cardId);
+}
+
+export function decisionsOfWorkflow(cardId: string) {
+  return decisions.filter((d) => decisionWorkflow[d.id]?.workflowId === cardId);
+}
+
+/* ---------------- Captured financial documents ----------------
+ * Everything captured on Home that turned out to be financial lands here for
+ * review. Non-financial captures stay with their task or workflow.
+ */
+
+export type CapturedDoc = {
+  id: string;
+  name: string;
+  kind: "Invoice" | "Bill" | "Receipt" | "Expense";
+  party: string;
+  amount: number;
+  date: string;
+  status: "Needs review" | "Reviewed" | "Filed";
+  source: Source;
+};
+
+export const capturedDocs: CapturedDoc[] = [
+  { id: "cd1", name: "AP-2291.pdf", kind: "Bill", party: "Acme Packaging", amount: 240000, date: "26 Jul", status: "Needs review", source: "upload" },
+  { id: "cd2", name: "ST-0771.pdf", kind: "Bill", party: "Southern Transport", amount: 121000, date: "2 Aug", status: "Needs review", source: "whatsapp" },
+  { id: "cd3", name: "Diesel receipt", kind: "Receipt", party: "IOCL Guindy", amount: 4800, date: "3 Aug", status: "Reviewed", source: "upload" },
+  { id: "cd4", name: "Invoice #4825", kind: "Invoice", party: "Salem Retailer Hub", amount: 400000, date: "28 Jul", status: "Filed", source: "text" },
+  { id: "cd5", name: "Godown repair estimate", kind: "Expense", party: "Sri Balaji Works", amount: 61000, date: "5 Aug", status: "Needs review", source: "upload" },
+];

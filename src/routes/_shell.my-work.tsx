@@ -1,7 +1,17 @@
 import * as React from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import { ChevronDown, ChevronRight, ArrowUp, ArrowDown, Trash2, Paperclip } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
+  ChevronDown,
+  ChevronRight,
+  ArrowUp,
+  ArrowDown,
+  ArrowRight,
+  AlertTriangle,
+  Trash2,
+  Paperclip,
+} from "lucide-react";
+import {
+  BottomSheet,
   Btn,
   Card,
   EmptyState,
@@ -19,11 +29,29 @@ import {
   type Urgency,
 } from "@/components/ds";
 import { AiBtn } from "@/components/ds/ai";
+import { WorkflowChip } from "@/components/workflow/WorkflowChip";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { VoiceTextArea } from "@/components/ds/voice";
-import { leaves, people, pipelines, tasks, type Task } from "@/data/demo";
+import {
+  decisionWorkflow,
+  decisions,
+  decisionsOfWorkflow,
+  findWorkflow,
+  leaves,
+  people,
+  pipelines,
+  taskWorkflow,
+  tasks,
+  tasksOfWorkflow,
+  workflowBlockers,
+  type Task,
+} from "@/data/demo";
 import { inr } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
+
+
+
 
 const assigneeOptions = [
   ...people.filter((p) => p.type === "employee").map((p) => p.name),
@@ -35,6 +63,11 @@ const approverOptions = people.filter((p) => p.type === "employee").map((p) => p
 const counterpartyOptions = people.filter((p) => p.type !== "employee").map((p) => p.name);
 
 export const Route = createFileRoute("/_shell/my-work")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    ...(typeof s["view"] === "string" ? { view: s["view"] } : {}),
+    ...(typeof s["workflow"] === "string" ? { workflow: s["workflow"] } : {}),
+  }),
+
   head: () => ({
     meta: [
       { title: "My Work - DecisionOS" },
@@ -114,7 +147,13 @@ function TaskCard({
         <div className="min-w-40 flex-1">
           <p className="text-body-strong text-foreground">{task.title}</p>
           <Meta items={metaItems} className="mt-1" />
+          {taskWorkflow[task.id] ? (
+            <div className="mt-1.5">
+              <WorkflowChip id={taskWorkflow[task.id]!.workflowId} />
+            </div>
+          ) : null}
         </div>
+
 
         <button
           type="button"
@@ -460,7 +499,7 @@ function StageProgress({ stages, current }: { stages: string[]; current: string 
   );
 }
 
-function WorkflowsView() {
+function WorkflowsView({ onOpen }: { onOpen: (id: string) => void }) {
   const [note, setNote] = React.useState("");
   const [newCard, setNewCard] = React.useState(false);
 
@@ -519,10 +558,18 @@ function WorkflowsView() {
               {p.cards.map((c) => {
                 const si = Math.max(0, p.stages.indexOf(c.stage));
                 const next = p.stages[si + 1];
+                const blockerId = workflowBlockers[c.id];
+                const blocker = blockerId ? decisions.find((d) => d.id === blockerId) : undefined;
+                const linked = tasksOfWorkflow(c.id);
+                const linkedDecisions = decisionsOfWorkflow(c.id);
                 return (
                   <li key={c.id}>
                     <Card compact className="space-y-3">
-                      <div className="flex flex-wrap items-start justify-between gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onOpen(c.id)}
+                        className="flex w-full flex-wrap items-start justify-between gap-2 text-left"
+                      >
                         <div className="min-w-0">
                           <p className="text-body-strong text-foreground">{c.title}</p>
                           <p className="text-meta text-secondary-foreground">
@@ -532,19 +579,47 @@ function WorkflowsView() {
                         <span className="tabular text-body-strong text-foreground">
                           {inr(c.amount)}
                         </span>
-                      </div>
+                      </button>
 
                       <StageProgress stages={p.stages} current={c.stage} />
 
+                      {blocker ? (
+                        <div className="rounded-md border border-danger-200 bg-danger-50 p-3">
+                          <p className="flex flex-wrap items-center gap-1.5 text-small font-semibold text-danger-700">
+                            <AlertTriangle className="size-3.5 shrink-0" aria-hidden="true" />
+                            Stalled at {c.stage} - waiting on your decision
+                          </p>
+                          <Link
+                            to="/inbox"
+                            search={{ decision: blocker.id }}
+                            className="mt-1 inline-flex items-center gap-1 text-small font-medium text-brand underline-offset-2 hover:underline"
+                          >
+                            {blocker.title}
+                            <ArrowRight className="size-3.5" aria-hidden="true" />
+                          </Link>
+                        </div>
+                      ) : null}
+
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <p className="text-meta text-secondary-foreground">
-                          Stage {si + 1} of {p.stages.length} ·{" "}
-                          {next ? `Next: ${next}` : "Final stage"}
-                        </p>
+                        <button
+                          type="button"
+                          onClick={() => onOpen(c.id)}
+                          className="text-meta text-secondary-foreground underline-offset-2 hover:underline"
+                        >
+                          Stage {si + 1} of {p.stages.length} · {linked.length}{" "}
+                          {linked.length === 1 ? "task" : "tasks"}
+                          {linkedDecisions.length
+                            ? ` · ${linkedDecisions.length} decision waiting`
+                            : ""}
+                        </button>
                         <div className="flex gap-1">
+                          <Btn size="sm" variant="secondary" onClick={() => onOpen(c.id)}>
+                            Open
+                          </Btn>
                           <Btn
                             size="sm"
-                            variant="secondary"
+                            variant="tertiary"
+                            disabled={Boolean(blocker)}
                             onClick={() =>
                               setNote(
                                 next
@@ -555,13 +630,6 @@ function WorkflowsView() {
                           >
                             {next ? `Move to ${next}` : "Advance"}
                           </Btn>
-                          <Btn
-                            size="sm"
-                            variant="tertiary"
-                            onClick={() => setNote(`${c.title} deleted.`)}
-                          >
-                            Delete
-                          </Btn>
                         </div>
                       </div>
                     </Card>
@@ -569,13 +637,150 @@ function WorkflowsView() {
                 );
               })}
             </ul>
-
           </section>
         ))}
       </div>
     </div>
   );
 }
+
+/** Everything belonging to one workflow, grouped by the stage it happens at. */
+function WorkflowDetail({ cardId, onClose }: { cardId: string; onClose: () => void }) {
+  const found = findWorkflow(cardId);
+  const [openStage, setOpenStage] = React.useState<string | null>(null);
+  if (!found) return null;
+  const { pipeline, card } = found;
+  const blockerId = workflowBlockers[card.id];
+  const blocker = blockerId ? decisions.find((d) => d.id === blockerId) : undefined;
+  const linkedTasks = tasksOfWorkflow(card.id);
+  const linkedDecisions = decisionsOfWorkflow(card.id);
+
+  return (
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="min-w-0">
+          <h2 className="text-h2 font-semibold text-foreground">{card.title}</h2>
+          <p className="text-meta text-secondary-foreground">
+            {pipeline.name} · {card.counterparty}
+          </p>
+        </div>
+        <span className="tabular text-h3 text-foreground">{inr(card.amount)}</span>
+      </div>
+
+      <StageProgress stages={pipeline.stages} current={card.stage} />
+
+      {blocker ? (
+        <div className="rounded-md border border-danger-200 bg-danger-50 p-3">
+          <p className="flex flex-wrap items-center gap-1.5 text-small font-semibold text-danger-700">
+            <AlertTriangle className="size-3.5 shrink-0" aria-hidden="true" />
+            Stalled at {card.stage} - waiting on your decision
+          </p>
+          <p className="mt-1 text-meta text-secondary-foreground">
+            This workflow cannot advance until you answer it.
+          </p>
+          <Link
+            to="/inbox"
+            search={{ decision: blocker.id }}
+            onClick={onClose}
+            className="mt-2 inline-flex items-center gap-1 text-small font-medium text-brand underline-offset-2 hover:underline"
+          >
+            Open Decision Review
+            <ArrowRight className="size-3.5" aria-hidden="true" />
+          </Link>
+        </div>
+      ) : null}
+
+      <p className="text-meta text-secondary-foreground">
+        {linkedTasks.length} {linkedTasks.length === 1 ? "task" : "tasks"}
+        {linkedDecisions.length
+          ? ` · ${linkedDecisions.length} ${linkedDecisions.length === 1 ? "decision" : "decisions"} waiting`
+          : ""}
+      </p>
+
+      <ul className="space-y-1.5">
+        {pipeline.stages.map((s) => {
+          const st = linkedTasks.filter((t) => taskWorkflow[t.id]?.stage === s);
+          const sd = linkedDecisions.filter((d) => decisionWorkflow[d.id]?.stage === s);
+          const isCurrent = s === card.stage;
+          const open = openStage === s;
+          if (st.length === 0 && sd.length === 0) {
+            return (
+              <li
+                key={s}
+                className="flex items-center justify-between rounded-md px-3 py-2 text-small text-tertiary-foreground"
+              >
+                <span>{s}</span>
+                <span className="text-meta">Nothing here</span>
+              </li>
+            );
+          }
+          return (
+            <li
+              key={s}
+              className={cn(
+                "rounded-md border border-hairline",
+                isCurrent && "border-brand-tint-border bg-brand-tint/40",
+              )}
+            >
+              <button
+                type="button"
+                aria-expanded={open}
+                onClick={() => setOpenStage(open ? null : s)}
+                className="flex w-full items-center gap-2 px-3 py-2 text-left"
+              >
+                <span
+                  className={cn(
+                    "flex-1 text-small",
+                    isCurrent ? "font-semibold text-foreground" : "text-secondary-foreground",
+                  )}
+                >
+                  {s}
+                </span>
+                <span className="text-meta text-secondary-foreground">
+                  {st.length} {st.length === 1 ? "task" : "tasks"}
+                  {sd.length ? ` · ${sd.length} decision waiting` : ""}
+                </span>
+                {open ? (
+                  <ChevronDown className="size-4 shrink-0 text-secondary-foreground" />
+                ) : (
+                  <ChevronRight className="size-4 shrink-0 text-secondary-foreground" />
+                )}
+              </button>
+              {open ? (
+                <div className="space-y-1.5 border-t border-hairline px-3 py-2">
+                  {sd.map((d) => (
+                    <Link
+                      key={d.id}
+                      to="/inbox"
+                      search={{ decision: d.id }}
+                      onClick={onClose}
+                      className="flex items-center gap-2 rounded-md bg-surface-sunken px-3 py-2 text-small text-foreground hover:bg-surface-hover"
+                    >
+                      <span className="flex-1">{d.title}</span>
+                      <span className="text-meta text-brand">Decide</span>
+                    </Link>
+                  ))}
+                  {st.map((t) => (
+                    <div
+                      key={t.id}
+                      className="flex flex-wrap items-center gap-2 rounded-md px-3 py-2"
+                    >
+                      <span className="min-w-40 flex-1 text-small text-foreground">{t.title}</span>
+                      <span className="text-meta text-secondary-foreground">
+                        {t.assignee} · {t.progress}% done
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
 
 function LeaveView() {
   const [impact, setImpact] = React.useState(false);
@@ -710,7 +915,20 @@ function LeaveView() {
 
 function MyWorkPage() {
   const isMobile = useIsMobile();
-  const [view, setView] = React.useState<(typeof views)[number]>("My Work");
+  const search = Route.useSearch();
+  const navigate = useNavigate();
+  const [view, setView] = React.useState<(typeof views)[number]>(
+    (views as readonly string[]).includes(search.view ?? "")
+      ? (search.view as (typeof views)[number])
+      : "My Work",
+  );
+
+  // Deep links (a "Part of" chip elsewhere in the app) drive the view.
+  React.useEffect(() => {
+    if (search.view && (views as readonly string[]).includes(search.view)) {
+      setView(search.view as (typeof views)[number]);
+    }
+  }, [search.view]);
 
   // The Kanban board stays available on tablet and desktop only; on phones the
   // same tasks are shown as the list + status pills instead.
@@ -719,6 +937,13 @@ function MyWorkPage() {
     [isMobile],
   );
   const activeView = isMobile && view === "Board" ? "My Work" : view;
+
+  const openWorkflow = (id: string | undefined) =>
+    navigate({
+      to: "/my-work",
+      search: { view: "Workflows", ...(id ? { workflow: id } : {}) },
+      replace: true,
+    });
 
   return (
     <div>
@@ -730,8 +955,15 @@ function MyWorkPage() {
 
       {activeView === "My Work" ? <GroupedView /> : null}
       {activeView === "Board" ? <BoardView /> : null}
-      {activeView === "Workflows" ? <WorkflowsView /> : null}
+      {activeView === "Workflows" ? <WorkflowsView onOpen={(id) => openWorkflow(id)} /> : null}
       {activeView === "Leave" ? <LeaveView /> : null}
+
+      <BottomSheet open={Boolean(search.workflow)} onClose={() => openWorkflow(undefined)}>
+        {search.workflow ? (
+          <WorkflowDetail cardId={search.workflow} onClose={() => openWorkflow(undefined)} />
+        ) : null}
+      </BottomSheet>
     </div>
   );
 }
+

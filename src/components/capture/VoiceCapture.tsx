@@ -4,9 +4,8 @@ import {
   Pause,
   Play,
   Square,
-  Camera,
   Paperclip,
-  Upload,
+  X,
   AudioLines,
   Type as TypeIcon,
   Sparkles,
@@ -14,7 +13,8 @@ import {
 import { currentUser } from "@/data/demo";
 import { cn } from "@/lib/utils";
 
-type Mode = "talk" | "type" | "upload" | "camera";
+type Mode = "talk" | "type";
+
 
 function timeGreeting() {
   const h = new Date().getHours();
@@ -51,8 +51,6 @@ function Waveform({ active }: { active: boolean }) {
 const MODES = [
   { id: "talk", label: "Talk", icon: AudioLines },
   { id: "type", label: "Type", icon: TypeIcon },
-  { id: "upload", label: "Docs", icon: Paperclip },
-  { id: "camera", label: "Photo", icon: Camera },
 ] as const;
 
 const COPY: Record<Mode, { heading: string; sub: string }> = {
@@ -62,15 +60,7 @@ const COPY: Record<Mode, { heading: string; sub: string }> = {
   },
   type: {
     heading: "Type What You Want Done",
-    sub: "Write it in any language. DecisionOS structures it, assigns it and tracks it.",
-  },
-  upload: {
-    heading: "Drop In a Document",
-    sub: "Upload a bill, invoice or file. DecisionOS reads it, structures it and files it.",
-  },
-  camera: {
-    heading: "Point And Capture",
-    sub: "Capture a bill, receipt or note. DecisionOS reads it, structures it and files it.",
+    sub: "Write it, attach a bill or a photo. DecisionOS reads it, structures it and files it.",
   },
 };
 
@@ -83,15 +73,8 @@ const PROCESSING: Record<Mode, { heading: string; sub: string }> = {
     heading: "Making Sense Of It",
     sub: "DecisionOS is turning what you wrote into tasks, owners and dates.",
   },
-  upload: {
-    heading: "Reading Your Document",
-    sub: "DecisionOS is pulling out the details and filing them.",
-  },
-  camera: {
-    heading: "Reading Your Photo",
-    sub: "DecisionOS is pulling out the details and filing them.",
-  },
 };
+
 
 const SUGGESTIONS = [
   "List the overdue tasks",
@@ -139,6 +122,9 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
   const [paused, setPaused] = React.useState(false);
   const [processing, setProcessing] = React.useState(false);
   const [typed, setTyped] = React.useState("");
+  const [files, setFiles] = React.useState<string[]>([]);
+  const fileInput = React.useRef<HTMLInputElement>(null);
+
   const [greeting, setGreeting] = React.useState("Welcome Back");
 
   React.useEffect(() => setGreeting(timeGreeting()), []);
@@ -239,24 +225,89 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
               </h1>
               <p className={sub}>{COPY.talk.sub}</p>
             </>
-          ) : mode === "type" ? (
+          ) : (
             <>
               {greetingLine}
               <h1 id="capture-heading" className="mt-4 max-w-xs text-h1 font-bold text-foreground">
                 {COPY.type.heading}
               </h1>
               <p className={sub}>{COPY.type.sub}</p>
-              <div className="mt-5 w-full max-w-md">
+
+              {/* Chat-style field: type it and attach the bill or photo together. */}
+              <div className="mt-5 w-full max-w-md rounded-lg bg-surface/55 backdrop-blur-sm">
                 <textarea
                   id="capture-type"
                   rows={2}
                   value={typed}
                   onChange={(e) => setTyped(e.target.value)}
-                  placeholder="Ask Anything to DecisionOS"
-                  aria-label="Ask Anything to DecisionOS"
-                  className="w-full resize-y rounded-lg bg-surface/55 px-4 py-2.5 text-left text-small text-foreground placeholder:text-tertiary-foreground backdrop-blur-sm focus-visible:outline-none"
+                  placeholder="Type what should happen, attach the bill or photo"
+                  aria-label="Type what should happen, attach the bill or photo"
+                  className="w-full resize-y bg-transparent px-4 pt-2.5 text-left text-small text-foreground placeholder:text-tertiary-foreground focus-visible:outline-none"
                 />
+
+                {files.length > 0 ? (
+                  <ul className="flex flex-wrap gap-1.5 px-3 pb-1">
+                    {files.map((f) => (
+                      <li
+                        key={f}
+                        className="inline-flex max-w-full items-center gap-1.5 rounded-pill bg-brand-tint px-2.5 py-1 text-label text-brand-on-tint"
+                      >
+                        <Paperclip className="size-3 shrink-0" aria-hidden="true" />
+                        <span className="truncate">{f}</span>
+                        <button
+                          type="button"
+                          aria-label={`Remove ${f}`}
+                          onClick={() => setFiles((x) => x.filter((y) => y !== f))}
+                          className="shrink-0 rounded-pill p-0.5 hover:bg-brand-tint-hover"
+                        >
+                          <X className="size-3" aria-hidden="true" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+
+                <div className="flex items-center gap-2 px-2 pb-2">
+                  <input
+                    ref={fileInput}
+                    type="file"
+                    multiple
+                    accept="image/*,application/pdf"
+                    className="hidden"
+                    onChange={(e) => {
+                      const picked = Array.from(e.target.files ?? []).map((f) => f.name);
+                      if (picked.length) setFiles((x) => [...x, ...picked]);
+                      e.target.value = "";
+                    }}
+                  />
+                  <button
+                    type="button"
+                    aria-label="Attach a document or photo"
+                    onClick={() => fileInput.current?.click()}
+                    className="inline-flex size-8 items-center justify-center rounded-pill text-secondary-foreground transition-colors hover:bg-surface hover:text-foreground active:scale-95"
+                  >
+                    <Paperclip className="size-4" aria-hidden="true" />
+                  </button>
+                  <span className="flex-1 truncate text-left text-meta text-tertiary-foreground">
+                    Attach an invoice, bill or photo
+                  </span>
+                  <button
+                    type="button"
+                    disabled={!typed.trim() && files.length === 0}
+                    onClick={() => {
+                      setTyped("");
+                      setFiles([]);
+                      setProcessing(true);
+                      onSubmit?.();
+                    }}
+                    className="brand-gradient inline-flex h-8 shrink-0 items-center gap-1.5 rounded-pill px-3.5 text-label font-semibold text-on-primary shadow-xs transition hover:brightness-110 active:scale-95 disabled:opacity-45"
+                  >
+                    <Sparkles className="size-3.5 shrink-0" aria-hidden="true" />
+                    Structure it
+                  </button>
+                </div>
               </div>
+
               <div className="mt-3 flex w-full max-w-md flex-wrap justify-start gap-1.5">
                 {SUGGESTIONS.map((s) => (
                   <button
@@ -269,66 +320,13 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                   </button>
                 ))}
               </div>
-              <div className="mt-4 flex w-full max-w-md justify-start">
-                <button
-                  type="button"
-                  disabled={!typed.trim()}
-                  onClick={() => {
-                    setTyped("");
-                    setProcessing(true);
-                    onSubmit?.();
-                  }}
-                  className="brand-gradient inline-flex h-9 items-center gap-2 rounded-pill px-4 text-small font-semibold text-on-primary shadow-xs transition hover:brightness-110 active:scale-95 disabled:opacity-45"
-                >
-                  <Sparkles className="size-4 shrink-0" aria-hidden="true" />
-                  Structure it
-                </button>
-              </div>
-            </>
-          ) : mode === "upload" ? (
-            <>
-              {greetingLine}
-              <div className="mt-6">
-                <CaptureCircle
-                  label="Upload Documents"
-                  icon={Upload}
-                  onClick={() => setProcessing(true)}
-                />
-              </div>
-              <div className="mt-4">
-                <button
-                  type="button"
-                  onClick={() => setProcessing(true)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-hairline bg-surface/60 px-3.5 py-2 text-small font-medium text-foreground transition-colors hover:bg-surface active:scale-95"
-                >
-                  <Paperclip className="size-4" aria-hidden="true" /> Choose Files
-                </button>
-              </div>
-              <h1 id="capture-heading" className={heading}>
-                {COPY.upload.heading}
-              </h1>
-              <p className={sub}>{COPY.upload.sub}</p>
-            </>
-          ) : (
-            <>
-              {greetingLine}
-              <div className="mt-6">
-                <CaptureCircle
-                  label="Open Camera"
-                  icon={Camera}
-                  onClick={() => setProcessing(true)}
-                />
-              </div>
-              <h1 id="capture-heading" className={heading}>
-                {COPY.camera.heading}
-              </h1>
-              <p className={sub}>{COPY.camera.sub}</p>
             </>
           )}
+
         </div>
       </div>
 
-      {/* Mode selector: all four always visible, no horizontal scroll. */}
+      {/* Mode selector: Talk or Type - attachments live inside the Type field. */}
       <div className="flex w-full items-center justify-center gap-1.5 sm:gap-2">
         {MODES.map((m) => (
           <button
