@@ -321,7 +321,7 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                   type="button"
                   disabled={!typed.trim()}
                   onClick={() => {
-                    setHeld(typed);
+                    setTyped("");
                     setTyped("");
                     setProcessing(true);
                     onSubmit?.();
