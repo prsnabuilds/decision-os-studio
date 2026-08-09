@@ -1,10 +1,10 @@
 import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, Flame } from "lucide-react";
-import { Btn, Card, Meta, PageHeader, SectionHeading, Segmented, StatusBadge } from "@/components/ds";
+import { Btn, Card, FilterPill, Meta, PageHeader, SectionHeading, Segmented, StatusBadge } from "@/components/ds";
 import { AiBtn, AiTag } from "@/components/ds/ai";
 import { buildRanked, decisions, tasks } from "@/data/demo";
-import { inr, joinReadably, plural } from "@/lib/format";
+import { inr, plural } from "@/lib/format";
 
 export const Route = createFileRoute("/_shell/brief")({
   head: () => ({
@@ -32,13 +32,6 @@ function BriefPage() {
   const fires = ranked.filter((r) => r.tier === "overdue");
   const pending = decisions.filter((d) => d.status === "pending").length;
   const openTasks = tasks.filter((t) => t.status !== "done").length;
-
-  const counters = [
-    { label: "Fires", value: fires.length },
-    { label: "Decisions", value: pending },
-    { label: "Tasks", value: openTasks },
-    { label: "Overdue", value: fires.length },
-  ].filter((c) => c.value > 0);
 
   const summaryByPeriod: Record<(typeof periods)[number], string> = {
     Morning:
