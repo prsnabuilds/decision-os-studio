@@ -74,11 +74,31 @@ const COPY: Record<Mode, { heading: string; sub: string }> = {
   },
 };
 
+const PROCESSING: Record<Mode, { heading: string; sub: string }> = {
+  talk: {
+    heading: "Making Sense Of It",
+    sub: "DecisionOS is turning what you said into tasks, owners and dates.",
+  },
+  type: {
+    heading: "Making Sense Of It",
+    sub: "DecisionOS is turning what you wrote into tasks, owners and dates.",
+  },
+  upload: {
+    heading: "Reading Your Document",
+    sub: "DecisionOS is pulling out the details and filing them.",
+  },
+  camera: {
+    heading: "Reading Your Photo",
+    sub: "DecisionOS is pulling out the details and filing them.",
+  },
+};
+
 const SUGGESTIONS = [
   "List the overdue tasks",
   "Get me a To Do list",
   "Prioritize the tasks on fire",
 ];
+
 
 /** The gradient circle used by every capture control. */
 function CaptureCircle({
@@ -161,11 +181,10 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                 Structuring it…
               </span>
               <h1 id="capture-heading" className={heading}>
-                Making Sense Of It
+                {PROCESSING[mode].heading}
               </h1>
-              <p className={sub}>
-                DecisionOS is turning what you said into tasks, owners and dates.
-              </p>
+              <p className={sub}>{PROCESSING[mode].sub}</p>
+
             </>
           ) : recording ? (
             <>

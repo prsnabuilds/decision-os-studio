@@ -424,6 +424,42 @@ function BoardView() {
   );
 }
 
+/** Staged progress rail for a workflow card: done / current / upcoming. */
+function StageProgress({ stages, current }: { stages: string[]; current: string }) {
+  const idx = Math.max(0, stages.indexOf(current));
+  return (
+    <ol className="flex items-start gap-1.5" aria-label="Workflow stages">
+      {stages.map((s, i) => {
+        const state = i < idx ? "done" : i === idx ? "active" : "next";
+        return (
+          <li key={s} className="min-w-0 flex-1">
+            <span
+              aria-hidden="true"
+              className={cn(
+                "block h-1 rounded-pill",
+                state === "done" && "bg-success-600",
+                state === "active" && "brand-gradient",
+                state === "next" && "bg-hairline-strong opacity-60",
+              )}
+            />
+            <span
+              className={cn(
+                "mt-1.5 block truncate text-meta",
+                state === "done" && "text-secondary-foreground",
+                state === "active" && "font-semibold text-foreground",
+                state === "next" && "text-tertiary-foreground",
+              )}
+              title={s}
+            >
+              {s}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 function WorkflowsView() {
   const [note, setNote] = React.useState("");
   const [newCard, setNewCard] = React.useState(false);
@@ -432,8 +468,9 @@ function WorkflowsView() {
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-end gap-3">
         <Btn variant="primary" onClick={() => setNewCard((n) => !n)}>
-          New Pipeline Card
+          New Pipeline
         </Btn>
+
       </div>
 
       {note ? <p className="mb-3 text-small text-secondary-foreground">{note}</p> : null}
@@ -478,57 +515,61 @@ function WorkflowsView() {
         {pipelines.map((p) => (
           <section key={p.name}>
             <h2 className="mb-3 text-h3 text-foreground">{p.name}</h2>
-            <div className="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
-              <div
-                className="grid w-max gap-3"
-                style={{ gridTemplateColumns: `repeat(${p.stages.length}, minmax(220px, 1fr))` }}
-              >
-                {p.stages.map((stage, si) => (
-                  <div
-                    key={stage}
-                    className="rounded-lg border border-hairline bg-surface-sunken p-3"
-                  >
-                    <p className="mb-3 text-label text-tertiary-foreground">{stage}</p>
-                    <div className="space-y-2">
-                      {p.cards
-                        .filter((c) => c.stage === stage)
-                        .map((c) => (
-                          <Card key={c.id} compact className="space-y-1">
-                            <p className="text-body-strong text-foreground">{c.title}</p>
-                            <p className="text-small text-secondary-foreground">{c.counterparty}</p>
-                            <p className="tabular text-small text-foreground">{inr(c.amount)}</p>
-                            <p className="text-label text-tertiary-foreground">
-                              Created {c.created}
-                            </p>
-                            <div className="flex gap-1 pt-1">
-                              <Btn
-                                size="sm"
-                                variant="secondary"
-                                onClick={() =>
-                                  setNote(
-                                    si === p.stages.length - 1
-                                      ? `${c.title} is already at the final stage.`
-                                      : `${c.title} moved to ${p.stages[si + 1]}.`,
-                                  )
-                                }
-                              >
-                                Advance
-                              </Btn>
-                              <Btn
-                                size="sm"
-                                variant="tertiary"
-                                onClick={() => setNote(`${c.title} deleted.`)}
-                              >
-                                Delete
-                              </Btn>
-                            </div>
-                          </Card>
-                        ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <ul className="space-y-2.5">
+              {p.cards.map((c) => {
+                const si = Math.max(0, p.stages.indexOf(c.stage));
+                const next = p.stages[si + 1];
+                return (
+                  <li key={c.id}>
+                    <Card compact className="space-y-3">
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-body-strong text-foreground">{c.title}</p>
+                          <p className="text-meta text-secondary-foreground">
+                            {c.counterparty} · Created {c.created}
+                          </p>
+                        </div>
+                        <span className="tabular text-body-strong text-foreground">
+                          {inr(c.amount)}
+                        </span>
+                      </div>
+
+                      <StageProgress stages={p.stages} current={c.stage} />
+
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="text-meta text-secondary-foreground">
+                          Stage {si + 1} of {p.stages.length} ·{" "}
+                          {next ? `Next: ${next}` : "Final stage"}
+                        </p>
+                        <div className="flex gap-1">
+                          <Btn
+                            size="sm"
+                            variant="secondary"
+                            onClick={() =>
+                              setNote(
+                                next
+                                  ? `${c.title} moved to ${next}.`
+                                  : `${c.title} is already at the final stage.`,
+                              )
+                            }
+                          >
+                            {next ? `Move to ${next}` : "Advance"}
+                          </Btn>
+                          <Btn
+                            size="sm"
+                            variant="tertiary"
+                            onClick={() => setNote(`${c.title} deleted.`)}
+                          >
+                            Delete
+                          </Btn>
+                        </div>
+                      </div>
+                    </Card>
+                  </li>
+                );
+              })}
+            </ul>
+
           </section>
         ))}
       </div>
