@@ -523,6 +523,7 @@ function WorkflowsView() {
                     </div>
                   </div>
                 ))}
+                </div>
               </div>
             </section>
           ))}
