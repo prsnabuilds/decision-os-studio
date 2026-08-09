@@ -50,52 +50,25 @@ function DeskSkeleton() {
   );
 }
 
-type Tone = "decision" | "fire" | "due" | "important";
-
-const toneStyles: Record<Tone, { chip: string; edge: string }> = {
-  decision: { chip: "bg-brand-tint text-brand-on-tint", edge: "var(--edge-today)" },
-  fire: {
-    chip: "bg-danger-50 text-danger-700 dark:bg-danger-800/30 dark:text-danger-300",
-    edge: "var(--edge-overdue)",
-  },
-  due: { chip: "bg-surface-sunken text-secondary-foreground", edge: "var(--edge-week)" },
-  important: { chip: "bg-surface-sunken text-secondary-foreground", edge: "var(--edge-later)" },
-};
-
 function Group({
-  tone,
-  icon: Icon,
   title,
-  sub,
   count,
+  showTitle,
   children,
 }: {
-  tone: Tone;
-  icon: React.ComponentType<{ className?: string }>;
   title: string;
-  sub: string;
   count: number;
+  showTitle: boolean;
   children: React.ReactNode;
 }) {
   if (count === 0) return null;
-  const s = toneStyles[tone];
   return (
-    <section aria-label={title} className="relative rounded-xl bg-surface-sunken/60 p-4 sm:p-5">
-      <span
-        aria-hidden="true"
-        className="absolute inset-y-0 left-0 w-[3px] rounded-l-xl"
-        style={{ backgroundColor: s.edge }}
-      />
-      <header className="mb-3 flex flex-wrap items-center gap-2">
-        <span
-          className={`inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-label ${s.chip}`}
-        >
-          <Icon className="size-3.5" aria-hidden="true" />
-          {title}
-        </span>
-        <span className="text-small tabular text-tertiary-foreground">{count}</span>
-        <p className="w-full text-small text-secondary-foreground">{sub}</p>
-      </header>
+    <section aria-label={title}>
+      {showTitle ? (
+        <h2 className="mb-2 text-h3 text-secondary-foreground">
+          {title} <span className="tabular text-tertiary-foreground">{count}</span>
+        </h2>
+      ) : null}
       {children}
     </section>
   );
@@ -116,7 +89,7 @@ function DeskRow({
   return (
     <Card compact interactive className="flex flex-wrap items-center gap-3">
       <div className="min-w-48 flex-1">
-        <p className="text-body-strong text-foreground">{title}</p>
+        <p className="text-h3 text-foreground">{title}</p>
         <Meta className="mt-0.5" items={meta.filter(Boolean)} />
       </div>
       {amount ? (
