@@ -682,3 +682,83 @@ export function DetailPanel({
     </div>
   );
 }
+
+/* ------------------------------ Bottom sheet ------------------------------ */
+
+/*
+ * Slides up over the current screen. Dismissed by swiping the handle down,
+ * tapping outside or pressing Escape - the user never leaves their context.
+ */
+export function BottomSheet({
+  open,
+  onClose,
+  title,
+  subtitle,
+  children,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  subtitle?: string | undefined;
+  children: React.ReactNode;
+}) {
+  const [drag, setDrag] = React.useState(0);
+  const startY = React.useRef<number | null>(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    setDrag(0);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50">
+      <button
+        type="button"
+        aria-label="Close"
+        onClick={onClose}
+        className="absolute inset-0 bg-neutral-900/40 animate-in fade-in"
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        style={{ transform: `translateY(${drag}px)` }}
+        className="absolute inset-x-0 bottom-0 mx-auto flex max-h-[86dvh] w-full max-w-xl flex-col rounded-t-xl bg-surface shadow-lg animate-in slide-in-from-bottom duration-200"
+      >
+        <div
+          className="shrink-0 cursor-grab touch-none px-5 pb-2 pt-3"
+          onTouchStart={(e) => {
+            startY.current = e.touches[0]!.clientY;
+          }}
+          onTouchMove={(e) => {
+            if (startY.current === null) return;
+            setDrag(Math.max(0, e.touches[0]!.clientY - startY.current));
+          }}
+          onTouchEnd={() => {
+            if (drag > 96) onClose();
+            else setDrag(0);
+            startY.current = null;
+          }}
+        >
+          <span aria-hidden="true" className="mx-auto block h-1 w-10 rounded-pill bg-hairline-strong" />
+          <div className="mt-3">
+            <h2 className="text-h3 text-foreground">{title}</h2>
+            {subtitle ? <p className="mt-0.5 text-small text-tertiary-foreground">{subtitle}</p> : null}
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto px-5 pb-6 pt-1">{children}</div>
+      </div>
+    </div>
+  );
+}
