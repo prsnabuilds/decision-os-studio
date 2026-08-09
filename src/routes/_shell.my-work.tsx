@@ -479,10 +479,11 @@ function WorkflowsView() {
           {pipelines.map((p) => (
             <section key={p.name}>
               <h2 className="mb-3 text-h3 text-foreground">{p.name}</h2>
-              <div
-                className="grid gap-3"
-                style={{ gridTemplateColumns: `repeat(${p.stages.length}, minmax(200px, 1fr))` }}
-              >
+              <div className="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
+                <div
+                  className="grid w-max gap-3"
+                  style={{ gridTemplateColumns: `repeat(${p.stages.length}, minmax(220px, 1fr))` }}
+                >
                 {p.stages.map((stage, si) => (
                   <div key={stage} className="rounded-lg border border-hairline bg-surface-sunken p-3">
                     <p className="mb-3 text-label text-tertiary-foreground">{stage}</p>
