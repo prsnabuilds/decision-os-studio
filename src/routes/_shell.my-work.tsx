@@ -134,6 +134,18 @@ function TaskCard({
             {task.description ?? "No description was captured with this task."}
           </p>
 
+          <Meta
+            items={[
+              task.priority === "high" ? <PriorityBadge key="p" priority="high" /> : null,
+              task.status !== "todo" ? statusLabels[task.status] : null,
+              task.assignee ? `With ${task.assignee}` : null,
+              task.requireProof ? "Proof required" : null,
+              task.amount ? inr(task.amount) : null,
+              typeof aiScore === "number" ? `AI score ${aiScore}` : null,
+            ].filter(Boolean)}
+          />
+
+
           <div>
             <p className="text-label text-tertiary-foreground">Execution Steps</p>
             {steps.length === 0 ? (
