@@ -181,11 +181,10 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                 Structuring it…
               </span>
               <h1 id="capture-heading" className={heading}>
-                Making Sense Of It
+                {PROCESSING[mode].heading}
               </h1>
-              <p className={sub}>
-                DecisionOS is turning what you said into tasks, owners and dates.
-              </p>
+              <p className={sub}>{PROCESSING[mode].sub}</p>
+
             </>
           ) : recording ? (
             <>
