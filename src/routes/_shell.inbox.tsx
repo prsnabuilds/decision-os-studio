@@ -7,6 +7,7 @@ import {
   Card,
   DetailPanel,
   EmptyState,
+  FilterPill,
   Meta,
   Skel,
   SectionHeading,
@@ -95,18 +96,6 @@ function Group({
         <span className="text-small tabular text-tertiary-foreground">{count}</span>
         <p className="w-full text-small text-secondary-foreground">{sub}</p>
       </header>
-
-      <div className="flex flex-wrap gap-2">
-        {filters.map((f) => (
-          <FilterPill
-            key={f.id}
-            label={f.label}
-            count={f.count}
-            active={filter === f.id}
-            onClick={() => setFilter((c) => (c === f.id ? "all" : f.id))}
-          />
-        ))}
-      </div>
       {children}
     </section>
   );
@@ -194,6 +183,18 @@ function DecisionDesk() {
           {headline || "Nothing needs you right now. You're clear."}
         </p>
       </header>
+
+      <div className="flex flex-wrap gap-2">
+        {filters.map((f) => (
+          <FilterPill
+            key={f.id}
+            label={f.label}
+            count={f.count}
+            active={filter === f.id}
+            onClick={() => setFilter((c) => (c === f.id ? "all" : f.id))}
+          />
+        ))}
+      </div>
 
       {pending.length + onFire.length + dueToday.length + important.length === 0 ? (
         <EmptyState
