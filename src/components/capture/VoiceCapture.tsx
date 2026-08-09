@@ -272,15 +272,8 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                   <Square className="size-4" aria-hidden="true" />
                 </button>
               </div>
-              <p
-                aria-live="polite"
-                className="mt-8 max-w-sm text-h2 font-normal italic leading-relaxed text-secondary-foreground"
-                style={{
-                  maskImage: "linear-gradient(to bottom, var(--foreground) 45%, transparent 100%)",
-                  WebkitMaskImage: "linear-gradient(to bottom, #000 45%, transparent 100%)",
-                }}
-              >
-                {transcript || (paused ? "" : "…")}
+              <p className="mt-8 max-w-[19rem] text-label leading-relaxed text-secondary-foreground">
+                Keep talking. Press stop when you are done and DecisionOS will structure it.
               </p>
             </>
           ) : mode === "talk" ? (
