@@ -188,9 +188,6 @@ function DecisionDesk() {
         </p>
       </header>
 
-
-
-
       {pending.length + onFire.length + dueToday.length + important.length === 0 ? (
         <EmptyState
           title="Nothing Needs You Right Now"

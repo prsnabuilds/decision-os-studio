@@ -116,7 +116,6 @@ function TaskCard({
           <Meta items={metaItems} className="mt-1" />
         </div>
 
-
         <button
           type="button"
           aria-expanded={open}
@@ -144,7 +143,6 @@ function TaskCard({
               typeof aiScore === "number" ? `AI score ${aiScore}` : null,
             ].filter(Boolean)}
           />
-
 
           <div>
             <p className="text-label text-tertiary-foreground">Execution Steps</p>

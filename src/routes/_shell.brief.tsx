@@ -88,11 +88,6 @@ function BriefPage() {
         </div>
       </Card>
 
-
-
-
-
-
       {show("fires") ? (
         <section className="mb-8">
           <div className="mb-3 flex items-center gap-2">

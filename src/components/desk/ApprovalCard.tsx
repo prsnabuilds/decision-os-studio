@@ -140,4 +140,3 @@ export function ApprovalCard({ decision }: { decision: Decision }) {
     </div>
   );
 }
-
