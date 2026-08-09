@@ -137,6 +137,7 @@ function BriefPage() {
 
       <section className="mb-8 grid gap-6 lg:grid-cols-2">
         {show("decisions") ? (
+        <div>
           <div className="mb-3 flex items-baseline gap-2">
             <h2 className="text-h2 text-foreground">Decisions This Period</h2>
             <span className="text-small text-tertiary-foreground">
@@ -171,7 +172,9 @@ function BriefPage() {
             <Link to="/inbox">Open The Decision Desk →</Link>
           </Btn>
         </div>
+        ) : null}
 
+        {show("completed") ? (
         <div>
           <div className="mb-3 flex items-baseline gap-2">
             <h2 className="text-h2 text-foreground">Work Completed</h2>
@@ -196,6 +199,7 @@ function BriefPage() {
             <Link to="/journal">See The Full Record →</Link>
           </Btn>
         </div>
+        ) : null}
       </section>
 
       <section>
