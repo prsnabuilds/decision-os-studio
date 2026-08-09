@@ -17,6 +17,9 @@ import { decisions, tasks } from "@/data/demo";
 import { inr, plural } from "@/lib/format";
 
 export const Route = createFileRoute("/_shell/inbox")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    ...(typeof s["decision"] === "string" ? { decision: s["decision"] } : {}),
+  }),
   head: () => ({
     meta: [
       { title: "Decision Desk - DecisionOS" },
@@ -99,8 +102,14 @@ function DeskRow({
 }
 
 function DecisionDesk() {
+  const search = Route.useSearch();
   const [loading, setLoading] = React.useState(true);
-  const [reviewing, setReviewing] = React.useState<string | null>(null);
+  const [reviewing, setReviewing] = React.useState<string | null>(search.decision ?? null);
+
+  // A stalled workflow can link straight into the decision that unsticks it.
+  React.useEffect(() => {
+    if (search.decision) setReviewing(search.decision);
+  }, [search.decision]);
   const [respondTo, setRespondTo] = React.useState<string | null>(null);
   const [filter, setFilter] = React.useState<"all" | "decision" | "fire" | "due" | "important">(
     "decision",

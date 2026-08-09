@@ -1,10 +1,23 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Btn, Card, EmptyState, Field, PageHeader, Segmented, Select, StatusBadge, TextInput } from "@/components/ds";
+import { FileText } from "lucide-react";
+import {
+  Btn,
+  Card,
+  CountBadge,
+  EmptyState,
+  Field,
+  PageHeader,
+  Segmented,
+  Select,
+  StatusBadge,
+  TextInput,
+} from "@/components/ds";
 import { AiBtn, AiTag } from "@/components/ds/ai";
 import { VoiceInput } from "@/components/ds/voice";
-import { finance, people } from "@/data/demo";
+import { capturedDocs, finance, people } from "@/data/demo";
 import { inr } from "@/lib/format";
+
 
 export const Route = createFileRoute("/_shell/ledger")({
   head: () => ({
@@ -22,7 +35,60 @@ export const Route = createFileRoute("/_shell/ledger")({
   component: FinancePage,
 });
 
-const tabs = ["Overview", "Revenue", "Expenses", "Assets", "Inventory"] as const;
+const tabs = ["Overview", "Documents", "Revenue", "Expenses", "Assets", "Inventory"] as const;
+
+/** Financial documents captured on Home, waiting to be reviewed and filed. */
+function CapturedDocuments({ compact = false }: { compact?: boolean }) {
+  const shown = compact ? capturedDocs.slice(0, 3) : capturedDocs;
+  const waiting = capturedDocs.filter((d) => d.status === "Needs review").length;
+
+  return (
+    <section aria-label="Captured documents">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <h2 className="text-h3 text-foreground">Captured Documents</h2>
+        <CountBadge count={waiting} />
+        <span className="text-meta text-secondary-foreground">waiting for review</span>
+      </div>
+      <p className="mb-3 text-meta text-secondary-foreground">
+        Invoices, bills and receipts captured on Home land here. Anything not financial stays with
+        its task or workflow.
+      </p>
+      <ul className="space-y-2">
+        {shown.map((d) => (
+          <li key={d.id}>
+            <Card compact className="flex flex-wrap items-center gap-3">
+              <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-md bg-surface-sunken text-secondary-foreground">
+                <FileText className="size-4" aria-hidden="true" />
+              </span>
+              <div className="min-w-40 flex-1">
+                <p className="text-body-strong text-foreground">{d.name}</p>
+                <p className="text-meta text-secondary-foreground">
+                  {d.kind} · {d.party} · {d.date}
+                </p>
+              </div>
+              <span className="tabular text-body-strong text-foreground">{inr(d.amount)}</span>
+              <StatusBadge
+                kind={
+                  d.status === "Needs review"
+                    ? "pending"
+                    : d.status === "Reviewed"
+                      ? "completed"
+                      : "neutral"
+                }
+              >
+                {d.status}
+              </StatusBadge>
+              <Btn size="sm" variant="secondary">
+                {d.status === "Needs review" ? "Review" : "Open"}
+              </Btn>
+            </Card>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 
 function Kpi({ label, value }: { label: string; value: number }) {
   return (
@@ -92,7 +158,7 @@ function Table({
   );
 }
 
-function Overview() {
+function Overview({ onSeeDocuments }: { onSeeDocuments: () => void }) {
   const max = Math.max(...finance.monthlySpend.map((m) => m.amount));
   const maxCat = Math.max(...finance.categories.map((c) => c.amount));
   return (
@@ -105,6 +171,15 @@ function Overview() {
         <Kpi label="Asset Value" value={finance.assetValue} />
         <Kpi label="Inventory Value" value={finance.inventoryValue} />
       </section>
+
+      <div>
+        <CapturedDocuments compact />
+        <Btn size="sm" variant="tertiary" className="mt-2" onClick={onSeeDocuments}>
+          See All Captured Documents
+        </Btn>
+      </div>
+
+
 
       <Card className="space-y-3">
         <div className="flex flex-wrap items-center gap-2">
@@ -238,9 +313,12 @@ function FinancePage() {
         <Segmented options={tabs} value={tab} onChange={setTab} label="Finance section" />
       </div>
 
-      {tab === "Overview" ? <Overview /> : null}
+      {tab === "Overview" ? <Overview onSeeDocuments={() => setTab("Documents")} /> : null}
 
-      {tab !== "Overview" ? (
+      {tab === "Documents" ? <CapturedDocuments /> : null}
+
+      {tab !== "Overview" && tab !== "Documents" ? (
+
         <div className="space-y-4">
           <div className="flex justify-end">
             <Btn variant="primary" onClick={() => setForm((f) => !f)}>
