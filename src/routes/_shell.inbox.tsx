@@ -6,7 +6,6 @@ import {
   Btn,
   Card,
   DetailPanel,
-  FilterPill,
   EmptyState,
   Meta,
   Skel,
@@ -188,18 +187,6 @@ function DecisionDesk() {
           {headline || "Nothing needs you right now. You're clear."}
         </p>
       </header>
-
-      <div className="flex flex-wrap gap-2">
-        {filters.map((f) => (
-          <FilterPill
-            key={f.id}
-            label={f.label}
-            count={f.count}
-            active={filter === f.id}
-            onClick={() => setFilter(f.id)}
-          />
-        ))}
-      </div>
 
       {pending.length + onFire.length + dueToday.length + important.length === 0 ? (
         <EmptyState
