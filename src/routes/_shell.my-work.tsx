@@ -96,17 +96,13 @@ function TaskCard({
         ? "Due today"
         : `Due in ${task.dueInDays} days`;
 
-  const metaItems = dense
-    ? [task.assignee, dueLabel].filter(Boolean)
-    : [
-        task.priority === "high" ? <PriorityBadge priority="high" /> : null,
-        task.status !== "todo" ? statusLabels[task.status] : null,
-        task.assignee,
-        dueLabel,
-        task.requireProof ? "Proof required" : null,
-        `${task.progress}% done`,
-        typeof aiScore === "number" ? `AI score ${aiScore}` : null,
-      ].filter(Boolean);
+  const overdue = task.dueInDays < 0;
+  const metaItems = [
+    <span key="due" className={overdue ? "text-danger-600" : undefined}>
+      {dueLabel}
+    </span>,
+    `${task.progress}% done`,
+  ];
 
   return (
     <Card
@@ -118,13 +114,8 @@ function TaskCard({
         <div className="min-w-40 flex-1">
           <p className="text-body-strong text-foreground">{task.title}</p>
           <Meta items={metaItems} className="mt-1" />
-          {dense && task.amount ? (
-            <p className="mt-1 tabular text-small text-secondary-foreground">{inr(task.amount)}</p>
-          ) : null}
         </div>
-        {!dense && task.amount ? (
-          <span className="tabular text-body-strong text-foreground">{inr(task.amount)}</span>
-        ) : null}
+
 
         <button
           type="button"
