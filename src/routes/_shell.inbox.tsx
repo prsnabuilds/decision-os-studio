@@ -152,16 +152,38 @@ function DecisionDesk() {
     .filter(Boolean)
     .join(" · ");
 
+  const filters = [
+    { id: "all", label: "All", count: pending.length + onFire.length + dueToday.length + important.length },
+    { id: "decision", label: "Needs Your Decision", count: pending.length },
+    { id: "fire", label: "On Fire", count: onFire.length },
+    { id: "due", label: "Due Today", count: dueToday.length },
+    { id: "important", label: "Important", count: important.length },
+  ] as const;
+
+  const show = (id: (typeof filters)[number]["id"]) => filter === "all" || filter === id;
+
   if (loading) return <DeskSkeleton />;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <header>
         <h1 className="text-h1 text-foreground">Decision Desk</h1>
         <p className="mt-1 text-lead text-secondary-foreground">
           {headline || "Nothing needs you right now. You're clear."}
         </p>
       </header>
+
+      <div className="flex flex-wrap gap-2">
+        {filters.map((f) => (
+          <FilterPill
+            key={f.id}
+            label={f.label}
+            count={f.count}
+            active={filter === f.id}
+            onClick={() => setFilter(f.id)}
+          />
+        ))}
+      </div>
 
       {pending.length + onFire.length + dueToday.length + important.length === 0 ? (
         <EmptyState
@@ -170,6 +192,7 @@ function DecisionDesk() {
         />
       ) : null}
 
+      {show("decision") ? (
       <Group
         tone="decision"
         icon={Stamp}
