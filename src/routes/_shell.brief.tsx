@@ -3,7 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, Flame } from "lucide-react";
 import { Btn, Card, FilterPill, Meta, PageHeader, SectionHeading, Segmented, StatusBadge } from "@/components/ds";
 import { AiBtn, AiTag } from "@/components/ds/ai";
-import { buildRanked, decisions, tasks } from "@/data/demo";
+import { buildRanked, decisions } from "@/data/demo";
 import { inr, plural } from "@/lib/format";
 
 export const Route = createFileRoute("/_shell/brief")({
@@ -30,8 +30,6 @@ function BriefPage() {
 
   const ranked = buildRanked();
   const fires = ranked.filter((r) => r.tier === "overdue");
-  const pending = decisions.filter((d) => d.status === "pending").length;
-  const openTasks = tasks.filter((t) => t.status !== "done").length;
 
   const summaryByPeriod: Record<(typeof periods)[number], string> = {
     Morning:
