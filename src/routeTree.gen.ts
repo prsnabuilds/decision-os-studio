@@ -23,7 +23,6 @@ import { Route as ShellInboxRouteImport } from './routes/_shell.inbox'
 import { Route as ShellIngestRouteImport } from './routes/_shell.ingest'
 import { Route as ShellJournalRouteImport } from './routes/_shell.journal'
 import { Route as ShellLedgerRouteImport } from './routes/_shell.ledger'
-import { Route as ShellMeetingsRouteImport } from './routes/_shell.meetings'
 import { Route as ShellMyWorkRouteImport } from './routes/_shell.my-work'
 import { Route as ShellNotificationsRouteImport } from './routes/_shell.notifications'
 import { Route as ShellOperatingScoreRouteImport } from './routes/_shell.operating-score'
@@ -100,11 +99,6 @@ const ShellLedgerRoute = ShellLedgerRouteImport.update({
   path: '/ledger',
   getParentRoute: () => ShellRoute,
 } as any)
-const ShellMeetingsRoute = ShellMeetingsRouteImport.update({
-  id: '/meetings',
-  path: '/meetings',
-  getParentRoute: () => ShellRoute,
-} as any)
 const ShellMyWorkRoute = ShellMyWorkRouteImport.update({
   id: '/my-work',
   path: '/my-work',
@@ -150,7 +144,6 @@ export interface FileRoutesByFullPath {
   '/ingest': typeof ShellIngestRoute
   '/journal': typeof ShellJournalRoute
   '/ledger': typeof ShellLedgerRoute
-  '/meetings': typeof ShellMeetingsRoute
   '/my-work': typeof ShellMyWorkRoute
   '/notifications': typeof ShellNotificationsRoute
   '/operating-score': typeof ShellOperatingScoreRoute
@@ -172,7 +165,6 @@ export interface FileRoutesByTo {
   '/ingest': typeof ShellIngestRoute
   '/journal': typeof ShellJournalRoute
   '/ledger': typeof ShellLedgerRoute
-  '/meetings': typeof ShellMeetingsRoute
   '/my-work': typeof ShellMyWorkRoute
   '/notifications': typeof ShellNotificationsRoute
   '/operating-score': typeof ShellOperatingScoreRoute
@@ -196,7 +188,6 @@ export interface FileRoutesById {
   '/_shell/ingest': typeof ShellIngestRoute
   '/_shell/journal': typeof ShellJournalRoute
   '/_shell/ledger': typeof ShellLedgerRoute
-  '/_shell/meetings': typeof ShellMeetingsRoute
   '/_shell/my-work': typeof ShellMyWorkRoute
   '/_shell/notifications': typeof ShellNotificationsRoute
   '/_shell/operating-score': typeof ShellOperatingScoreRoute
@@ -220,7 +211,6 @@ export interface FileRouteTypes {
     | '/ingest'
     | '/journal'
     | '/ledger'
-    | '/meetings'
     | '/my-work'
     | '/notifications'
     | '/operating-score'
@@ -242,7 +232,6 @@ export interface FileRouteTypes {
     | '/ingest'
     | '/journal'
     | '/ledger'
-    | '/meetings'
     | '/my-work'
     | '/notifications'
     | '/operating-score'
@@ -265,7 +254,6 @@ export interface FileRouteTypes {
     | '/_shell/ingest'
     | '/_shell/journal'
     | '/_shell/ledger'
-    | '/_shell/meetings'
     | '/_shell/my-work'
     | '/_shell/notifications'
     | '/_shell/operating-score'
@@ -381,13 +369,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellLedgerRouteImport
       parentRoute: typeof ShellRoute
     }
-    '/_shell/meetings': {
-      id: '/_shell/meetings'
-      path: '/meetings'
-      fullPath: '/meetings'
-      preLoaderRoute: typeof ShellMeetingsRouteImport
-      parentRoute: typeof ShellRoute
-    }
     '/_shell/my-work': {
       id: '/_shell/my-work'
       path: '/my-work'
@@ -444,7 +425,6 @@ interface ShellRouteChildren {
   ShellIngestRoute: typeof ShellIngestRoute
   ShellJournalRoute: typeof ShellJournalRoute
   ShellLedgerRoute: typeof ShellLedgerRoute
-  ShellMeetingsRoute: typeof ShellMeetingsRoute
   ShellMyWorkRoute: typeof ShellMyWorkRoute
   ShellNotificationsRoute: typeof ShellNotificationsRoute
   ShellOperatingScoreRoute: typeof ShellOperatingScoreRoute
@@ -464,7 +444,6 @@ const ShellRouteChildren: ShellRouteChildren = {
   ShellIngestRoute: ShellIngestRoute,
   ShellJournalRoute: ShellJournalRoute,
   ShellLedgerRoute: ShellLedgerRoute,
-  ShellMeetingsRoute: ShellMeetingsRoute,
   ShellMyWorkRoute: ShellMyWorkRoute,
   ShellNotificationsRoute: ShellNotificationsRoute,
   ShellOperatingScoreRoute: ShellOperatingScoreRoute,
@@ -484,13 +463,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -34,7 +34,7 @@ const nav = [
   { to: "/brain", label: "Company Brain", short: "Brain", icon: Brain },
   { to: "/ledger", label: "Finance", short: "Finance", icon: Wallet },
   { to: "/ingest", label: "Capture", short: "Capture", icon: Upload, count: 5, tone: "neutral" as const },
-  { to: "/meetings", label: "Meeting Notes", short: "Notes", icon: Mic2 },
+  
   { to: "/settings", label: "Settings", short: "Settings", icon: SettingsIcon },
 ];
 
