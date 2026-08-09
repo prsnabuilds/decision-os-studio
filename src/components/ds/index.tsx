@@ -230,7 +230,7 @@ export function Meta({
   return (
     <p
       className={cn(
-        "flex flex-wrap items-center gap-x-2 gap-y-1 text-small text-tertiary-foreground",
+        "flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-tertiary-foreground",
         className,
       )}
     >
@@ -674,7 +674,7 @@ export function BottomSheet({
 }: {
   open: boolean;
   onClose: () => void;
-  title: string;
+  title?: string | undefined;
   subtitle?: string | undefined;
   children: React.ReactNode;
 }) {
@@ -708,7 +708,7 @@ export function BottomSheet({
       <div
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-label={title ?? "Details"}
         style={{ transform: `translateY(${drag}px)` }}
         className="absolute inset-x-0 bottom-0 mx-auto flex max-h-[86dvh] w-full max-w-xl flex-col rounded-t-xl bg-surface shadow-lg animate-in slide-in-from-bottom duration-200"
       >
@@ -731,12 +731,14 @@ export function BottomSheet({
             aria-hidden="true"
             className="mx-auto block h-1 w-10 rounded-pill bg-hairline-strong"
           />
-          <div className="mt-3">
-            <h2 className="text-h3 text-foreground">{title}</h2>
-            {subtitle ? (
-              <p className="mt-0.5 text-small text-tertiary-foreground">{subtitle}</p>
-            ) : null}
-          </div>
+          {title ? (
+            <div className="mt-3">
+              <h2 className="text-h3 text-foreground">{title}</h2>
+              {subtitle ? (
+                <p className="mt-0.5 text-small text-tertiary-foreground">{subtitle}</p>
+              ) : null}
+            </div>
+          ) : null}
         </div>
         <div className="flex-1 overflow-y-auto px-5 pb-6 pt-1">{children}</div>
       </div>
