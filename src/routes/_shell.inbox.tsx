@@ -54,7 +54,10 @@ type Tone = "decision" | "fire" | "due" | "important";
 
 const toneStyles: Record<Tone, { chip: string; edge: string }> = {
   decision: { chip: "bg-brand-tint text-brand-on-tint", edge: "var(--edge-today)" },
-  fire: { chip: "bg-danger-50 text-danger-700 dark:bg-danger-800/30 dark:text-danger-300", edge: "var(--edge-overdue)" },
+  fire: {
+    chip: "bg-danger-50 text-danger-700 dark:bg-danger-800/30 dark:text-danger-300",
+    edge: "var(--edge-overdue)",
+  },
   due: { chip: "bg-surface-sunken text-secondary-foreground", edge: "var(--edge-week)" },
   important: { chip: "bg-surface-sunken text-secondary-foreground", edge: "var(--edge-later)" },
 };
@@ -84,7 +87,9 @@ function Group({
         style={{ backgroundColor: s.edge }}
       />
       <header className="mb-3 flex flex-wrap items-center gap-2">
-        <span className={`inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-label ${s.chip}`}>
+        <span
+          className={`inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-label ${s.chip}`}
+        >
           <Icon className="size-3.5" aria-hidden="true" />
           {title}
         </span>
@@ -126,7 +131,9 @@ function DecisionDesk() {
   const [loading, setLoading] = React.useState(true);
   const [reviewing, setReviewing] = React.useState<string | null>(null);
   const [respondTo, setRespondTo] = React.useState<string | null>(null);
-  const [filter, setFilter] = React.useState<"all" | "decision" | "fire" | "due" | "important">("all");
+  const [filter, setFilter] = React.useState<"all" | "decision" | "fire" | "due" | "important">(
+    "all",
+  );
 
   React.useEffect(() => {
     const id = window.setTimeout(() => setLoading(false), 500);
@@ -148,7 +155,9 @@ function DecisionDesk() {
   const escalated = escalations.find((t) => t.id === respondTo);
 
   const headline = [
-    pending.length ? `${pending.length} ${plural(pending.length, "decision", "decisions")} waiting on you` : "",
+    pending.length
+      ? `${pending.length} ${plural(pending.length, "decision", "decisions")} waiting on you`
+      : "",
     onFire.length ? `${onFire.length} on fire` : "",
     dueToday.length ? `${dueToday.length} due today` : "",
   ]
@@ -156,7 +165,11 @@ function DecisionDesk() {
     .join(" · ");
 
   const filters = [
-    { id: "all", label: "All", count: pending.length + onFire.length + dueToday.length + important.length },
+    {
+      id: "all",
+      label: "All",
+      count: pending.length + onFire.length + dueToday.length + important.length,
+    },
     { id: "decision", label: "Needs Your Decision", count: pending.length },
     { id: "fire", label: "On Fire", count: onFire.length },
     { id: "due", label: "Due Today", count: dueToday.length },
@@ -196,133 +209,133 @@ function DecisionDesk() {
       ) : null}
 
       {show("decision") ? (
-      <Group
-        tone="decision"
-        icon={Stamp}
-        title="Needs Your Decision"
-        sub="Work stays blocked until you decide. Longest waiting first."
-        count={pending.length}
-      >
-        <ul className="space-y-1.5">
-          {pending.map((d) => (
-            <li key={d.id}>
-              <DeskRow
-                title={d.title}
-                amount={d.amount}
-                meta={[
-                  `Waiting ${d.waitingDays} ${plural(d.waitingDays, "day", "days")}`,
-                  `From ${d.raisedBy}`,
-                  `Unblocks ${d.unblocks.length} ${plural(d.unblocks.length, "task", "tasks")}`,
-                ]}
-                action={
-                  <Btn variant="secondary" size="sm" onClick={() => setReviewing(d.id)}>
-                    Review <ArrowRight className="size-3.5" aria-hidden="true" />
-                  </Btn>
-                }
-              />
-            </li>
-          ))}
-        </ul>
-      </Group>
+        <Group
+          tone="decision"
+          icon={Stamp}
+          title="Needs Your Decision"
+          sub="Work stays blocked until you decide. Longest waiting first."
+          count={pending.length}
+        >
+          <ul className="space-y-1.5">
+            {pending.map((d) => (
+              <li key={d.id}>
+                <DeskRow
+                  title={d.title}
+                  amount={d.amount}
+                  meta={[
+                    `Waiting ${d.waitingDays} ${plural(d.waitingDays, "day", "days")}`,
+                    `From ${d.raisedBy}`,
+                    `Unblocks ${d.unblocks.length} ${plural(d.unblocks.length, "task", "tasks")}`,
+                  ]}
+                  action={
+                    <Btn variant="secondary" size="sm" onClick={() => setReviewing(d.id)}>
+                      Review <ArrowRight className="size-3.5" aria-hidden="true" />
+                    </Btn>
+                  }
+                />
+              </li>
+            ))}
+          </ul>
+        </Group>
       ) : null}
 
       {show("fire") ? (
-      <Group
-        tone="fire"
-        icon={Flame}
-        title="On Fire"
-        sub="Escalated to you or already past its date."
-        count={onFire.length}
-      >
-        <ul className="space-y-1.5">
-          {onFire.map((t) => (
-            <li key={t.id}>
-              <DeskRow
-                title={t.title}
-                amount={t.amount}
-                meta={[
-                  t.kind === "task"
-                    ? `${Math.abs(t.dueInDays)} ${plural(Math.abs(t.dueInDays), "day", "days")} overdue`
-                    : t.kind === "escalation"
-                      ? `Escalated by ${t.raisedBy}`
-                      : `Handed to you by ${t.raisedBy}`,
-                  t.assignee ? `With ${t.assignee}` : null,
-                ]}
-                action={
-                  t.kind === "task" ? (
-                    <Btn variant="tertiary" size="sm">
-                      Chase
-                    </Btn>
-                  ) : (
-                    <Btn variant="secondary" size="sm" onClick={() => setRespondTo(t.id)}>
-                      Respond
-                    </Btn>
-                  )
-                }
-              />
-            </li>
-          ))}
-        </ul>
-      </Group>
+        <Group
+          tone="fire"
+          icon={Flame}
+          title="On Fire"
+          sub="Escalated to you or already past its date."
+          count={onFire.length}
+        >
+          <ul className="space-y-1.5">
+            {onFire.map((t) => (
+              <li key={t.id}>
+                <DeskRow
+                  title={t.title}
+                  amount={t.amount}
+                  meta={[
+                    t.kind === "task"
+                      ? `${Math.abs(t.dueInDays)} ${plural(Math.abs(t.dueInDays), "day", "days")} overdue`
+                      : t.kind === "escalation"
+                        ? `Escalated by ${t.raisedBy}`
+                        : `Handed to you by ${t.raisedBy}`,
+                    t.assignee ? `With ${t.assignee}` : null,
+                  ]}
+                  action={
+                    t.kind === "task" ? (
+                      <Btn variant="tertiary" size="sm">
+                        Chase
+                      </Btn>
+                    ) : (
+                      <Btn variant="secondary" size="sm" onClick={() => setRespondTo(t.id)}>
+                        Respond
+                      </Btn>
+                    )
+                  }
+                />
+              </li>
+            ))}
+          </ul>
+        </Group>
       ) : null}
 
       {show("due") ? (
-      <Group
-        tone="due"
-        icon={CalendarClock}
-        title="Due Today"
-        sub="On the date - nudge anything that looks slow."
-        count={dueToday.length}
-      >
-        <ul className="grid gap-1.5 sm:grid-cols-2">
-          {dueToday.map((t) => (
-            <li key={t.id}>
-              <DeskRow
-                title={t.title}
-                amount={t.amount}
-                meta={[t.assignee ? `With ${t.assignee}` : null]}
-                action={
-                  <Btn variant="tertiary" size="sm">
-                    Nudge
-                  </Btn>
-                }
-              />
-            </li>
-          ))}
-        </ul>
-      </Group>
+        <Group
+          tone="due"
+          icon={CalendarClock}
+          title="Due Today"
+          sub="On the date - nudge anything that looks slow."
+          count={dueToday.length}
+        >
+          <ul className="grid gap-1.5 sm:grid-cols-2">
+            {dueToday.map((t) => (
+              <li key={t.id}>
+                <DeskRow
+                  title={t.title}
+                  amount={t.amount}
+                  meta={[t.assignee ? `With ${t.assignee}` : null]}
+                  action={
+                    <Btn variant="tertiary" size="sm">
+                      Nudge
+                    </Btn>
+                  }
+                />
+              </li>
+            ))}
+          </ul>
+        </Group>
       ) : null}
 
       {show("important") ? (
-      <Group
-        tone="important"
-        icon={Star}
-        title="Important, Not Yet Due"
-        sub="High-value work worth keeping an eye on this week."
-        count={important.length}
-      >
-        <ul className="grid gap-1.5 sm:grid-cols-2">
-          {important.map((t) => (
-            <li key={t.id}>
-              <DeskRow
-                title={t.title}
-                amount={t.amount}
-                meta={[
-                  `Due in ${t.dueInDays} ${plural(t.dueInDays, "day", "days")}`,
-                  t.assignee ? `With ${t.assignee}` : null,
-                ]}
-              />
-            </li>
-          ))}
-        </ul>
-      </Group>
+        <Group
+          tone="important"
+          icon={Star}
+          title="Important, Not Yet Due"
+          sub="High-value work worth keeping an eye on this week."
+          count={important.length}
+        >
+          <ul className="grid gap-1.5 sm:grid-cols-2">
+            {important.map((t) => (
+              <li key={t.id}>
+                <DeskRow
+                  title={t.title}
+                  amount={t.amount}
+                  meta={[
+                    `Due in ${t.dueInDays} ${plural(t.dueInDays, "day", "days")}`,
+                    t.assignee ? `With ${t.assignee}` : null,
+                  ]}
+                />
+              </li>
+            ))}
+          </ul>
+        </Group>
       ) : null}
 
       {filter === "all" ? (
-      <div>
-        <SectionHeading title="Everything Else" sub="Captured, classified and waiting quietly." />
-        <TasksAndActivity />
-      </div>
+        <div>
+          <SectionHeading title="Everything Else" sub="Captured, classified and waiting quietly." />
+          <TasksAndActivity />
+        </div>
       ) : null}
 
       <BottomSheet
@@ -331,9 +344,7 @@ function DecisionDesk() {
         title="Decision Review"
         subtitle="Approve or reject. The detail is there if you want it."
       >
-        {reviewing ? (
-          <ApprovalCard decision={decisions.find((d) => d.id === reviewing)!} />
-        ) : null}
+        {reviewing ? <ApprovalCard decision={decisions.find((d) => d.id === reviewing)!} /> : null}
       </BottomSheet>
 
       <DetailPanel

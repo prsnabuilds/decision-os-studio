@@ -4,12 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ------------------------------ Buttons ------------------------------ */
 
@@ -23,17 +18,14 @@ const sizes: Record<Size, string> = {
 };
 
 const variants: Record<Variant, string> = {
-  primary:
-    "bg-brand text-on-primary shadow-xs hover:bg-brand-hover active:brightness-95",
-  secondary:
-    "bg-surface text-foreground border border-hairline-strong hover:bg-surface-hover",
+  primary: "bg-brand text-on-primary shadow-xs hover:bg-brand-hover active:brightness-95",
+  secondary: "bg-surface text-foreground border border-hairline-strong hover:bg-surface-hover",
   tertiary: "text-secondary-foreground hover:bg-surface-hover",
   destructive:
     "bg-transparent border border-destructive-border text-destructive hover:bg-destructive-hover",
   // Anything the AI does for you is always this shape - a tinted, sparkled pill.
   ai: "rounded-pill brand-gradient text-on-primary shadow-xs hover:brightness-110",
 };
-
 
 export function Btn({
   variant = "secondary",
@@ -79,7 +71,6 @@ export function Btn({
       )}
     </Comp>
   );
-
 }
 
 export function Spinner({ className }: { className?: string }) {
@@ -306,7 +297,6 @@ export function Card({
   );
 }
 
-
 export function BackLink({ to, label }: { to: string; label: string }) {
   return (
     <Link
@@ -345,7 +335,6 @@ export function PageHeader({
     </header>
   );
 }
-
 
 export function SectionHeading({
   title,
@@ -429,10 +418,7 @@ export function Field({
 export const inputClass =
   "h-10 w-full rounded-md border border-hairline bg-surface px-3 text-body text-foreground placeholder:text-tertiary-foreground focus-visible:border-brand";
 
-export function TextInput({
-  className,
-  ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) {
+export function TextInput({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(inputClass, className)} {...props} />;
 }
 
@@ -496,15 +482,11 @@ export function SelectWithOther({
         onChange={(e) => setValue(e.target.value)}
       />
       {value === "Other" ? (
-        <TextInput
-          aria-label="Please specify"
-          placeholder={otherPlaceholder ?? "Please specify"}
-        />
+        <TextInput aria-label="Please specify" placeholder={otherPlaceholder ?? "Please specify"} />
       ) : null}
     </div>
   );
 }
-
 
 export function TextArea({
   className,
@@ -561,9 +543,6 @@ export function Segmented<T extends string>({
   );
 }
 
-
-
-
 export function FilterPill({
   label,
   count,
@@ -604,10 +583,7 @@ export function Quarters({ value }: { value: number }) {
         {[25, 50, 75, 100].map((q) => (
           <span
             key={q}
-            className={cn(
-              "h-1.5 w-8 rounded-pill",
-              value >= q ? "bg-brand" : "bg-surface-sunken",
-            )}
+            className={cn("h-1.5 w-8 rounded-pill", value >= q ? "bg-brand" : "bg-surface-sunken")}
           />
         ))}
       </div>
@@ -751,10 +727,15 @@ export function BottomSheet({
             startY.current = null;
           }}
         >
-          <span aria-hidden="true" className="mx-auto block h-1 w-10 rounded-pill bg-hairline-strong" />
+          <span
+            aria-hidden="true"
+            className="mx-auto block h-1 w-10 rounded-pill bg-hairline-strong"
+          />
           <div className="mt-3">
             <h2 className="text-h3 text-foreground">{title}</h2>
-            {subtitle ? <p className="mt-0.5 text-small text-tertiary-foreground">{subtitle}</p> : null}
+            {subtitle ? (
+              <p className="mt-0.5 text-small text-tertiary-foreground">{subtitle}</p>
+            ) : null}
           </div>
         </div>
         <div className="flex-1 overflow-y-auto px-5 pb-6 pt-1">{children}</div>

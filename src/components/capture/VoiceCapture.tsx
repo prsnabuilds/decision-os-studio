@@ -1,5 +1,16 @@
 import * as React from "react";
-import { Mic, Pause, Play, Square, Camera, Paperclip, Upload, AudioLines, Type as TypeIcon, Sparkles } from "lucide-react";
+import {
+  Mic,
+  Pause,
+  Play,
+  Square,
+  Camera,
+  Paperclip,
+  Upload,
+  AudioLines,
+  Type as TypeIcon,
+  Sparkles,
+} from "lucide-react";
 import { currentUser } from "@/data/demo";
 import { cn } from "@/lib/utils";
 
@@ -63,9 +74,11 @@ const COPY: Record<Mode, { heading: string; sub: string }> = {
   },
 };
 
-const SUGGESTIONS = ["List the overdue tasks", "Get me a To Do list", "Prioritize the tasks on fire"];
-
-
+const SUGGESTIONS = [
+  "List the overdue tasks",
+  "Get me a To Do list",
+  "Prioritize the tasks on fire",
+];
 
 /** The gradient circle used by every capture control. */
 function CaptureCircle({
@@ -83,7 +96,10 @@ function CaptureCircle({
     <div className="relative flex items-center justify-center">
       <span
         aria-hidden="true"
-        className={cn("absolute size-[96px] rounded-pill bg-brand-300/40", breathing && "halo-breathe")}
+        className={cn(
+          "absolute size-[96px] rounded-pill bg-brand-300/40",
+          breathing && "halo-breathe",
+        )}
       />
       <button
         type="button"
@@ -132,7 +148,10 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
   return (
     <section aria-labelledby="capture-heading" className="flex flex-col gap-3">
       <div className="relative isolate overflow-hidden rounded-xl bg-surface-sunken">
-        <div aria-hidden="true" className="aurora-bloom pointer-events-none absolute inset-0 -z-10" />
+        <div
+          aria-hidden="true"
+          className="aurora-bloom pointer-events-none absolute inset-0 -z-10"
+        />
 
         <div className="flex h-[calc(100dvh-16rem)] min-h-[300px] flex-col items-center justify-center overflow-y-auto px-5 py-8 text-center sm:h-[calc(100dvh-15rem)] sm:max-h-[560px] sm:px-10">
           {processing ? (
@@ -144,11 +163,15 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
               <h1 id="capture-heading" className={heading}>
                 Making Sense Of It
               </h1>
-              <p className={sub}>DecisionOS is turning what you said into tasks, owners and dates.</p>
+              <p className={sub}>
+                DecisionOS is turning what you said into tasks, owners and dates.
+              </p>
             </>
           ) : recording ? (
             <>
-              <p className="text-label text-secondary-foreground">{paused ? "Paused" : "Listening…"}</p>
+              <p className="text-label text-secondary-foreground">
+                {paused ? "Paused" : "Listening…"}
+              </p>
               <div className="mt-6 w-full max-w-md">
                 <Waveform active={!paused} />
               </div>
@@ -247,7 +270,11 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
             <>
               {greetingLine}
               <div className="mt-6">
-                <CaptureCircle label="Upload Documents" icon={Upload} onClick={() => setProcessing(true)} />
+                <CaptureCircle
+                  label="Upload Documents"
+                  icon={Upload}
+                  onClick={() => setProcessing(true)}
+                />
               </div>
               <div className="mt-4">
                 <button
@@ -267,7 +294,11 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
             <>
               {greetingLine}
               <div className="mt-6">
-                <CaptureCircle label="Open Camera" icon={Camera} onClick={() => setProcessing(true)} />
+                <CaptureCircle
+                  label="Open Camera"
+                  icon={Camera}
+                  onClick={() => setProcessing(true)}
+                />
               </div>
               <h1 id="capture-heading" className={heading}>
                 {COPY.camera.heading}

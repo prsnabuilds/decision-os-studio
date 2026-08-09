@@ -9,7 +9,6 @@ import {
   Brain,
   Wallet,
   Upload,
-  Mic2,
   Settings as SettingsIcon,
   Globe,
   Moon,
@@ -27,21 +26,40 @@ import logoOnDark from "@/assets/decisionos-wordmark-light-text.svg.asset.json";
 
 const nav = [
   { to: "/home", label: "Home", short: "Home", icon: Home },
-  { to: "/inbox", label: "Decision Desk", short: "Desk", icon: Inbox, count: 6, tone: "neutral" as const },
-  { to: "/brief", label: "CEO Brief", short: "Brief", icon: Newspaper, count: 5, tone: "danger" as const },
+  {
+    to: "/inbox",
+    label: "Decision Desk",
+    short: "Desk",
+    icon: Inbox,
+    count: 6,
+    tone: "neutral" as const,
+  },
+  {
+    to: "/brief",
+    label: "CEO Brief",
+    short: "Brief",
+    icon: Newspaper,
+    count: 5,
+    tone: "danger" as const,
+  },
   { to: "/my-work", label: "My Work", short: "My Work", icon: ListChecks },
   { to: "/contacts", label: "People", short: "People", icon: Users },
   { to: "/brain", label: "Company Brain", short: "Brain", icon: Brain },
   { to: "/ledger", label: "Finance", short: "Finance", icon: Wallet },
-  { to: "/ingest", label: "Capture", short: "Capture", icon: Upload, count: 5, tone: "neutral" as const },
-  
+  {
+    to: "/ingest",
+    label: "Capture",
+    short: "Capture",
+    icon: Upload,
+    count: 5,
+    tone: "neutral" as const,
+  },
+
   { to: "/settings", label: "Settings", short: "Settings", icon: SettingsIcon },
 ];
 
 /* The bottom bar is the primary route set; the drawer holds the same names in full. */
 const mobileTabs = nav.slice(0, 4);
-
-
 
 export function Wordmark({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const width = size === "lg" ? "w-[164px]" : size === "sm" ? "w-[118px]" : "w-[137px]";
@@ -253,7 +271,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Desktop header */}
         <header className="sticky top-0 z-30 hidden h-16 items-center justify-between border-b border-hairline bg-surface/80 px-6 backdrop-blur lg:flex">
           <p className="text-small text-secondary-foreground">
-            Signed in as <span className="text-body-strong text-foreground">{currentUser.name}</span>{" "}
+            Signed in as{" "}
+            <span className="text-body-strong text-foreground">{currentUser.name}</span>{" "}
             <StatusBadge kind="neutral" className="ml-1.5 align-middle">
               {currentUser.role}
             </StatusBadge>
@@ -306,8 +325,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Menu className="size-5 shrink-0" aria-hidden="true" />
           <span className="w-full truncate whitespace-nowrap leading-tight">Menu</span>
         </button>
-
-
       </nav>
     </div>
   );

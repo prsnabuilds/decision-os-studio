@@ -11,7 +11,11 @@ import { inr } from "@/lib/format";
 function UnblockTimeline({ decision }: { decision: Decision }) {
   const steps = [
     { title: "Raised by " + decision.raisedBy, sub: decision.createdOn, state: "done" as const },
-    { title: "Waiting on your decision", sub: "Everything below is blocked", state: "active" as const },
+    {
+      title: "Waiting on your decision",
+      sub: "Everything below is blocked",
+      state: "active" as const,
+    },
     ...decision.unblocks.map((t) => ({
       title: t.title,
       sub: t.assignee ? `Goes to ${t.assignee}` : "Unassigned",
@@ -53,13 +57,7 @@ function UnblockTimeline({ decision }: { decision: Decision }) {
   );
 }
 
-function Disclosure({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function Disclosure({ label, children }: { label: string; children: React.ReactNode }) {
   const [open, setOpen] = React.useState(false);
   return (
     <div className="border-t border-hairline pt-3">
@@ -93,7 +91,8 @@ export function ApprovalCard({ decision }: { decision: Decision }) {
           ) : null}
         </div>
         <p className="mt-1 text-small text-tertiary-foreground">
-          Raised by {decision.raisedBy} · <SourceLabel source={decision.source} /> · {decision.createdOn}
+          Raised by {decision.raisedBy} · <SourceLabel source={decision.source} /> ·{" "}
+          {decision.createdOn}
         </p>
         {outcome !== "pending" ? (
           <div className="mt-2">
