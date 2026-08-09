@@ -329,7 +329,7 @@ function DecisionDesk() {
         open={reviewing !== null}
         onClose={() => setReviewing(null)}
         title="Decision Review"
-        subtitle="Approve, reject or send it back - the tasks below unblock the moment you decide."
+        subtitle="Approve or reject. The detail is there if you want it."
       >
         {reviewing ? (
           <ApprovalCard decision={decisions.find((d) => d.id === reviewing)!} />
