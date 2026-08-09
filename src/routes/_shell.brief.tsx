@@ -90,16 +90,8 @@ function BriefPage() {
       </Card>
 
       <div className="mb-6 flex flex-wrap gap-2">
-        {filters.map((f) => (
-          <FilterPill
-            key={f.id}
-            label={f.label}
-            count={f.count}
-            active={filter === f.id}
-            onClick={() => setFilter(f.id)}
-          />
-        ))}
-      </div>
+
+
 
       {show("fires") ? (
         <section className="mb-8">
