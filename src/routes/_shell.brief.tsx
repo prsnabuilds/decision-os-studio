@@ -67,7 +67,7 @@ function BriefPage() {
     { id: "completed", label: "Work Completed", count: completed.length },
   ] as const;
 
-  const [filter, setFilter] = React.useState<(typeof filters)[number]["id"] | "all">("all");
+  const [filter, setFilter] = React.useState<(typeof filters)[number]["id"] | "all">("fires");
   const show = (id: (typeof filters)[number]["id"]) => filter === "all" || filter === id;
 
   return (
