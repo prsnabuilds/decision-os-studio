@@ -57,7 +57,15 @@ function UnblockTimeline({ decision }: { decision: Decision }) {
   );
 }
 
-function Disclosure({ label, children }: { label: string; children: React.ReactNode }) {
+function Disclosure({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = React.useState(false);
   return (
     <div className="border-t border-hairline pt-3">
@@ -65,12 +73,13 @@ function Disclosure({ label, children }: { label: string; children: React.ReactN
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-2 text-left text-small text-secondary-foreground"
+        className="flex w-full items-center gap-2 text-left text-small text-secondary-foreground"
       >
-        {label}
+        <span className="flex-1">{label}</span>
+        {hint ? <span className="text-small text-tertiary-foreground">{hint}</span> : null}
         <ChevronDown
           aria-hidden="true"
-          className={cn("size-4 transition-transform", open && "rotate-180")}
+          className={cn("size-4 shrink-0 transition-transform", open && "rotate-180")}
         />
       </button>
       {open ? <div className="pt-3">{children}</div> : null}
@@ -85,15 +94,15 @@ export function ApprovalCard({ decision }: { decision: Decision }) {
     <div className="space-y-5">
       <div>
         <div className="flex flex-wrap items-start gap-2">
-          <h3 className="min-w-40 flex-1 text-h3 text-foreground">{decision.title}</h3>
+          <h3 className="min-w-40 flex-1 text-h2 font-semibold text-foreground">
+            {decision.title}
+          </h3>
           {decision.amount ? (
-            <span className="tabular text-h3 text-foreground">{inr(decision.amount)}</span>
+            <span className="tabular text-h2 font-semibold text-foreground">
+              {inr(decision.amount)}
+            </span>
           ) : null}
         </div>
-        <p className="mt-1 text-small text-tertiary-foreground">
-          Raised by {decision.raisedBy} · <SourceLabel source={decision.source} /> ·{" "}
-          {decision.createdOn}
-        </p>
         {outcome !== "pending" ? (
           <div className="mt-2">
             <StatusBadge kind={outcome === "approved" ? "done" : "neutral"}>
@@ -103,7 +112,7 @@ export function ApprovalCard({ decision }: { decision: Decision }) {
         ) : null}
       </div>
 
-      <p className="text-body text-secondary-foreground">{decision.summary}</p>
+      <p className="text-body leading-relaxed text-secondary-foreground">{decision.summary}</p>
 
       <div className="flex flex-wrap gap-2">
         <Btn variant="primary" className="flex-1" onClick={() => setOutcome("approved")}>
@@ -114,11 +123,14 @@ export function ApprovalCard({ decision }: { decision: Decision }) {
         </Btn>
       </div>
 
-      <Disclosure label={`What happens next (${decision.unblocks.length} tasks unblock)`}>
+      <Disclosure
+        label="What happens next"
+        hint={`${decision.unblocks.length} ${decision.unblocks.length === 1 ? "task" : "tasks"}`}
+      >
         <UnblockTimeline decision={decision} />
       </Disclosure>
 
-      <Disclosure label={`Add a note or send it back to ${decision.raisedBy}`}>
+      <Disclosure label="Send a note" hint={`To ${decision.raisedBy}`}>
         <VoiceReply
           ariaLabel={`Your note to ${decision.raisedBy}`}
           placeholder={`Speak or type - this goes back to ${decision.raisedBy}`}
@@ -128,3 +140,4 @@ export function ApprovalCard({ decision }: { decision: Decision }) {
     </div>
   );
 }
+
