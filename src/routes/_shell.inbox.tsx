@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Stamp, Flame, CalendarClock, Star, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import {
   BottomSheet,
   Btn,
@@ -10,10 +10,8 @@ import {
   FilterPill,
   Meta,
   Skel,
-  SectionHeading,
 } from "@/components/ds";
 import { ApprovalCard } from "@/components/desk/ApprovalCard";
-import { TasksAndActivity } from "@/components/desk/Feed";
 import { VoiceReply } from "@/components/desk/VoiceReply";
 import { decisions, tasks } from "@/data/demo";
 import { inr, plural } from "@/lib/format";
@@ -105,7 +103,7 @@ function DecisionDesk() {
   const [reviewing, setReviewing] = React.useState<string | null>(null);
   const [respondTo, setRespondTo] = React.useState<string | null>(null);
   const [filter, setFilter] = React.useState<"all" | "decision" | "fire" | "due" | "important">(
-    "all",
+    "decision",
   );
 
   React.useEffect(() => {
@@ -178,10 +176,8 @@ function DecisionDesk() {
 
       {show("decision") ? (
         <Group
-          tone="decision"
-          icon={Stamp}
           title="Needs Your Decision"
-          sub="Work stays blocked until you decide. Longest waiting first."
+          showTitle={filter === "all"}
           count={pending.length}
         >
           <ul className="space-y-1.5">
@@ -209,10 +205,8 @@ function DecisionDesk() {
 
       {show("fire") ? (
         <Group
-          tone="fire"
-          icon={Flame}
           title="On Fire"
-          sub="Escalated to you or already past its date."
+          showTitle={filter === "all"}
           count={onFire.length}
         >
           <ul className="space-y-1.5">
@@ -249,10 +243,8 @@ function DecisionDesk() {
 
       {show("due") ? (
         <Group
-          tone="due"
-          icon={CalendarClock}
           title="Due Today"
-          sub="On the date - nudge anything that looks slow."
+          showTitle={filter === "all"}
           count={dueToday.length}
         >
           <ul className="grid gap-1.5 sm:grid-cols-2">
@@ -276,10 +268,8 @@ function DecisionDesk() {
 
       {show("important") ? (
         <Group
-          tone="important"
-          icon={Star}
           title="Important, Not Yet Due"
-          sub="High-value work worth keeping an eye on this week."
+          showTitle={filter === "all"}
           count={important.length}
         >
           <ul className="grid gap-1.5 sm:grid-cols-2">
@@ -297,13 +287,6 @@ function DecisionDesk() {
             ))}
           </ul>
         </Group>
-      ) : null}
-
-      {filter === "all" ? (
-        <div>
-          <SectionHeading title="Everything Else" sub="Captured, classified and waiting quietly." />
-          <TasksAndActivity />
-        </div>
       ) : null}
 
       <BottomSheet open={reviewing !== null} onClose={() => setReviewing(null)}>
