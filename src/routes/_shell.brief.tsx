@@ -4,7 +4,6 @@ import { ArrowRight, CheckCircle2, Flame } from "lucide-react";
 import {
   Btn,
   Card,
-  FilterPill,
   Meta,
   PageHeader,
   SectionHeading,

@@ -6,7 +6,6 @@ import {
   Btn,
   Card,
   DetailPanel,
-  FilterPill,
   EmptyState,
   Meta,
   Skel,
