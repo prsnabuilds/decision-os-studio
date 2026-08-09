@@ -89,7 +89,8 @@ function BriefPage() {
         </div>
       </Card>
 
-      <div className="mb-6 flex flex-wrap gap-2">
+
+
 
 
 
