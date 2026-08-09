@@ -238,11 +238,6 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                 Making Sense Of It
               </h1>
               <p className={sub}>DecisionOS is turning what you said into tasks, owners and dates.</p>
-              {(held || transcript) && (
-                <p className="mt-6 max-w-sm text-small italic leading-relaxed text-secondary-foreground">
-                  {held || transcript}
-                </p>
-              )}
             </>
           ) : recording ? (
             <>
