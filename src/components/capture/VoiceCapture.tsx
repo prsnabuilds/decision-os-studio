@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  ArrowUp,
   Mic,
   Pause,
   Play,
@@ -267,7 +268,7 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                   </ul>
                 ) : null}
 
-                <div className="flex items-center gap-2 px-2 pb-2">
+                <div className="flex items-center justify-between border-t border-hairline px-2 py-2">
                   <input
                     ref={fileInput}
                     type="file"
@@ -286,13 +287,11 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                     onClick={() => fileInput.current?.click()}
                     className="inline-flex size-8 items-center justify-center rounded-pill text-secondary-foreground transition-colors hover:bg-surface hover:text-foreground active:scale-95"
                   >
-                    <Paperclip className="size-4" aria-hidden="true" />
+                    <Paperclip className="size-4.5" aria-hidden="true" />
                   </button>
-                  <span className="flex-1 truncate text-left text-meta text-tertiary-foreground">
-                    Attach an invoice, bill or photo
-                  </span>
                   <button
                     type="button"
+                    aria-label="Send"
                     disabled={!typed.trim() && files.length === 0}
                     onClick={() => {
                       setTyped("");
@@ -300,10 +299,9 @@ export function VoiceCapture({ onSubmit }: { onSubmit?: () => void }) {
                       setProcessing(true);
                       onSubmit?.();
                     }}
-                    className="brand-gradient inline-flex h-8 shrink-0 items-center gap-1.5 rounded-pill px-3.5 text-label font-semibold text-on-primary shadow-xs transition hover:brightness-110 active:scale-95 disabled:opacity-45"
+                    className="brand-gradient inline-flex size-9 shrink-0 items-center justify-center rounded-pill text-on-primary shadow-xs transition hover:brightness-110 active:scale-95 disabled:opacity-45"
                   >
-                    <Sparkles className="size-3.5 shrink-0" aria-hidden="true" />
-                    Structure it
+                    <ArrowUp className="size-4.5" strokeWidth={2.25} aria-hidden="true" />
                   </button>
                 </div>
               </div>
