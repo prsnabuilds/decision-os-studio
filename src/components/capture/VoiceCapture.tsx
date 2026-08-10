@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  ArrowUp,
   Mic,
   Pause,
   Play,
